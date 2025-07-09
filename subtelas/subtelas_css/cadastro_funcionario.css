@@ -1,0 +1,349 @@
+@charset "UTF-8";
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Candara, sans-serif;
+  background-color: #fbf0ff;
+  min-height: 100vh;
+}
+
+.btn-voltar {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  padding: 8px 15px;
+  background-color: #7076c9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-voltar:hover {
+  background-color: #4c52a7;
+}
+
+header{
+  height: 150px;
+  width: 1000px;
+  border-radius: 50px;
+  background-color: #85ccea;
+  margin: 30px auto;
+  flex-wrap: wrap; /* <-- ESSENCIAL PARA CELULAR */
+}
+
+header h1{
+  color: #4a3092; 
+  text-align: center;
+  font-size: 41px;
+  float: center;
+  margin: 10px 10px 10px;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap; /* <-- ESSENCIAL PARA CELULAR */
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0px 1px 1px 0.1px; /* ADICIONA padding à direita */
+  box-sizing: border-box;
+}
+
+
+.logodiv img {
+  width: 655px;
+  height: 635px;
+  object-fit: cover;
+  display: block;
+  margin-right: 0 auto;
+}
+
+.conteudo-direito {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinha tudo à esquerda */
+    max-width: 450px;
+    width: 100%;
+}
+
+header h1 {
+  font-size: 50px;
+  text-align: center;
+  float: center;
+  margin: 36px 225px 30px;
+}
+
+h2 {
+  font-size: 28px;
+  margin-top: 20px;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+h3 {
+  font-size: 28px;
+  margin-top: 100px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.formulario {
+  background: #fefaff;
+  padding: 30px;
+  border-radius: 35px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 1000px;
+  max-width: 1000px;
+  margin-top: 230px;
+  margin-right: 50px;
+  margin-top: 5px;
+  margin-left: 150px;
+}
+
+.btn {
+  background: #ffbcfc;
+  color: rgb(0, 0, 0);
+  padding: 15px 130px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 30px;
+  margin-left: 70px;
+}
+
+.btn.glow {
+  box-shadow: 0px 0px 15px #884b85;
+}
+
+.btn:hover {
+  background: #e07ddb;
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px #884b85;
+}
+
+.btn2 {
+  background: #ffbcfc;
+  color: rgb(0, 0, 0);
+  padding: 15px 130px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 30px;
+  margin-right: 150px;
+}
+
+.btn2.glow {
+  box-shadow: 0px 0px 15px #884b85;
+}
+
+.btn2:hover {
+  background: #e07ddb;
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px #884b85;
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  display: flex;
+  gap: 40px; /* Espaço entre os botões */
+  padding: 20px 1px; /* Espaço acima e abaixo dos botões */
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.input-group input {
+  width: 400px;
+  padding: 15px 55px;
+  border: none;
+  border-radius: 25px;
+  background: #cef1ff;
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid #85ccea;
+}
+
+.input-group input::placeholder {
+  color: rgb(0, 0, 0);
+  opacity: 1px;
+}
+
+.input-group .icon {
+  position: absolute;
+  left: 16px;
+  top: 71%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: rgb(0, 0, 0);
+}
+
+.linha-dupla {
+  display: flex;
+  gap: 180px; /* espaçamento entre os campos */
+  justify-content: space-between;
+}
+
+.linha-dupla .input-group {
+  flex: 1;
+}
+
+.checkbox-show-senha {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  margin-left: 600px;
+  font-size: 14px;
+}
+
+.custom-select {
+  width: 400px;
+  padding: 15px 55px;
+  border: 1px solid #85ccea;
+  border-radius: 25px;
+  background-color: #ecf9ff;
+  font-size: 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpolygon points='0,0 10,0 5,7' style='fill:%23666;'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 20px center;
+  background-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: #e280dd;
+  box-shadow: 0 0 5px rgba(255, 188, 252, 0.5);
+}
+
+.cep-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.cep-container input[type="text"] {
+  width: 400px;
+  padding: 15px 55px;
+  border: none;
+  border-radius: 25px;
+  background: #cef1ff;
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid #85ccea;
+}
+
+.cep-container .icon {
+  position: absolute;
+  left: 16px;
+  top: 45%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: rgb(0, 0, 0);
+}
+
+.btn-cep-inside {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #cef1ff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 18px;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.3s;
+}
+
+.btn-cep-inside:hover {
+  background-color: #68acf0;
+}
+
+.arquivo-box {
+  margin-top: 25px;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  width: 100%;
+  max-width: 300px;
+  margin-left: 300;
+  margin-right: auto;
+}
+
+/* Estilo do parágrafo dentro do box de arquivos */
+.arquivo-box p {
+  margin-top: 10;
+  padding: 5px 0;
+}
+
+/* Estilo da lista de arquivos */
+#lista-arquivos {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+/* Estilo para cada item na lista de arquivos */
+#lista-arquivos li {
+  padding: 5px;
+  background-color: #f1f1f1;
+  margin: 5px 0;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Estilo do parágrafo dentro de arquivo-box */
+#arquivo-box p {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Estilo do botão inline */
+.botao-inline {
+  margin-left: 870px;
+  padding: 5px 15px;
+  font-size: 12px;
+  background-color: #ffbcfc;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* Efeito hover no botão inline */
+.botao-inline:hover {
+  background-color: #e07ddb;
+}
+
+footer {
+  text-align: center;
+  padding: 1px;
+  font-size: 14px;
+  background-color: #e1e1e1;
+}

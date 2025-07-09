@@ -1,0 +1,135 @@
+@charset "UTF-8";
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Candara, sans-serif;
+  background-color: #ffffff;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap; /* <-- ESSENCIAL PARA CELULAR */
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0px 1px 1px 0.1px; /* ADICIONA padding à direita */
+  box-sizing: border-box;
+}
+
+
+.logodiv img {
+  width: 655px;
+  height: 635px;
+  object-fit: cover;
+  display: block;
+  margin-right: 0 auto;
+}
+
+.conteudo-direito {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinha tudo à esquerda */
+    max-width: 450px;
+    width: 100%;
+}
+
+h1 {
+  font-size: 70px;
+  margin-left:30px;
+  margin-top: 50px;
+  text-align: left;
+}
+
+.formulario {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 35px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  margin-top: 230px;
+  margin-right: 50px;
+  margin-top: 40px;
+  margin-left: 40px;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 15px 55px;
+  border: none;
+  border-radius: 25px;
+  background: #cef1ff;
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.input-group input::placeholder {
+  color: rgb(0, 0, 0);
+  opacity: 1px;
+}
+
+.input-group .icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: rgb(0, 0, 0);
+}
+
+.btn {
+  background: #ffbcfc;
+  color: rgb(0, 0, 0);
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  min-width: 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+  margin-left: 95px;
+}
+
+.btn.glow {
+  box-shadow: 0px 0px 15px #884b85;
+}
+
+.btn:hover {
+  background: #e07ddb;
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px #884b85;
+}
+
+.links {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.conteudo-direito a {
+  color: #db5050;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-left: 195px;
+}
+
+footer {
+  text-align: center;
+  padding: 1px;
+  font-size: 14px;
+  background-color: #e1e1e1;
+}

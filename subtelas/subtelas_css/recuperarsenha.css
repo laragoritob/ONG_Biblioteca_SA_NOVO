@@ -1,0 +1,267 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Candara, sans-serif;
+    background-color: #fbf0ff;
+    min-height: 100vh;
+  }
+
+  .btn-voltar {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    padding: 8px 15px;
+    background-color: #7076c9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .btn-voltar:hover {
+    background-color: #4c52a7;
+  }
+
+h1 {
+  font-size: 70px;
+  margin-left:30px;
+  margin-top: 50px;
+  text-align: center;
+}
+
+.verification-container {
+  display: none;
+  text-align: center;
+  padding: 20px;
+}
+
+.verification-title {
+  color: #7076c9;
+  margin-bottom: 20px;
+}
+
+.verification-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.verification-input {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  font-size: 24px;
+  border: 2px solid #7076c9;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.verification-input:focus {
+  outline: none;
+  border-color: #4c52a7;
+  box-shadow: 0 0 5px rgba(112, 118, 201, 0.5);
+}
+
+.btn-verify {
+  background-color: #7076c9;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.btn-verify:hover {
+  background-color: #4c52a7;
+}
+
+.email-form {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+.password-reset-container {
+  display: none;
+  text-align: center;
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.password-reset-title {
+  color: #7076c9;
+  margin-bottom: 50px;
+}
+
+.password-input-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.password-input-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.password-input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #7076c9;
+  border-radius: 30px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #4c52a7;
+  box-shadow: 0 0 5px rgba(112, 118, 201, 0.5);
+}
+
+.btn-reset {
+  background-color: #7076c9;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 35px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  width: 100%;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.btn-reset:hover {
+  background-color: #4c52a7;
+}
+
+.user-type-group {
+  margin-bottom: 20px;
+}
+
+.user-type-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  text-align: left;
+}
+
+.user-type-input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #7076c9;
+  border-radius: 30px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.user-type-input:focus {
+  outline: none;
+  border-color: #4c52a7;
+  box-shadow: 0 0 5px rgba(112, 118, 201, 0.5);
+}
+
+.show-password-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  color: #7076c9;
+  cursor: pointer;
+}
+
+.show-password-container input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #7076c9;
+}
+
+.show-password-container label {
+  cursor: pointer;
+  user-select: none;
+}
+
+.formulario {
+  background: #fcf5ff;
+  padding: 30px;
+  border-radius: 35px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  margin-left: 450px;
+  margin-top: 70px;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 15px 55px;
+  border: none;
+  border-radius: 25px;
+  background: #cef1ff;
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.input-group input::placeholder {
+  color: rgb(0, 0, 0);
+  opacity: 1;
+}
+
+.input-group .icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: rgb(0, 0, 0);
+}
+
+.btn {
+  background: #ffbcfc;
+  color: rgb(0, 0, 0);
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  min-width: 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+  margin-left: 95px;
+}
+
+.btn.glow {
+  box-shadow: 0px 0px 15px #884b85;
+}
+
+.btn:hover {
+  background: #e07ddb;
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px #884b85;
+}
+
+.botao {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}

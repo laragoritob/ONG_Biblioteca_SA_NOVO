@@ -1,0 +1,121 @@
+@charset "UTF-8";
+
+/* Configuração geral */
+body {
+  margin: 0 auto;
+  font-family: "Candara", sans-serif;
+  background-color: #fbf0ff;
+  height: 100%;
+  padding:0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex-wrap: wrap; /* <-- ESSENCIAL PARA CELULAR */
+}
+
+/* Cabeçalho */
+header {
+  height: 150px;
+  background-color: #85ccea;
+  border-radius: 50px;
+  width: 1000px;
+  text-align: center;
+  margin: 30px auto;
+  position: relative;
+  flex-wrap: wrap; /* <-- ESSENCIAL PARA CELULAR */
+}
+
+header img {
+  float: left;
+  height: 150px;
+  width: 125px;
+  margin: 10px;
+}
+
+.logout-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 8px 25px;
+  background-color: #9960c7;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+.logout-btn:hover {
+  background-color: #69408b;
+}
+
+.opcao {
+  background: #85ccea;
+  color: rgb(0, 0, 0);
+  padding: 15px 130px;
+  border: none;
+  border-radius: 50px;
+  font-size: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 30px;
+  margin-left: 20px;
+  height: 90px;
+}
+
+.opcao.glow {
+  box-shadow: 0px 0px 15px #275870;
+}
+
+.opcao:hover {
+  background: #66a4be;
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px #72b0cf;
+}
+
+header h1 {
+  margin: 0;
+  line-height: 150px;
+  font-size: 50px;
+  color: #4a3092;
+}
+
+nav {
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  gap: 50px;              
+  margin: 30px auto;
+  flex-wrap: wrap;       
+}
+
+nav a{
+    color:black;
+    font-size:25px;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: center;
+    height: 100px;
+    width: 350px;
+    border-radius: 50px;     
+    margin: 50px;
+}
+
+
+.logo {
+  position: fixed;
+  bottom: 10px;
+  right: 20px;
+  height: 130px;
+  width: 130px;
+  z-index: 1000;
+  flex-wrap: wrap; /* <-- ESSENCIAL PARA CELULAR */
+}
+
