@@ -3,24 +3,22 @@
     <head> 
          <meta charset="UTF-8">
          <title> ONG Bilbioteca - Gerente </title>
-         <link rel ="stylesheet" type="text/css" href="css/telgerente.css"/>
+         <link rel ="stylesheet" type="text/css" href="css/style.css" />
          <script src="javascript/JS_Logout.js" defer></script>
     </head>
     <body> 
         <a href="#" class="logout-btn">🚶🏻‍♂️ Logout</a>
+        <img src="img/logo_trans.png" title="imgs" class="logo"> 
         <header> 
             <h1> Bem-Vindo, "Gerente"! </h1>
-            <div>
-                <img src="img/logo_trans.png" title="imgs" class="logo"> 
-            </div>
         </header>
         <ul class="nav-bar">
-            <li><a href="#"> Início </a></li>
+            <li><a href="#" class="dropbtn"> Início </a></li>
             <li class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn"> Funcionários </a>
                 <div class="dropdown-content">
-                    <a href="#"> Registrar Funcionário </a>
-                    <a href="#"> Consultar Funcionários </a>
+                    <a href="subtelas/cadastro_funcionario.html"> Registrar Funcionário </a>
+                    <a href="subtelas/telconsultar_funcionario.html"> Consultar Funcionários </a>
                 </div>
             </li>
 

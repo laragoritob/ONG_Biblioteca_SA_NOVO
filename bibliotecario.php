@@ -2,7 +2,7 @@
 <html lang="pt-br">
     <head> 
         <title> ONG Bilbioteca - Bibliotecário </title>
-            <link  rel="stylesheet" type="text/css" href="css/bibliotecario.css"/>
+            <link  rel="stylesheet" type="text/css" href="css/style.css"/>
     </head>
     <body>
         <a href="#" class="logout-btn">🚶🏻‍♂️Logout</a>

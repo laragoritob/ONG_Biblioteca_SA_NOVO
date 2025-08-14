@@ -3,7 +3,7 @@
      <head>
 	    <meta charset="UTF-8">
         <title> ONG Bilbioteca - Recreador </title>
-        <link rel="stylesheet" type="text/css" href="css/css_recreador.css"/>
+        <link rel="stylesheet" type="text/css" href="css/style.css"/>
         </head>
         <body>
             <a href="#" class="logout-btn">🚶🏻‍♂️ Logout</a>

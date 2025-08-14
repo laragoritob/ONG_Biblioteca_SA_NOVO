@@ -4,7 +4,7 @@
 	    <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
            <title> ONG Biblioteca - Repositor </title>
-           <link rel="stylesheet" type="text/css" href="css/repositor.css"/>
+           <link rel="stylesheet" type="text/css" href="css/style.css"/>
      </head>
      <body>
         <a href="#" class="logout-btn">🚶🏻‍♂️Logout</a>

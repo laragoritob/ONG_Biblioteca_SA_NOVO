@@ -2,7 +2,7 @@
 <html lang="pt-br">
     <head> 
         <title> ONG Bilbioteca - Gestor </title>
-            <link  rel="stylesheet" type="text/css" href="css/gestor.css"/>
+            <link  rel="stylesheet" type="text/css" href="css/style.css"/>
     </head>
     <body>
         <a href="#" class="logout-btn">🚶🏻‍♂️ Logout</a>
