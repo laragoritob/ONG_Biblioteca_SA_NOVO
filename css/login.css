@@ -37,7 +37,7 @@ body {
   background: rgba(255,255,255,0.95);
   border-radius: 0 24px 24px 0;
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  padding: 40px 32px 32px 32px;
+  padding: 35px 70px 32px 22px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -53,6 +53,7 @@ h1 {
   color: #884b85;
   margin-bottom: 24px;
   letter-spacing: 1px;
+  margin-left: 60px;
 }
 
 .formulario {
@@ -79,8 +80,7 @@ h1 {
 
 .input-group input {
   width: 100%;
-  padding-left: 5px;
-  padding-top: 20px;
+  padding: 12px 5px 12px 45px;
   border: 1.5px solid #e0e0e0;
   border-radius: 18px;
   background: #f7fafd;
@@ -92,14 +92,6 @@ h1 {
 .input-group input:focus {
   border: 1.5px solid #884b85;
   background: #fff;
-}
-
-.input-group input::placeholder {
-  color: #b0b0b0;
-  opacity: 1;
-  margin-top: 100px;
-  padding-left: 40px;
-  font-size: 16px;
 }
 
 .btn {
@@ -114,7 +106,7 @@ h1 {
   box-shadow: 0 2px 8px rgba(136,75,133,0.10);
   transition: background 0.2s, transform 0.1s;
   margin-top: 8px;
-  margin-right: 116px;
+  margin-right: 90px;
 }
 
 .btn:hover {
@@ -136,6 +128,7 @@ h1 {
   font-weight: 500;
   margin-top: 12px;
   transition: color 0.2s;
+  margin-left: 60px;
 }
 
 .conteudo-direito a:hover {

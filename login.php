@@ -1,3 +1,38 @@
+<?php
+    session_start();
+    require_once 'conexao.php';
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $usuario = $_POST['usuario'];
+        $senha = $_POST['senha'];
+
+        $sql = "SELECT * FROM funcionario WHERE usuario = :usuario";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':usuario', $usuario);
+        $stmt->execute();
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($usuario) {
+            // LOGIN BEM SUCEDIDO DEFINE VARIÁVEIS DE SESSÃO
+            $_SESSION['usuario'] = $usuario['Nome'];
+            $_SESSION['perfil'] = $usuario['Cod_Perfil'];
+            $_SESSION['cod_func'] = $usuario['Cod_usuario'];
+
+            // VERIFICA SE A SENHA É TEMPORÁRIA
+            if ($usuario) {
+                // REDIRECIONA PARA A PÁGINA PRINCIPAL
+                header("Location: gerente.php");
+                exit();
+            } else {
+                // REDIRECIONA PARA A PÁGINA PRINCIPAL
+                header("Location: login.php");
+                exit();
+            }
+        } 
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -14,15 +49,15 @@
 
         <div class="conteudo-direito">
             <h1>LOGIN</h1>
-            <form class="formulario" id="form_login" action="#" method="post">
+            <form class="formulario" id="form_login" action="login.php" method="POST">
                 <div class="input-group">
                     <span class="icon">👤</span>
-                    <input type="text" name="usuario" placeholder="Usuário" required>
+                    <input type="text" name="usuario" id="usuario" placeholder="Usuário" required>
                 </div>
 
                 <div class="input-group">
                     <span class="icon">🔒</span>
-                    <input type="password" name="senha" placeholder="Senha" required>
+                    <input type="password" name="senha" id="senha" placeholder="Senha" required>
                 </div>
                 <div class="links">
                     <button type="submit" class="btn"> Acessar </button>
