@@ -16,7 +16,7 @@
                 </svg>
                 Voltar
             </button>
-            <h1>Cadastro de Funcionários</h1>
+            <h1>Cadastro de Clientes</h1>
         </header>
         
         <main class="main-content">
