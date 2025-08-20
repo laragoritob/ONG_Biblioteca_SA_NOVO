@@ -57,7 +57,7 @@ header h1{
 }
 
 /* Botão de logout */
-.logout-btn {
+.logout {
   position: fixed;
   top: 20px;
   left: 20px;

@@ -1,3 +1,14 @@
+<?php
+    session_start();
+    require_once 'conexao.php';
+
+    if (!isset($_SESSION['usuario'])) {
+        header('Location: login.php');
+        exit();
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
     <head> 
@@ -8,9 +19,11 @@
     </head>
     <body> 
         <header> 
-            <h1> Bem-Vindo, "Gerente"! </h1>
-            <a href="#" class="logout-btn">🚶🏻‍♂️ Logout</a>
-            <img src="img/logo_trans.png" title="imgs" class="logo"> 
+        <h1> Bem-Vindo, <?php echo $_SESSION['usuario']?>! </h1>
+        <form action="logout.php" method="POST">
+            <button type="submit" class="logout-btn">🚶🏻‍♂️ Logout</a>
+        </form>
+
         </header>
         <ul class="nav-bar">
             <li><a href="#" class="dropbtn"> Início </a></li>
