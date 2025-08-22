@@ -1,6 +1,5 @@
 // ANIMAÇÃO DO BOTÃO DE CADASTRAR //
 document.getElementById('btnCadastrar').addEventListener('click', function (e) {
-    e.preventDefault(); // Impede o envio do formulário até validar
 
     const form = document.querySelector('#form_pessoal');
     const inputs = form.querySelectorAll('input');
@@ -95,24 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-// LIMITAR O NÚMERO DE DÍGITOS DO RG E PERMITIR APENAS NÚMEROS //
-    function formatRG(input) {
-        let value = input.value.replace(/\D/g, ''); // Remove tudo que não for dígito
-        value = value.slice(0, 10); // Limita a 11 dígitos
-    
-        // Aplica a máscara: 123.456.789-00
-        if (value.length > 9) {
-            input.value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-        } else if (value.length > 6) {
-            input.value = value.replace(/(\d{2})(\d{3})(\d{1,3})/, "$1.$2.$3");
-        } else if (value.length > 3) {
-            input.value = value.replace(/(\d{2})(\d{1,3})/, "$1.$2");
-        } else {
-            input.value = value;
-        }
-    }
-
-
 // LIMITAR O NÚMERO DE DÍGITOS DO TELEFONE E PERMITIR APENAS NÚMEROS //
     function formatTelefone(input) {
         let value = input.value.replace(/\D/g, ''); // Remove tudo que não for dígito
@@ -167,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                document.querySelector('input[name="estado"]').value = data.uf || '';
+                document.querySelector('input[name="uf"]').value = data.uf || '';
                 document.querySelector('input[name="cidade"]').value = data.localidade || '';
                 document.querySelector('input[name="bairro"]').value = data.bairro || '';
                 document.querySelector('input[name="rua"]').value = data.logradouro || '';
@@ -181,8 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // ATUALIZAR O NOME DO ARQUIVO AO SELECIONAR UM ARQUIVO //
     function atualizarNomeArquivo() {
-        const inputArquivo = document.getElementById('seletor_arquivo');
-        const nomeArquivo = document.getElementById('arquivo');
+        const inputArquivo = document.getElementById('foto');
+        const nomeArquivo = document.getElementById('seletor_arquivo');
         const listaArquivos = document.getElementById('lista-arquivos');
         const arquivoBox = document.getElementById('arquivo-box');
         const arquivosSelecionados = inputArquivo.files;

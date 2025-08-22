@@ -59,19 +59,6 @@ CREATE TABLE `cliente` (
 -- --------------------------------------------------------
 
 --
--- Estrutura stand-in para view `cliente_vw`
--- (Veja abaixo para a visão atual)
---
-CREATE TABLE `cliente_vw` (
-`nome` varchar(50)
-,`cpf` varchar(15)
-,`data_nascimento` date
-,`cidade` varchar(30)
-);
-
--- --------------------------------------------------------
-
---
 -- Estrutura para tabela `doador`
 --
 
@@ -138,15 +125,6 @@ CREATE TABLE `funcionario` (
 
 INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`) VALUES
 (5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678');
-
--- --------------------------------------------------------
-
---
--- Estrutura stand-in para view `funcionario_vw`
--- (Veja abaixo para a visão atual)
---
-CREATE TABLE `funcionario_vw` (
-);
 
 -- --------------------------------------------------------
 
@@ -241,22 +219,6 @@ CREATE TABLE `relatorio` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
-
---
--- Estrutura para view `cliente_vw`
---
-DROP TABLE IF EXISTS `cliente_vw`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `cliente_vw`  AS SELECT `cliente`.`Nome` AS `nome`, `cliente`.`CPF` AS `cpf`, `cliente`.`Data_Nascimento` AS `data_nascimento`, `cliente`.`Cidade` AS `cidade` FROM `cliente` WHERE `cliente`.`Cidade` like 'Curitiba' ;
-
--- --------------------------------------------------------
-
---
--- Estrutura para view `funcionario_vw`
---
-DROP TABLE IF EXISTS `funcionario_vw`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `funcionario_vw`  AS SELECT `funcionario`.`Nome` AS `nome`, `funcionario`.`Cargo` AS `cargo`, `funcionario`.`Usuario` AS `usuario`, `funcionario`.`Senha` AS `senha` FROM `funcionario` ORDER BY `funcionario`.`Nome` ASC ;
 
 --
 -- Índices para tabelas despejadas

@@ -21,7 +21,7 @@
         <header> 
         <h1> Bem-Vindo, <?php echo $_SESSION['usuario']?>! </h1>
         <form action="logout.php" method="POST">
-            <button type="submit" class="logout-btn">🚶🏻‍♂️ Logout</a>
+            <button type="submit" class="logout">🚶🏻‍♂️ Logout</a>
         </form>
 
         </header>
