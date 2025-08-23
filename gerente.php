@@ -63,7 +63,7 @@
             <li class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn"> Doador </a>
                 <div class="dropdown-content">
-                    <a href="#"> Registrar Doador </a>
+                    <a href="subtelas/registrar_doador.php"> Registrar Doador </a>
                     <a href="#"> Consultar Doadores </a>
                 </div>
             </li>
