@@ -1,3 +1,60 @@
+<?php
+    session_start();
+    require_once '../conexao.php';
+
+    // VERIFICA SE O USUÁRIO TEM PERMISSÃO
+    // SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR
+    if ($_SESSION['perfil'] != 1) {
+        echo "<script>alert('Acesso Negado!');window.location.href='../gerente.php';</script>";
+        exit();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $nome = $_POST['nome'];
+        $perfil = $_POST['perfil'];
+        $nome_responsavel = $_POST['nome_responsavel'];
+        $cpf = $_POST['cpf'];
+        $sexo = $_POST['sexo'];
+        $email = $_POST['email'];
+        $telefone = $_POST['telefone'];
+        $data_nascimento = $_POST['data_nascimento'];
+        $cep = $_POST['cep'];
+        $uf = $_POST['uf'];
+        $cidade = $_POST['cidade'];
+        $bairro = $_POST['bairro'];
+        $rua = $_POST['rua'];
+        $num_residencia = $_POST['num_residencia'];
+        $foto = $_POST['foto'];
+
+        $sql = "INSERT INTO cliente (cod_perfil, nome, nome_responsavel, cpf, sexo, email, telefone, data_nascimento, cep, uf, cidade, bairro, rua, num_residencia, foto) 
+                    VALUES (:cod_perfil, :nome, :nome_responsavel, :cpf, :sexo, :email, :telefone, :data_nascimento, :cep, :uf, :cidade, :bairro, :rua, :num_residencia, :foto)";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':cod_perfil', $perfil);
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':cpf', $cpf);
+        $stmt->bindParam(':sexo', $sexo);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':telefone', $telefone);
+        $stmt->bindParam(':data_nascimento', $data_nascimento);
+        $stmt->bindParam(':nome_responsavel', $nome_responsavel);
+        $stmt->bindParam(':cep', $cep);
+        $stmt->bindParam(':uf', $uf);
+        $stmt->bindParam(':cidade', $cidade);
+        $stmt->bindParam(':bairro', $bairro);
+        $stmt->bindParam(':rua', $rua);
+        $stmt->bindParam(':num_residencia', $num_residencia);
+        $stmt->bindParam(':foto', $foto);
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Funcionário cadastrado com sucesso!');</script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar funcionário!');</script>";
+        }
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -16,12 +73,12 @@
                 </svg>
                 Voltar
             </button>
-            <h1>Cadastro de Funcionários</h1>
+            <h1>Cadastro de Clientes</h1>
         </header>
         
         <main class="main-content">
             <div class="container">
-                <form class="formulario" id="form_pessoal" action="#" method="post" onsubmit="return validaFormulario()">
+                <form class="formulario" id="form_pessoal" action="cadastro_cliente.php" method="post" onsubmit="return validaFormulario()">
                     
                     <section class="form-section">
                         <h2 class="section-title">
@@ -104,6 +161,8 @@
                             </div>
                         </div>
 
+                        <br>
+
                         <div class="form-row">
                             <div class="input-group">
                                 <label for="telefone">Telefone</label>
@@ -111,16 +170,16 @@
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                                     </svg>
-                                    <input type="text" id="telefone" name="rg" maxlength="15" oninput="formatTelefone(this)" required placeholder="(00) 00000-0000">
+                                    <input type="text" id="telefone" name="telefone" maxlength="15" oninput="formatTelefone(this)" required placeholder="(00) 00000-0000">
                                 </div>
                             </div>
 
                             <div class="input-group">
                                 <label for="foto">Foto do Funcionário</label>
                                 <div class="file-upload-wrapper">
-                                    <input type="text" name="arquivo" id="arquivo" readonly placeholder="Nenhum arquivo selecionado" class="file-display">
-                                    <input type="file" id="seletor_arquivo" accept=".png, .jpeg, .jpg" style="display: none;" multiple onchange="atualizarNomeArquivo()">
-                                    <button type="button" class="file-select-btn" onclick="document.getElementById('seletor_arquivo').click()">
+                                    <input type="text" name="seletor_arquivo" id="seletor_arquivo" readonly placeholder="Nenhum arquivo selecionado" class="file-display">
+                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" multiple onchange="atualizarNomeArquivo()">
+                                    <button type="button" class="file-select-btn" onclick="document.getElementById('foto').click()">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                                             <polyline points="7,10 12,15 17,10"/>
@@ -140,12 +199,12 @@
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                                         <circle cx="12" cy="7" r="4"/>
                                     </svg>
-                                    <input type="text" id="responsavel" name="responsavel" required placeholder="Digite o nome do responsável">
+                                    <input type="text" id="nome_responsavel" name="nome_responsavel" required placeholder="Digite o nome do responsável">
                                 </div>
                             </div>
 
                             <div class="input-group">
-                                <label for="tipo_cliente">Tipo de Cliente</label>
+                                <label for="perfil">Tipo de Cliente</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
@@ -153,10 +212,10 @@
                                         <path d="M9 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
                                         <path d="M15 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
                                     </svg>
-                                    <select id="tipo_cliente" name="tipo_cliente" class="custom-select" required>
+                                    <select id="perfil" name="perfil" class="custom-select" required>
                                         <option value="" disabled selected>Selecione o tipo</option>
-                                        <option value="crianca">Criança</option>
-                                        <option value="responsavel">Responsável</option>
+                                        <option value="1">Criança</option>
+                                        <option value="2">Responsável</option>
                                     </select>
                                 </div>
                             </div>
@@ -190,13 +249,13 @@
                             </div>
 
                             <div class="input-group">
-                                <label for="estado">Estado</label>
+                                <label for="uf">Estado</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                                         <circle cx="12" cy="10" r="3"/>
                                     </svg>
-                                    <input type="text" id="estado" name="estado" required placeholder="Digite o estado">
+                                    <input type="text" id="uf" name="uf" required placeholder="Digite o estado">
                                 </div>
                             </div>
                         </div>
@@ -238,13 +297,13 @@
                             </div>
 
                             <div class="input-group">
-                                <label for="numcasa">Número</label>
+                                <label for="num_residencia">Número</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                                         <circle cx="12" cy="10" r="3"/>
                                     </svg>
-                                    <input type="text" id="numcasa" name="numcasa" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required placeholder="000">
+                                    <input type="text" id="num_residencia" name="num_residencia" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required placeholder="0000">
                                 </div>
                             </div>
                         </div>
@@ -272,5 +331,5 @@
         </main>
     </div>
 </body>
-<script src="subtelas_javascript/cadastro_cliente.js"></script>
+<script src="subtelas_javascript/validaCadastro.js"></script>
 </html>
