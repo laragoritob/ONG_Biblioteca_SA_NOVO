@@ -390,6 +390,6 @@
         </main>
     </div>
 
-    <script src="subtelas_javascript/JS_cadastro_funcionario.js"></script>
+    <script src="subtelas_javascript/validaCadastro.js"></script>
 </body>
 </html>
