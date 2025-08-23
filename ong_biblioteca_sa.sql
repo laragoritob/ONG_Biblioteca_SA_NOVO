@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 23/08/2025 às 22:05
+-- Tempo de geração: 23/08/2025 às 23:42
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -135,8 +135,7 @@ CREATE TABLE `funcionario` (
 --
 
 INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Foto`) VALUES
-(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', ''),
-(6, 2, 'EDSON CARLOS DE SOUZA', '254.635.745-77', 'scopus6@gmail.com', 'Masculino', '(47) 99164-4739', '2942-02-08', '7654-03-07', '89220-230', 'SC', 'Joinville', 'Costa e Silva', 'Rua Bernardo Welter', 275, 'edson_carlos', '$2y$10$bW8u8j5RRL4W.', 0x6b61747970657272792e6a7067);
+(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', '');
 
 -- --------------------------------------------------------
 
@@ -165,7 +164,8 @@ CREATE TABLE `livro` (
   `Data_Lancamento` varchar(12) DEFAULT NULL,
   `Data_Registro` varchar(12) DEFAULT NULL,
   `Quantidade` int(11) NOT NULL,
-  `Num_Prateleira` char(2) DEFAULT NULL
+  `Num_Prateleira` char(2) DEFAULT NULL,
+  `Foto` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
