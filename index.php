@@ -25,7 +25,7 @@
                 exit();
             } else {
                 // REDIRECIONA PARA A PÁGINA PRINCIPAL
-                header("Location: login.php");
+                header("Location: index.php");
                 exit();
             }
         } 
@@ -49,7 +49,7 @@
 
         <div class="conteudo-direito">
             <h1>LOGIN</h1>
-            <form class="formulario" id="form_login" action="login.php" method="POST">
+            <form class="formulario" id="form_login" action="index.php" method="POST">
                 <div class="input-group">
                     <span class="icon">👤</span>
                     <input type="text" name="usuario" id="usuario" placeholder="Usuário" required>

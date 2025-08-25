@@ -21,7 +21,7 @@
         <header> 
         <h1> Bem-Vindo, <?php echo $_SESSION['usuario']?>! </h1>
         <form action="logout.php" method="POST">
-            <button type="submit" class="logout-btn">🚶🏻‍♂️ Logout</a>
+            <button type="submit" class="logout">🚶🏻‍♂️ Logout</a>
         </form>
 
         </header>
@@ -55,7 +55,7 @@
             <li class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn"> Empréstimos </a>
                 <div class="dropdown-content">
-                    <a href="#"> Registrar Empréstimo </a>
+                    <a href="subtelas/registrar_emprestimo.php"> Registrar Empréstimo </a>
                     <a href="#"> Consultar Empréstimos </a>
                 </div>
             </li>
@@ -63,7 +63,7 @@
             <li class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn"> Doador </a>
                 <div class="dropdown-content">
-                    <a href="#"> Registrar Doador </a>
+                    <a href="subtelas/registrar_doador.php"> Registrar Doador </a>
                     <a href="#"> Consultar Doadores </a>
                 </div>
             </li>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 20/08/2025 às 20:49
+-- Tempo de geração: 23/08/2025 às 23:42
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -44,7 +44,8 @@ CREATE TABLE `cliente` (
   `Cod_Perfil` int(11) DEFAULT NULL,
   `Nome` varchar(50) NOT NULL,
   `CPF` varchar(15) NOT NULL,
-  `Sexo` char(2) NOT NULL,
+  `Email` varchar(255) NOT NULL,
+  `Sexo` varchar(10) NOT NULL,
   `Nome_Responsavel` varchar(50) DEFAULT NULL,
   `Telefone` varchar(20) NOT NULL,
   `Data_Nascimento` date NOT NULL,
@@ -53,21 +54,16 @@ CREATE TABLE `cliente` (
   `Cidade` varchar(30) NOT NULL,
   `Bairro` varchar(30) NOT NULL,
   `Rua` varchar(40) NOT NULL,
-  `Num_Residencia` int(11) NOT NULL
+  `Num_Residencia` int(11) NOT NULL,
+  `Foto` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
+--
+-- Despejando dados para a tabela `cliente`
+--
 
---
--- Estrutura stand-in para view `cliente_vw`
--- (Veja abaixo para a visão atual)
---
-CREATE TABLE `cliente_vw` (
-`nome` varchar(50)
-,`cpf` varchar(15)
-,`data_nascimento` date
-,`cidade` varchar(30)
-);
+INSERT INTO `cliente` (`Cod_Cliente`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Nome_Responsavel`, `Telefone`, `Data_Nascimento`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Foto`) VALUES
+(2, 1, 'Guilherme Vinicius Schwarz', '928.759.274-87', 'guilhermevinicius@gmail.com', 'Ma', 'Johnny Schwarz', '(87) 53386-5862', '2007-08-17', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 0x6c6f676f5f7472616e732e706e67);
 
 -- --------------------------------------------------------
 
@@ -118,6 +114,7 @@ CREATE TABLE `funcionario` (
   `Cod_Perfil` int(11) DEFAULT NULL,
   `Nome` varchar(50) NOT NULL,
   `CPF` varchar(15) NOT NULL,
+  `Email` varchar(255) NOT NULL,
   `Sexo` varchar(10) NOT NULL,
   `Telefone` varchar(20) NOT NULL,
   `Data_Nascimento` date NOT NULL,
@@ -129,24 +126,16 @@ CREATE TABLE `funcionario` (
   `Rua` varchar(40) NOT NULL,
   `Num_Residencia` int(11) NOT NULL,
   `Usuario` varchar(20) NOT NULL,
-  `Senha` varchar(20) NOT NULL
+  `Senha` varchar(20) NOT NULL,
+  `Foto` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `funcionario`
 --
 
-INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`) VALUES
-(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678');
-
--- --------------------------------------------------------
-
---
--- Estrutura stand-in para view `funcionario_vw`
--- (Veja abaixo para a visão atual)
---
-CREATE TABLE `funcionario_vw` (
-);
+INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Foto`) VALUES
+(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', '');
 
 -- --------------------------------------------------------
 
@@ -175,7 +164,8 @@ CREATE TABLE `livro` (
   `Data_Lancamento` varchar(12) DEFAULT NULL,
   `Data_Registro` varchar(12) DEFAULT NULL,
   `Quantidade` int(11) NOT NULL,
-  `Num_Prateleira` char(2) DEFAULT NULL
+  `Num_Prateleira` char(2) DEFAULT NULL,
+  `Foto` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -203,6 +193,14 @@ CREATE TABLE `perfil_cliente` (
   `Cod_Perfil` int(11) NOT NULL,
   `Nome_Perfil` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `perfil_cliente`
+--
+
+INSERT INTO `perfil_cliente` (`Cod_Perfil`, `Nome_Perfil`) VALUES
+(1, 'Criança'),
+(2, 'Responsável');
 
 -- --------------------------------------------------------
 
@@ -239,24 +237,6 @@ CREATE TABLE `relatorio` (
   `Data_Relatorio` date NOT NULL,
   `Tipo_Arquivo` varchar(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estrutura para view `cliente_vw`
---
-DROP TABLE IF EXISTS `cliente_vw`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `cliente_vw`  AS SELECT `cliente`.`Nome` AS `nome`, `cliente`.`CPF` AS `cpf`, `cliente`.`Data_Nascimento` AS `data_nascimento`, `cliente`.`Cidade` AS `cidade` FROM `cliente` WHERE `cliente`.`Cidade` like 'Curitiba' ;
-
--- --------------------------------------------------------
-
---
--- Estrutura para view `funcionario_vw`
---
-DROP TABLE IF EXISTS `funcionario_vw`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `funcionario_vw`  AS SELECT `funcionario`.`Nome` AS `nome`, `funcionario`.`Cargo` AS `cargo`, `funcionario`.`Usuario` AS `usuario`, `funcionario`.`Senha` AS `senha` FROM `funcionario` ORDER BY `funcionario`.`Nome` ASC ;
 
 --
 -- Índices para tabelas despejadas
@@ -360,7 +340,7 @@ ALTER TABLE `autor`
 -- AUTO_INCREMENT de tabela `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `doador`
@@ -384,7 +364,7 @@ ALTER TABLE `emprestimo`
 -- AUTO_INCREMENT de tabela `funcionario`
 --
 ALTER TABLE `funcionario`
-  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `genero`
@@ -408,7 +388,7 @@ ALTER TABLE `multa`
 -- AUTO_INCREMENT de tabela `perfil_cliente`
 --
 ALTER TABLE `perfil_cliente`
-  MODIFY `Cod_Perfil` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Cod_Perfil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `perfil_funcionario`

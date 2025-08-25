@@ -21,7 +21,7 @@
   </div>
   
   <nav>
-    <table id="funcionarios-table" border="1">
+    <table id="funcionarios-table" >
       <thead>
         <tr>
           <th>ID</th>
@@ -30,6 +30,7 @@
           <th>DATA DE NASCIMENTO</th>
           <th>DATA EFETIVAÇÃO</th>
           <th>STATUS</th>
+          <th>AÇÕES</th>
         </tr>
       </thead>
       <tbody>
@@ -40,6 +41,14 @@
           <td>21/03/1965</td>
           <td>08/07/2024</td>
           <td><span class="status-badge ativo">Ativo</span></td>
+          <td>
+            <button class="btn-action" onclick="editarFuncionario('0001', 'Silvio Luis de Sousa', 'Gerente', '1965-03-21', '2024-07-08')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
+          </td>
         </tr>
         <tr>
           <td>0002</td>
@@ -48,6 +57,14 @@
           <td>27/03/1963</td>
           <td>12/12/2024</td>
           <td><span class="status-badge ativo">Ativo</span></td>
+          <td>
+            <button class="btn-action" onclick="editarFuncionario('0002', 'Maria da Graça Xuxa Meneghel', 'Recreador', '1963-03-27', '2024-12-12')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
+          </td>
         </tr>
         <tr>
           <td>0003</td>
@@ -56,6 +73,14 @@
           <td>03/07/2007</td>
           <td>09/06/2025</td>
           <td><span class="status-badge desativado">Desativado</span></td>
+          <td>
+            <button class="btn-action" onclick="editarFuncionario('0003', 'Ruan de Mello Vieira', 'Bibliotecário', '2007-07-03', '2025-06-09')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
+          </td>
         </tr>
         <tr>
           <td>0004</td>
@@ -64,6 +89,14 @@
           <td>31/10/2008</td>
           <td>16/06/2025</td>
           <td><span class="status-badge ativo">Ativo</span></td>
+          <td>
+            <button class="btn-action" onclick="editarFuncionario('0004', 'Marcos Paulo Fernandes', 'Repositor', '2008-10-31', '2025-06-16')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
+          </td>
         </tr>
         <tr>
            <td>0005</td>
@@ -72,6 +105,14 @@
            <td>09/04/1977</td>
            <td>05/02/2025</td>
            <td><span class="status-badge desativado">Desativado</span></td>
+           <td>
+             <button class="btn-action" onclick="editarFuncionario('0005', 'Gerard Arthur Way', 'Recreador', '1977-04-09', '2025-02-05')">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                 <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+               </svg>
+             </button>
+           </td>
         </tr>
         <tr>
            <td>0006</td>
@@ -80,6 +121,14 @@
            <td>24/06/2003</td>
            <td>08/10/2024</td>
            <td><span class="status-badge desativado">Desativado</span></td>
+           <td>
+             <button class="btn-action" onclick="editarFuncionario('0006', 'Kim Sunoo', 'Repositor', '2003-06-24', '2024-10-08')">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                 <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+               </svg>
+             </button>
+           </td>
         </tr>
         <tr>
            <td>0007</td>
@@ -88,6 +137,14 @@
            <td>02/05/1972</td>
            <td>29/09/2024</td>   
            <td><span class="status-badge ativo">Ativo</span></td>
+           <td>
+             <button class="btn-action" onclick="editarFuncionario('0007', 'Dwayne Douglas Johnson', 'Recreador', '1972-05-02', '2024-09-29')">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                 <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+               </svg>
+             </button>
+           </td>
         </tr>
         <tr>
            <td>0008</td>
@@ -96,6 +153,14 @@
            <td>10/07/2007</td>
            <td>11/03/2025</td>
            <td><span class="status-badge ativo">Ativo</span></td>
+           <td>
+             <button class="btn-action" onclick="editarFuncionario('0008', 'Mason Thames', 'Recreador', '2007-07-10', '2025-03-11')">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                 <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+               </svg>
+             </button>
+           </td>
         </tr>
         <tr>
            <td>0009</td>
@@ -104,6 +169,14 @@
            <td>19/12/1980</td>
            <td>17/08/2024</td>
            <td><span class="status-badge ativo">Ativo</span></td>
+           <td>
+             <button class="btn-action" onclick="editarFuncionario('0009', 'Taylor Lautner', 'Bibliotecário', '1980-12-19', '2024-08-17')">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                 <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+               </svg>
+             </button>
+           </td>
         </tr>
         <tr>
            <td>0010</td>
@@ -112,6 +185,14 @@
            <td>03/08/1963</td>
            <td>21/08/2024</td>
            <td><span class="status-badge desativado">Desativado</span></td>
+           <td>
+             <button class="btn-action" onclick="editarFuncionario('0010', 'James Hetfield', 'Gestor', '1963-08-03', '2024-08-21')">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                 <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+               </svg>
+             </button>
+           </td>
         </tr>
 
       </tbody>
@@ -225,7 +306,65 @@
     </div>
   </div>
 
+  <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="btnCadastrar">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Cadastrar Funcionário
+                        </button>
+                        
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('form_pessoal').reset(); document.getElementById('arquivo').value = '';">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                <line x1="10" y1="11" x2="10" y2="17"/>
+                                <line x1="14" y1="11" x2="14" y2="17"/>
+                            </svg>
+                            Limpar Formulário
+                        </button>
+                    </div>
+
   <script>
+    // Função para editar funcionário
+    function editarFuncionario(id, nome, cargo, dataNascimento, dataEfetivacao) {
+      // Preencher o modal de edição com os dados do funcionário
+      document.getElementById('funcionario-codigo').value = id;
+      document.getElementById('funcionario-nome').value = nome;
+      document.getElementById('funcionario-cargo').value = cargo;
+      document.getElementById('funcionario-nascimento').value = dataNascimento;
+      document.getElementById('funcionario-efetivacao').value = dataEfetivacao;
+      
+      // Mostrar o modal de edição
+      document.getElementById('modal-editar').style.display = 'flex';
+    }
+
+    // Fechar modal de edição
+    document.addEventListener('DOMContentLoaded', function() {
+      const closeBtn = document.querySelector('#modal-editar .close');
+      const cancelarBtn = document.getElementById('cancelar-edicao');
+      
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          document.getElementById('modal-editar').style.display = 'none';
+        });
+      }
+      
+      if (cancelarBtn) {
+        cancelarBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.getElementById('modal-editar').style.display = 'none';
+        });
+      }
+      
+      // Fechar modal clicando fora dele
+      window.addEventListener('click', function(e) {
+        const modal = document.getElementById('modal-editar');
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    });
+
     // Verificar se o SweetAlert2 foi carregado
     window.addEventListener('load', function() {
       if (typeof Swal === 'undefined') {
