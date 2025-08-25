@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>ONG Biblioteca - Sala Arco-íris</title>
-  <link rel="stylesheet" type="text/css" href="subtelas_css/telconsultar_func.css" />
+  <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -22,8 +22,7 @@
   </div>
   
   <nav>
-    <table id="funcionarios-table" >
-      <thead>
+    <table id="funcionarios-table">
         <tr>
           <th>ID</th>
           <th>NOME COMPLETO</th>
@@ -33,7 +32,7 @@
           <th>STATUS</th>
           <th>AÇÕES</th>
         </tr>
-      </thead>
+  </nav>
   <script src="subtelas_javascript/telconsultar_funcionarios.js"></script>
 </body>
 </html>

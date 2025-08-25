@@ -111,8 +111,8 @@
                             </div>
                         </div>
 
-                        <div class="form-row">
-                            <div class="input-group">
+                        <div class="form-row" style="display: flex; gap: 1rem; align-items: flex-start;">
+                            <div class="input-group" style="flex: 2.0">
                                 <label for="data_lancamento">Data de Lançamento</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -125,7 +125,18 @@
                                 </div>
                             </div>
 
-                            <div class="input-group">
+                             <div class="input-group" style="flex: 0.5;">
+                                <label for="id_autor">ID do Gênero</label>
+                                <div class="input-wrapper">
+                                    <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                    <input type="number" id="cod_autor" name="cod_autor" placeholder="ID" style="width: 100px;">
+                                </div>
+                            </div>
+
+                            <div class="input-group" style="flex: 1.5">
                                 <label for="genero">Gênero</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40"> 
@@ -153,18 +164,8 @@
                             </div>
                         </div>
 
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label for="cod_editora">Editora</label>
-                            <div class="input-wrapper">
-                                <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="50"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                                    <path d="M96.5 160L96.5 309.5C96.5 326.5 103.2 342.8 115.2 354.8L307.2 546.8C332.2 571.8 372.7 571.8 397.7 546.8L547.2 397.3C572.2 372.3 572.2 331.8 547.2 306.8L355.2 114.8C343.2 102.7 327 96 310 96L160.5 96C125.2 96 96.5 124.7 96.5 160zM208.5 176C226.2 176 240.5 190.3 240.5 208C240.5 225.7 226.2 240 208.5 240C190.8 240 176.5 225.7 176.5 208C176.5 190.3 190.8 176 208.5 176z"/>
-                                </svg>
-                                <input type="text" id="cod_editora" name="cod_editora" required placeholder="Digite o nome da editora">
-                            </div>
-                        </div>
-
-                        <div class="input-group">
+                    <div class="form-row" style="display: flex; gap: 1rem; align-items: flex-start;">
+                        <div class="input-group" style="flex: 2.0;">
                                 <label for="foto">Foto do Livro</label>
                                 <div class="file-upload-wrapper">
                                     <input type="text" name="seletor_arquivo" id="seletor_arquivo" readonly placeholder="Nenhum arquivo selecionado" class="file-display">
@@ -179,6 +180,27 @@
                                     </button>
                                 </div>
                             </div>
+
+                        <div class="input-group" style="flex: 0.5;">
+                            <label for="cod_editora">ID da Editora</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                <input type="number" id="cod_editora" name="cod_editora" required placeholder="ID">
+                            </div>
+                        </div> 
+
+                        <div class="input-group" style="flex: 1.5;">
+                            <label for="cod_editora">Nome da Editora</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="50"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                                    <path d="M96.5 160L96.5 309.5C96.5 326.5 103.2 342.8 115.2 354.8L307.2 546.8C332.2 571.8 372.7 571.8 397.7 546.8L547.2 397.3C572.2 372.3 572.2 331.8 547.2 306.8L355.2 114.8C343.2 102.7 327 96 310 96L160.5 96C125.2 96 96.5 124.7 96.5 160zM208.5 176C226.2 176 240.5 190.3 240.5 208C240.5 225.7 226.2 240 208.5 240C190.8 240 176.5 225.7 176.5 208C176.5 190.3 190.8 176 208.5 176z"/>
+                                </svg>
+                                <input type="text" id="cod_editora" name="cod_editora" required placeholder="Digite o nome da editora">
+                            </div>
+                        </div> 
                     </div>
 
                         <br>
@@ -213,24 +235,13 @@
                                     <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                                         <path d="M129.5 464L179.5 304L558.9 304L508.9 464L129.5 464zM320.2 512L509 512C530 512 548.6 498.4 554.8 478.3L604.8 318.3C614.5 287.4 591.4 256 559 256L179.6 256C158.6 256 140 269.6 133.8 289.7L112.2 358.4L112.2 160C112.2 151.2 119.4 144 128.2 144L266.9 144C270.4 144 273.7 145.1 276.5 147.2L314.9 176C328.7 186.4 345.6 192 362.9 192L480.2 192C489 192 496.2 199.2 496.2 208L544.2 208C544.2 172.7 515.5 144 480.2 144L362.9 144C356 144 349.2 141.8 343.7 137.6L305.3 108.8C294.2 100.5 280.8 96 266.9 96L128.2 96C92.9 96 64.2 124.7 64.2 160L64.2 448C64.2 483.3 92.9 512 128.2 512L320.2 512z"/>
                                     </svg>
-                                    <input type="text" id="num_prateleira" name="num_prateleira" required placeholder="Digite o número da prateleira">
+                                    <input type="number" id="num_prateleira" name="num_prateleira" required placeholder="Digite o número da prateleira">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-row">
-                            <div class="input-group">
-                                <label for="cod_doador">Doador</label>
-                                <div class="input-wrapper">
-                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="12" cy="7" r="4"/>
-                                    </svg>
-                                    <input type="text" id="cod_doador" name="cod_doador" required placeholder="Digite o doador do livro">
-                                </div>
-                            </div>
-
-                            <div class="input-group">
+                        <div class="form-row" style="display: flex; gap: 1rem; align-items: flex-start;">
+                            <div class="input-group" style="flex: 2.0;">
                                 <label for="quantidade">Quantidade</label>
                                 <div class="input-wrapper">
                                    <!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -238,6 +249,28 @@
                                         <path d="M112 120C112 106.7 101.3 96 88 96C74.7 96 64 106.7 64 120L64 464C64 508.2 99.8 544 144 544L552 544C565.3 544 576 533.3 576 520C576 506.7 565.3 496 552 496L144 496C126.3 496 112 481.7 112 464L112 120zM216 192L424 192C437.3 192 448 181.3 448 168C448 154.7 437.3 144 424 144L216 144C202.7 144 192 154.7 192 168C192 181.3 202.7 192 216 192zM216 256C202.7 256 192 266.7 192 280C192 293.3 202.7 304 216 304L360 304C373.3 304 384 293.3 384 280C384 266.7 373.3 256 360 256L216 256zM216 368C202.7 368 192 378.7 192 392C192 405.3 202.7 416 216 416L488 416C501.3 416 512 405.3 512 392C512 378.7 501.3 368 488 368L216 368z"/>
                                     </svg>
                                     <input type="number" id="data_lancamento" name="data_lancamento" required placeholder="Digite a quantidade do livro">
+                                </div>
+                            </div>
+
+                            <div class="input-group" style="flex: 0.5;">
+                                <label for="cod_doador">ID do Doador</label>
+                                <div class="input-wrapper">
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                    <input type="number" id="cod_doador" name="cod_doador" required placeholder="ID">
+                                </div>
+                            </div>
+
+                            <div class="input-group" style="flex: 1.5;">
+                                <label for="doador">Nome do Doador</label>
+                                <div class="input-wrapper">
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                    <input type="text" id="doador" name="doador" required placeholder="Digite o doador do livro">
                                 </div>
                             </div>
                         </div>
