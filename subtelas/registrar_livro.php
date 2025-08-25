@@ -78,8 +78,8 @@
                             Informações do Livro
                         </h2>
 
-                        <div class="form-row">
-                            <div class="input-group">
+                        <div class="form-row" style="display: flex; gap: 1rem; align-items: flex-start;">
+                            <div class="input-group" style="flex: 2;">
                                 <label for="nome">Titulo: </label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -89,7 +89,7 @@
                                 </div>
                             </div>
 
-                            <div class="input-group">
+                            <div class="input-group" style="flex: 0.5;">
                                 <label for="id_autor">ID do Autor</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -100,13 +100,13 @@
                                 </div>
                             </div>
 
-                            <div class="input-group">
-                                <label for="quantidade">Autor</label>
+                            <div class="input-group" style="flex: 1.5;">
+                                <label for="autor">Nome do Autor</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40">
                                         <path d="M432.5 82.3L382.4 132.4L507.7 257.7L557.8 207.6C579.7 185.7 579.7 150.3 557.8 128.4L511.7 82.3C489.8 60.4 454.4 60.4 432.5 82.3zM343.3 161.2L342.8 161.3L198.7 204.5C178.8 210.5 163 225.7 156.4 245.5L67.8 509.8C64.9 518.5 65.9 528 70.3 535.8L225.7 380.4C224.6 376.4 224.1 372.3 224.1 368C224.1 341.5 245.6 320 272.1 320C298.6 320 320.1 341.5 320.1 368C320.1 394.5 298.6 416 272.1 416C267.8 416 263.6 415.4 259.7 414.4L104.3 569.7C112.1 574.1 121.5 575.1 130.3 572.2L394.6 483.6C414.3 477 429.6 461.2 435.6 441.3L478.8 297.2L478.9 296.7L343.4 161.2z"/>
                                     </svg>
-                                    <input type="text" id="autor" name="autor" style="width: 270px;" required placeholder="Digite o autor do livro">
+                                    <input type="text" id="autor" name="autor" required placeholder="Digite o autor do livro">
                                 </div>
                             </div>
                         </div>
@@ -126,7 +126,7 @@
                             </div>
 
                             <div class="input-group">
-                                <label for="data_registro">Gênero</label>
+                                <label for="genero">Gênero</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40"> 
                                        <!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -155,7 +155,7 @@
 
                     <div class="form-row">
                         <div class="input-group">
-                            <label for="num_prateleira">Editora</label>
+                            <label for="cod_editora">Editora</label>
                             <div class="input-wrapper">
                                 <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="50"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                                     <path d="M96.5 160L96.5 309.5C96.5 326.5 103.2 342.8 115.2 354.8L307.2 546.8C332.2 571.8 372.7 571.8 397.7 546.8L547.2 397.3C572.2 372.3 572.2 331.8 547.2 306.8L355.2 114.8C343.2 102.7 327 96 310 96L160.5 96C125.2 96 96.5 124.7 96.5 160zM208.5 176C226.2 176 240.5 190.3 240.5 208C240.5 225.7 226.2 240 208.5 240C190.8 240 176.5 225.7 176.5 208C176.5 190.3 190.8 176 208.5 176z"/>
@@ -208,7 +208,7 @@
                         
 
                             <div class="input-group">
-                                <label for="data_lancamento">Número da Prateleira</label>
+                                <label for="num_prateleira">Número da Prateleira</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                                         <path d="M129.5 464L179.5 304L558.9 304L508.9 464L129.5 464zM320.2 512L509 512C530 512 548.6 498.4 554.8 478.3L604.8 318.3C614.5 287.4 591.4 256 559 256L179.6 256C158.6 256 140 269.6 133.8 289.7L112.2 358.4L112.2 160C112.2 151.2 119.4 144 128.2 144L266.9 144C270.4 144 273.7 145.1 276.5 147.2L314.9 176C328.7 186.4 345.6 192 362.9 192L480.2 192C489 192 496.2 199.2 496.2 208L544.2 208C544.2 172.7 515.5 144 480.2 144L362.9 144C356 144 349.2 141.8 343.7 137.6L305.3 108.8C294.2 100.5 280.8 96 266.9 96L128.2 96C92.9 96 64.2 124.7 64.2 160L64.2 448C64.2 483.3 92.9 512 128.2 512L320.2 512z"/>
@@ -220,7 +220,7 @@
 
                         <div class="form-row">
                             <div class="input-group">
-                                <label for="data_registro">Doador</label>
+                                <label for="cod_doador">Doador</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -231,7 +231,7 @@
                             </div>
 
                             <div class="input-group">
-                                <label for="data_lancamento">Quantidade</label>
+                                <label for="quantidade">Quantidade</label>
                                 <div class="input-wrapper">
                                    <!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                                     <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40">
