@@ -118,5 +118,5 @@
         </div>
     </div>
 </body>
-    <script src="subtelas_javascript/validaCadastros.js"></script>
+    <script src="subtelas_javascript/validaCadastro.js"></script>
 </html>
