@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 23/08/2025 às 23:42
+-- Tempo de geração: 25/08/2025 às 21:55
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -30,8 +30,16 @@ SET time_zone = "+00:00";
 CREATE TABLE `autor` (
   `Cod_Autor` int(11) NOT NULL,
   `Nome_Autor` varchar(255) DEFAULT NULL,
-  `Contato` varchar(255) DEFAULT NULL
+  `Telefone` varchar(255) DEFAULT NULL,
+  `Email` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `autor`
+--
+
+INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`) VALUES
+(1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -74,8 +82,16 @@ INSERT INTO `cliente` (`Cod_Cliente`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sex
 CREATE TABLE `doador` (
   `Cod_Doador` int(11) NOT NULL,
   `Nome_Doador` varchar(255) DEFAULT NULL,
-  `Contato` varchar(255) DEFAULT NULL
+  `Telefone` varchar(255) DEFAULT NULL,
+  `Email` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `doador`
+--
+
+INSERT INTO `doador` (`Cod_Doador`, `Nome_Doador`, `Telefone`, `Email`) VALUES
+(1, 'Frank Ocean', '(21) 92636-6969', 'frankocean@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -86,8 +102,16 @@ CREATE TABLE `doador` (
 CREATE TABLE `editora` (
   `Cod_Editora` int(11) NOT NULL,
   `Nome_Editora` varchar(255) DEFAULT NULL,
-  `Contato` varchar(255) DEFAULT NULL
+  `Telefone` varchar(255) DEFAULT NULL,
+  `Email` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `editora`
+--
+
+INSERT INTO `editora` (`Cod_Editora`, `Nome_Editora`, `Telefone`, `Email`) VALUES
+(1, 'Moderna', '(47) 98231-2647', 'moderna_editora@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -147,6 +171,22 @@ CREATE TABLE `genero` (
   `Cod_Genero` int(11) NOT NULL,
   `Nome_Genero` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `genero`
+--
+
+INSERT INTO `genero` (`Cod_Genero`, `Nome_Genero`) VALUES
+(1, 'Ação'),
+(2, 'Aventura'),
+(3, 'Romance'),
+(4, 'Suspense'),
+(5, 'Ficção Científica'),
+(6, 'Terror'),
+(7, 'Educacional'),
+(8, 'Horror'),
+(9, 'Fantasia'),
+(10, 'Autobiografia');
 
 -- --------------------------------------------------------
 
@@ -334,7 +374,7 @@ ALTER TABLE `relatorio`
 -- AUTO_INCREMENT de tabela `autor`
 --
 ALTER TABLE `autor`
-  MODIFY `Cod_Autor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Cod_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `cliente`
@@ -346,13 +386,13 @@ ALTER TABLE `cliente`
 -- AUTO_INCREMENT de tabela `doador`
 --
 ALTER TABLE `doador`
-  MODIFY `Cod_Doador` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Cod_Doador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `editora`
 --
 ALTER TABLE `editora`
-  MODIFY `Cod_Editora` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Cod_Editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `emprestimo`
@@ -370,7 +410,7 @@ ALTER TABLE `funcionario`
 -- AUTO_INCREMENT de tabela `genero`
 --
 ALTER TABLE `genero`
-  MODIFY `Cod_Genero` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Cod_Genero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de tabela `livro`

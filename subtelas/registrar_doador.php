@@ -1,3 +1,37 @@
+<?php
+    session_start();
+    require_once '../conexao.php';
+
+    // VERIFICA SE O USUÁRIO TEM PERMISSÃO
+    // SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR
+    if ($_SESSION['perfil'] != 1) {
+        echo "<script>alert('Acesso Negado!');window.location.href='../gerente.php';</script>";
+        exit();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $cod_doador = $_POST['cod_doador'];
+        $nome_doador = $_POST['nome_doador'];
+        $telefone = $_POST['telefone'];
+        $email = $_POST['email'];
+
+        $sql = "INSERT INTO funcionario (cod_doador,nome_doador,telefone,email) 
+                    VALUES (:cod_doador,:nome_doador,:telefone,:email)";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':cod_doador', $cod_doador);
+        $stmt->bindParam(':nome_doador', $nome_doador);
+        $stmt->bindParam(':telefone', $telefone);
+        $stmt->bindParam(':email', $email);
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Doador cadastrado com sucesso!');</script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar doador!');</script>";
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
