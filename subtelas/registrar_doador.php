@@ -42,7 +42,7 @@
                         </div>
 
                         <div class="input-group">
-                            <label>Telefone:</label>
+                            <label>Telefone</label>
                             <div class="input-wrapper">
                                 <input type="text" name="telefone" required id="telefone" maxlength="15" oninput="formatTelefone(this)" required placeholder="(00) 00000-0000">
                                 <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -52,6 +52,17 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="input-group">
+                            <label for="email">E-mail</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                                <input type="email" id="email" name="email" required placeholder="exemplo@email.com">
+                            </div>
+                        </div>
 
                 <div class="form-actions">
                         <button type="submit" class="btn btn-primary" id="btnCadastrar">
