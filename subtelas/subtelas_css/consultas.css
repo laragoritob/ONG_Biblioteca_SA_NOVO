@@ -413,6 +413,17 @@ nav {
   animation: pulse 2s infinite;
 }
 
+/* Efeitos de hover para badges clicáveis */
+.status-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.status-badge:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 @keyframes pulse {
   0%, 100% {
     opacity: 1;

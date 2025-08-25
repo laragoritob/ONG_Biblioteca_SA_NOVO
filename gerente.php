@@ -32,6 +32,7 @@
                 <div class="dropdown-content">
                     <a href="subtelas/cadastro_funcionario.php"> Registrar Funcionário </a>
                     <a href="subtelas/telconsultar_funcionario.php"> Consultar Funcionários </a>
+                    <a href="subtelas/consultar_relatorio.php"> Consultar Relatórios </a>
                 </div>
             </li>
 
@@ -48,7 +49,7 @@
                 <a href="javascript:void(0)" class="dropbtn"> Livros </a>
                 <div class="dropdown-content">
                     <a href="subtelas/registrar_livro.php"> Registrar Livro </a>
-                    <a href="subtelas/controleestoque.php"> Consultar Livros </a>
+                    <a href="subtelas/consultarlivro.php"> Consultar Livros </a>
                 </div>
             </li>
 
@@ -56,7 +57,8 @@
                 <a href="javascript:void(0)" class="dropbtn"> Empréstimos </a>
                 <div class="dropdown-content">
                     <a href="subtelas/registrar_emprestimo.php"> Registrar Empréstimo </a>
-                    <a href="#"> Consultar Empréstimos </a>
+                    <a href="subtelas/consultar_emprestimo.php"> Consultar Empréstimos </a>
+                    <a href="subtelas/consultar_multa.php"> Consultar Multas </a>
                 </div>
             </li>
 
