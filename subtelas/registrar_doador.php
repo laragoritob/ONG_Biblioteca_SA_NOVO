@@ -10,16 +10,14 @@
     }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $cod_doador = $_POST['cod_doador'];
         $nome_doador = $_POST['nome_doador'];
         $telefone = $_POST['telefone'];
         $email = $_POST['email'];
 
-        $sql = "INSERT INTO funcionario (cod_doador,nome_doador,telefone,email) 
-                    VALUES (:cod_doador,:nome_doador,:telefone,:email)";
+        $sql = "INSERT INTO doador (nome_doador,telefone,email) 
+                    VALUES (:nome_doador,:telefone,:email)";
 
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':cod_doador', $cod_doador);
         $stmt->bindParam(':nome_doador', $nome_doador);
         $stmt->bindParam(':telefone', $telefone);
         $stmt->bindParam(':email', $email);
@@ -49,7 +47,7 @@
         </header>
         
         <div class="main-content">
-            <form class="formulario" id="form_doador" action="subtelas/registrar_doador.php" method="post">
+            <form class="formulario" id="form_doador" action="registrar_doador.php" method="post">
 
                 <div class="form-section">
                     <div class="section-title">
@@ -120,5 +118,5 @@
         </div>
     </div>
 </body>
-    <script src="subtelas_javascript/JS_cadastro_funcionario.js"></script>
+    <script src="subtelas_javascript/validaCadastros.js"></script>
 </html>
