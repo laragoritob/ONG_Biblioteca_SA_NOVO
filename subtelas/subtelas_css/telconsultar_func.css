@@ -74,7 +74,6 @@ header::before {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
 }
 
 header h1 {
@@ -357,25 +356,70 @@ nav {
 
 /* Badges de status */
 .status-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.status-badge.ativo {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #bbf7d0;
+.status-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
 }
 
-.status-badge.desativado {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
+.status-badge:hover::before {
+  transform: translateX(100%);
+}
+
+.status-badge.status-ativo {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+}
+
+.status-badge.status-ativo::after {
+  content: '●';
+  color: #00f583;
+  font-size: 0.875rem;
+  animation: pulse 2s infinite;
+}
+
+.status-badge.status-inativo {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+  border: none;
+}
+
+.status-badge.status-inativo::after {
+  content: '●';
+  color: #d1d5db;
+  font-size: 0.875rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 /* Botões de ação */
@@ -393,6 +437,11 @@ nav {
   cursor: pointer;
   transition: var(--transition);
   box-shadow: var(--shadow-sm);
+  margin-right: 0.5rem;
+}
+
+.btn-action:last-child {
+  margin-right: 0;
 }
 
 .btn-action:hover {
@@ -404,6 +453,15 @@ nav {
 .btn-action:active {
   transform: translateY(0);
   box-shadow: var(--shadow-sm);
+}
+
+.btn-action.btn-delete {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.btn-action.btn-delete:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px) scale(1.05);
 }
 
 .btn-action svg {
