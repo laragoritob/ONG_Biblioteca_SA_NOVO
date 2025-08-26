@@ -42,7 +42,9 @@
 <body>
     <div class="page-wrapper">
         <header class="header">
-            <button class="btn-voltar" onclick="window.history.back()">← Voltar</button>
+            <form action="../gerente.php" method="POST">
+                <button class="btn-voltar">← Voltar</button>
+            </form>
             <h1>Registrar Autor</h1>
         </header>
 

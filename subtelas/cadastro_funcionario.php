@@ -191,12 +191,14 @@
 
     <div class="page-wrapper">
         <header class="header">
-            <button class="btn-voltar" onclick="window.history.back()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-                Voltar
-            </button>
+            <form action="../gerente.php" method="POST">
+                <button class="btn-voltar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Voltar
+                </button>
+            </form>
             <h1>Cadastro de Funcionários</h1>
         </header>
         

@@ -7,7 +7,9 @@
     </head>
     <body> 
         <header> 
-            <button class="btn-voltar" onclick="window.history.back()">← Voltar</button>
+            <form action="../gerente.php" method="POST">
+            <button class="btn-voltar">← Voltar</button>
+        </form>
             <h1> Gerenciar Empréstimos </h1>
         </header>
         <nav> 
