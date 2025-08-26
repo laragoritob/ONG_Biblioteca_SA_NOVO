@@ -31,7 +31,7 @@
                 <a href="javascript:void(0)" class="dropbtn"> Funcionários </a>
                 <div class="dropdown-content">
                     <a href="subtelas/cadastro_funcionario.php"> Registrar Funcionário </a>
-                    <a href="subtelas/telconsultar_funcionario.php"> Consultar Funcionários </a>
+                    <a href="subtelas/consultar_funcionario.php"> Consultar Funcionários </a>
                     <a href="subtelas/consultar_relatorio.php"> Consultar Relatórios </a>
                 </div>
             </li>
@@ -40,7 +40,7 @@
                 <a href="javascript:void(0)" class="dropbtn"> Clientes </a>
                 <div class="dropdown-content">
                     <a href="subtelas/cadastro_cliente.php"> Registrar Cliente </a>
-                    <a href="subtelas/ficha_crianca.php"> Consultar Crianças </a>
+                    <a href="subtelas/consultar_crianca.php"> Consultar Crianças </a>
                     <a href="subtelas/consultar_responsavel.php"> Consultar Responsáveis </a>
                 </div>
             </li>
