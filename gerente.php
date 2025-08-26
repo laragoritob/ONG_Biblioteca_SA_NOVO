@@ -49,7 +49,11 @@
                 <a href="javascript:void(0)" class="dropbtn"> Livros </a>
                 <div class="dropdown-content">
                     <a href="subtelas/registrar_livro.php"> Registrar Livro </a>
-                    <a href="subtelas/consultarlivro.php"> Consultar Livros </a>
+                    <a href="subtelas/consultar_livro.php"> Consultar Livros </a>
+                    <a href="subtelas/registrar_autor.php"> Registrar Autor </a>
+                    <a href="subtelas/consultar_autor.php"> Consultar Autores </a>
+                    <a href="subtelas/registrar_editora.php"> Registrar Editora </a>
+                    <a href="subtelas/consultar_editora.php"> Consultar Editoras </a>
                 </div>
             </li>
 
