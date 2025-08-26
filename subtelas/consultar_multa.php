@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>ONG Biblioteca - Sala Arco-íris</title>
-  <link rel="stylesheet" type="text/css" href="subtelas_css/telconsultar_func.css" />
+  <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -25,6 +25,7 @@
     <table id="funcionarios-table" >
       <thead>
         <tr>
+          <th> ID <th>
           <th>DATA DA MULTA</th>
           <th>VALOR DA MULTA</th>
           <th>AÇÕES</th>

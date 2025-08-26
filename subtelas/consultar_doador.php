@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>ONG Biblioteca - Sala Arco-íris</title>
-  <link rel="stylesheet" type="text/css" href="subtelas_css/telconsultar_func.css" />
+  <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -11,7 +11,7 @@
   <br>
     <header>
         <button class="btn-voltar" onclick="window.history.back()">← Voltar</button>
-        <h1>Consultar Relatórios</h1>
+        <h1>Consultar Doadores</h1>
     </header>
 
   <div id="search-container">
@@ -25,10 +25,10 @@
     <table id="funcionarios-table" >
       <thead>
         <tr>
-          <th>ID</th>
-          <th>NOME DO RELATORIO</th>
-          <th>DATA DE EMISSÃO</th>
-          <th>TIPO ARQUIVO</th>
+          <th> ID <th>
+          <th>NOME DO DOADOR</th>
+          <th>TELEFONE</th>
+          <th>E-MAIL</th>
           <th>AÇÕES</th>
         </tr>
       </thead>
