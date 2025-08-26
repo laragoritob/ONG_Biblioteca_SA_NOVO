@@ -53,7 +53,7 @@ document.getElementById('btnCadastrar').addEventListener('click', function (e) {
 
 // LIMITE DO CALENDÁRIO (DATA DE NASCIMENTO) //
     document.addEventListener('DOMContentLoaded', function () {
-        const inputData = document.getElementById('dataNascimento');
+        const inputData = document.getElementById('data_nascimento');
         const hoje = new Date();
         const dia = String(hoje.getDate()).padStart(2, '0');
         const mes = String(hoje.getMonth() + 1).padStart(2, '0');
@@ -65,7 +65,7 @@ document.getElementById('btnCadastrar').addEventListener('click', function (e) {
 
 // LIMITE DO CALENDÁRIO (DATA EFETIVAÇÃO) //
 document.addEventListener('DOMContentLoaded', function () {
-    const inputData = document.getElementById('dataEfetivacao');
+    const inputData = document.getElementById('data_efetivacao');
     const hoje = new Date();
     const dia = String(hoje.getDate()).padStart(2, '0');
     const mes = String(hoje.getMonth() + 1).padStart(2, '0');

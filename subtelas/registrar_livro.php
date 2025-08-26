@@ -51,9 +51,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+    <!-- Botão para abrir sidebar -->
+    <button class="sidebar-toggle" id="sidebar-toggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+
+    <!-- Sidebar Lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>ONG Biblioteca</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="../gerente.php">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9,22 9,12 15,12 15,22"></polyline>
+                    </svg>
+                    Dashboard
+                </a></li>
+                
+                <li class="dropdown">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Cliente
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="cadastro_cliente.php">Cadastrar Cliente</a>
+                        <a href="consultar_crianca.php">Consultar Criança</a>
+                        <a href="consultar_responsavel.php">Consultar Responsável</a>
+                    </div>
+                </li>
+                
+                <li class="dropdown">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Funcionário
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="cadastro_funcionario.php">Cadastrar Funcionário</a>
+                        <a href="consultar_funcionario.php">Consultar Funcionário</a>
+                        <a href="relatorio_funcionario.php">Relatório Funcionário</a>
+                    </div>
+                </li>
+                
+                <li class="dropdown">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10,9 9,9 8,9"></polyline>
+                        </svg>
+                        Livro
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="registrar_livro.php">Registrar Livro</a>
+                        <a href="consultarlivro.php">Consultar Livro</a>
+                        <a href="controleestoque.php">Controle de Estoque</a>
+                        <a href="catalogar_livro.php">Catalogar Livro</a>
+                    </div>
+                </li>
+                
+                <li class="dropdown">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10,9 9,9 8,9"></polyline>
+                        </svg>
+                        Empréstimo
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="registrar_emprestimo.php">Registrar Empréstimo</a>
+                        <a href="consultar_emprestimo.php">Consultar Empréstimo</a>
+                        <a href="consultar_multa.php">Consultar Multa</a>
+                        <a href="devolver_livro.php">Devolver Livro</a>
+                        <a href="renovar_emprestimo.php">Renovar Empréstimo</a>
+                    </div>
+                </li>
+                
+                <li class="dropdown">
+                    <a href="#">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Doador
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="registrar_doador.php">Registrar Doador</a>
+                        <a href="consultar_doador.php">Consultar Doador</a>
+                        <a href="historico_doacoes.php">Histórico de Doações</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <p>© 2025 ONG Biblioteca</p>
+        </div>
+    </div>
+
+    <!-- Overlay para fechar sidebar -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
     <div class="page-wrapper">
         <header class="header">
             <button class="btn-voltar" onclick="window.history.back()">
@@ -106,7 +226,7 @@
                                     <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40">
                                         <path d="M432.5 82.3L382.4 132.4L507.7 257.7L557.8 207.6C579.7 185.7 579.7 150.3 557.8 128.4L511.7 82.3C489.8 60.4 454.4 60.4 432.5 82.3zM343.3 161.2L342.8 161.3L198.7 204.5C178.8 210.5 163 225.7 156.4 245.5L67.8 509.8C64.9 518.5 65.9 528 70.3 535.8L225.7 380.4C224.6 376.4 224.1 372.3 224.1 368C224.1 341.5 245.6 320 272.1 320C298.6 320 320.1 341.5 320.1 368C320.1 394.5 298.6 416 272.1 416C267.8 416 263.6 415.4 259.7 414.4L104.3 569.7C112.1 574.1 121.5 575.1 130.3 572.2L394.6 483.6C414.3 477 429.6 461.2 435.6 441.3L478.8 297.2L478.9 296.7L343.4 161.2z"/>
                                     </svg>
-                                    <input type="text" id="autor" name="autor" required placeholder="Digite o autor do livro">
+                                    <input type="text" id="autor" name="autor" required placeholder="Nome do autor" readonly>
                                 </div>
                             </div>
                         </div>
@@ -126,13 +246,13 @@
                             </div>
 
                              <div class="input-group" style="flex: 0.5;">
-                                <label for="id_autor">ID do Gênero</label>
+                                <label for="cod_genero">ID do Gênero</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                                         <circle cx="12" cy="7" r="4"/>
                                     </svg>
-                                    <input type="number" id="cod_autor" name="cod_autor" placeholder="ID" style="width: 100px;">
+                                    <input type="number" id="cod_genero_id" name="cod_genero_id" placeholder="ID" style="width: 100px;">
                                 </div>
                             </div>
 
@@ -159,6 +279,7 @@
                                         <option value="8">Horror</option>
                                         <option value="9">Fantasia</option>
                                         <option value="10">Autobiografia</option>
+                                        <option value="11">Infanto Juvenil</option>
                                     </select>
                                 </div>
                             </div>
@@ -193,12 +314,12 @@
                         </div> 
 
                         <div class="input-group" style="flex: 1.5;">
-                            <label for="cod_editora">Nome da Editora</label>
+                            <label for="nome_editora">Nome da Editora</label>
                             <div class="input-wrapper">
                                 <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="50"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                                     <path d="M96.5 160L96.5 309.5C96.5 326.5 103.2 342.8 115.2 354.8L307.2 546.8C332.2 571.8 372.7 571.8 397.7 546.8L547.2 397.3C572.2 372.3 572.2 331.8 547.2 306.8L355.2 114.8C343.2 102.7 327 96 310 96L160.5 96C125.2 96 96.5 124.7 96.5 160zM208.5 176C226.2 176 240.5 190.3 240.5 208C240.5 225.7 226.2 240 208.5 240C190.8 240 176.5 225.7 176.5 208C176.5 190.3 190.8 176 208.5 176z"/>
                                 </svg>
-                                <input type="text" id="cod_editora" name="cod_editora" required placeholder="Digite o nome da editora">
+                                <input type="text" id="nome_editora" name="nome_editora" required placeholder="Nome da editora" readonly>
                             </div>
                         </div> 
                     </div>
@@ -248,7 +369,7 @@
                                     <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40">
                                         <path d="M112 120C112 106.7 101.3 96 88 96C74.7 96 64 106.7 64 120L64 464C64 508.2 99.8 544 144 544L552 544C565.3 544 576 533.3 576 520C576 506.7 565.3 496 552 496L144 496C126.3 496 112 481.7 112 464L112 120zM216 192L424 192C437.3 192 448 181.3 448 168C448 154.7 437.3 144 424 144L216 144C202.7 144 192 154.7 192 168C192 181.3 202.7 192 216 192zM216 256C202.7 256 192 266.7 192 280C192 293.3 202.7 304 216 304L360 304C373.3 304 384 293.3 384 280C384 266.7 373.3 256 360 256L216 256zM216 368C202.7 368 192 378.7 192 392C192 405.3 202.7 416 216 416L488 416C501.3 416 512 405.3 512 392C512 378.7 501.3 368 488 368L216 368z"/>
                                     </svg>
-                                    <input type="number" id="data_lancamento" name="data_lancamento" required placeholder="Digite a quantidade do livro">
+                                    <input type="number" id="quantidade" name="quantidade" required placeholder="Digite a quantidade do livro">
                                 </div>
                             </div>
 
@@ -264,13 +385,13 @@
                             </div>
 
                             <div class="input-group" style="flex: 1.5;">
-                                <label for="doador">Nome do Doador</label>
+                                <label for="nome_doador">Nome do Doador</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                                         <circle cx="12" cy="7" r="4"/>
                                     </svg>
-                                    <input type="text" id="doador" name="doador" required placeholder="Digite o doador do livro">
+                                    <input type="text" id="nome_doador" name="nome_doador" required placeholder="Nome do doador" readonly>
                                 </div>
                             </div>
                         </div>
@@ -298,5 +419,7 @@
         </main>
     </div>
 </body>
-<script src="subtelas_javascript/validaCadastro.js"></script>
+<script src="subtelas_javascript/validaLivro.js"></script>
+<script src="subtelas_javascript/buscarID.js"></script>
+<script src="subtelas_javascript/sidebar.js"></script>
 </html>

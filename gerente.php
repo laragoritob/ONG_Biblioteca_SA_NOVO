@@ -26,7 +26,6 @@
 
         </header>
         <ul class="nav-bar">
-            <li><a href="#" class="dropbtn"> Início </a></li>
             <li class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn"> Funcionários </a>
                 <div class="dropdown-content">

@@ -10,22 +10,22 @@
     }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $nome_doador = $_POST['nome_doador'];
+        $nome_autor = $_POST['nome_autor'];
         $telefone = $_POST['telefone'];
         $email = $_POST['email'];
 
-        $sql = "INSERT INTO doador (nome_doador,telefone,email) 
-                    VALUES (:nome_doador,:telefone,:email)";
+        $sql = "INSERT INTO autor (nome_autor,telefone,email) 
+                    VALUES (:nome_autor,:telefone,:email)";
 
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':nome_doador', $nome_doador);
+        $stmt->bindParam(':nome_autor', $nome_autor);
         $stmt->bindParam(':telefone', $telefone);
         $stmt->bindParam(':email', $email);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Doador cadastrado com sucesso!');</script>";
+            echo "<script>alert('Autor cadastrado com sucesso!');</script>";
         } else {
-            echo "<script>alert('Erro ao cadastrar doador!');</script>";
+            echo "<script>alert('Erro ao cadastrar autor!');</script>";
         }
     }
 ?>
@@ -83,6 +83,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="input-group">
+                            <label for="email">E-mail</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                                <input type="email" id="email" name="email" required placeholder="exemplo@email.com">
+                            </div>
+                        </div>
                 </div>
 
                 <div class="form-actions">
@@ -90,7 +100,7 @@
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            Cadastrar Doador
+                            Cadastrar Autor
                         </button>
 
 

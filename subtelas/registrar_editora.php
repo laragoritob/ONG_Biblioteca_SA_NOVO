@@ -1,3 +1,36 @@
+<?php
+    session_start();
+    require_once '../conexao.php';
+
+    // VERIFICA SE O USUÁRIO TEM PERMISSÃO
+    // SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR
+    if ($_SESSION['perfil'] != 1) {
+        echo "<script>alert('Acesso Negado!');window.location.href='../gerente.php';</script>";
+        exit();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $nome_editora = $_POST['nome_editora'];
+        $telefone = $_POST['telefone'];
+        $email = $_POST['email'];
+
+        $sql = "INSERT INTO editora (nome_editora,telefone,email) 
+                    VALUES (:nome_editora,:telefone,:email)";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':nome_editora', $nome_editora);
+        $stmt->bindParam(':telefone', $telefone);
+        $stmt->bindParam(':email', $email);
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Editora cadastrada com sucesso!');</script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar editora!');</script>";
+        }
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -15,7 +48,7 @@
         </header>
         
         <div class="main-content">
-            <form class="formulario" id="form_doador" action="registrar_doador.php" method="post">
+            <form class="formulario" id="form_doador" action="registrar_editora.php" method="post">
 
                 <div class="form-section">
                     <div class="section-title">
@@ -51,6 +84,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="input-group">
+                            <label for="email">E-mail</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                                <input type="email" id="email" name="email" required placeholder="exemplo@email.com">
+                            </div>
+                        </div>
                 </div>
 
                 <div class="form-actions">
