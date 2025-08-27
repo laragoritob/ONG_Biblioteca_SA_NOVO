@@ -68,8 +68,8 @@ try {
               <td><?= date("d/m/Y", strtotime($f['data_nascimento'])) ?></td>
               <td><?= date("d/m/Y", strtotime($f['data_efetivacao'])) ?></td>
               <td>
-                <button onclick="editarFuncionario(<?= $f['id_funcionario'] ?>)">✏️ Editar</button>
-                <button onclick="desativarFuncionario(<?= $f['id_funcionario'] ?>)">❌ Desativar</button>
+                <button onclick="editarFuncionario(<?= $f['id_funcionario'] ?>)">✏️</button>
+                <button onclick="excluirFuncionario(<?= $f['id_funcionario'] ?>)">🗑️</button>
               </td>
             </tr>
           <?php endforeach; ?>
