@@ -295,42 +295,42 @@ header h1 {
 /* Navigation/Table */
 nav {
   background: var(--bg-primary);
-  padding: 2rem;
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  width: 100%;
-  max-width: 1200px;
-  border: 1px solid var(--border-color);
+  padding: 2rem;
   margin: 0 auto;
-  overflow: hidden;
+  max-width: 1200px;
+  box-shadow: var(--shadow-lg);
+  overflow-x: auto;
 }
 
-#funcionarios-table {
+#funcionarios-table,
+#doadores-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  margin-top: 1rem;
 }
 
-#funcionarios-table th {
+#funcionarios-table th,
+#doadores-table th {
   background: var(--bg-secondary);
   color: var(--text-primary);
-  font-weight: 600;
-  text-align: left;
   padding: 1rem;
-  border-bottom: 2px solid var(--border-color);
-  font-size: 0.8rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-#funcionarios-table td {
+#funcionarios-table td,
+#doadores-table td {
   padding: 1rem;
   border-bottom: 1px solid var(--border-color);
-  color: var(--text-secondary);
   vertical-align: middle;
 }
 
-#funcionarios-table tbody tr:hover {
+#funcionarios-table tbody tr:hover,
+#doadores-table tbody tr:hover {
   background: var(--bg-secondary);
   transition: var(--transition);
 }
@@ -840,9 +840,9 @@ nav {
   color: #ef4444;
 }
 
-<<<<<<< Updated upstream
 /* Estilos para botões da tabela - remover bordas */
-#funcionarios-table button {
+#funcionarios-table button,
+#doadores-table button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -863,33 +863,31 @@ nav {
   appearance: none;
 }
 
-#funcionarios-table button:first-child {
+#funcionarios-table button:first-child,
+#doadores-table button:first-child {
   background: linear-gradient(135deg, #10b981, #059669);
   color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-#funcionarios-table button:first-child:hover {
+#funcionarios-table button:first-child:hover,
+#doadores-table button:first-child:hover {
   background: linear-gradient(135deg, #059669, #047857);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-#funcionarios-table button:last-child {
+#funcionarios-table button:last-child,
+#doadores-table button:last-child {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-#funcionarios-table button:last-child:hover {
+#funcionarios-table button:last-child:hover,
+#doadores-table button:last-child:hover {
   background: linear-gradient(135deg, #dc2626, #b91c1c);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
-=======
-/* Lupa dentro do input - reforço */
-#search-container .input-wrapper { position: relative !important; }
-#search-container .input-wrapper svg { position: absolute !important; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; pointer-events: none; z-index: 1; }
-#search-container .input-wrapper input { padding-left: 40px !important; }
 
->>>>>>> Stashed changes
