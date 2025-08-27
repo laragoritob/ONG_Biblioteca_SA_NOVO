@@ -117,15 +117,14 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
       </form>
       <h1>Consultar Empréstimos</h1>
     </header>
-    <form action="consultar_emprestimo.php" method="POST">
-    </form>
+   
     
     <?php if (isset($erro)) { ?>
         <div style="text-align: center; padding: 20px; color: #d32f2f; background-color: #ffebee; border: 1px solid #f44336; border-radius: 4px; margin: 20px;">
             <p><strong>Erro:</strong> <?= htmlspecialchars($erro) ?></p>
         </div>
     <?php } ?>
-    
+    <form action="consultar_emprestimo.php" method="POST">
     <div id="search-container">
       <div class="input-wrapper">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
@@ -134,6 +133,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
           <input type="text" id="search-input" name="nome_funcionario" placeholder="Buscar empréstimo..." required style="padding-left:40px;">
         </div>
     </div>
+    </form>
 
     <nav>
       <table id="funcionarios-table">
