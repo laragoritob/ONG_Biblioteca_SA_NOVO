@@ -47,9 +47,9 @@
         $stmt->bindParam(':foto', $foto);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Funcionário cadastrado com sucesso!');</script>";
+            echo "<script>alert('Cliente cadastrado com sucesso!');</script>";
         } else {
-            echo "<script>alert('Erro ao cadastrar funcionário!');</script>";
+            echo "<script>alert('Erro ao cadastrar cliente!');</script>";
         }
     }
 ?>

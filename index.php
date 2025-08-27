@@ -18,17 +18,34 @@
             $_SESSION['perfil'] = $usuario['Cod_Perfil'];
             $_SESSION['cod_func'] = $usuario['Cod_usuario'];
 
-            // VERIFICA SE A SENHA É TEMPORÁRIA
-            if ($usuario) {
-                // REDIRECIONA PARA A PÁGINA PRINCIPAL
-                header("Location: gerente.php");
-                exit();
-            } else {
-                // REDIRECIONA PARA A PÁGINA PRINCIPAL
-                header("Location: index.php");
-                exit();
+            // REDIRECIONA PARA A PÁGINA CORRESPONDENTE AO PERFIL
+            switch ($usuario['Cod_Perfil']) {
+                case 1: // Gerente
+                    header("Location: gerente.php");
+                    break;
+                case 2: // Gestor
+                    header("Location: gestor.php");
+                    break;
+                case 3: // Bibliotecário
+                    header("Location: bibliotecario.php");
+                    break;
+                case 4: // Recreador
+                    header("Location: recreador.php");
+                    break;
+                case 5: // Repositor
+                    header("Location: repositor.php");
+                    break;
+                default:
+                    // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
+                    header("Location: index.php");
+                    break;
             }
-        } 
+            exit();
+        } else {
+            // USUÁRIO NÃO ENCONTRADO, REDIRECIONA PARA LOGIN
+            header("Location: index.php");
+            exit();
+        }
     }
 ?>
 
