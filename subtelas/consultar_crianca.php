@@ -1,25 +1,58 @@
 <?php
-session_start();
-require_once '../conexao.php';
+  session_start();
+  require_once '../conexao.php';
 
-// Consulta todas as crianças
-$sql = "SELECT 
-          Cod_Crianca     AS ID Criança
-          Nome            AS Nome
-          Sexo            AS sexo
-          Data_Nascimento AS data_nascimento
-          Nome_Responsavel AS responsavel
-          Telefone        AS telefone
-        FROM crianca
-        ORDER BY Nome ASC";
+  // VERIFICA SE O USUÁRIO TEM PERMISSÃO
+  if ($_SESSION['perfil'] != 1) {
+    echo "<script>alert('Acesso Negado!'); window.location.href='../gerente.php';</script>";
+    exit();
+  }
 
-try {
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $criancas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Erro na consulta: " . $e->getMessage());
-}
+  // INICIALIZA VARIÁVEIS
+  $clientes = [];
+  $erro = null;
+
+  try {
+      // SE O FORMULÁRIO FOR ENVIADO, BUSCA A CRIANÇA PELO ID OU NOME
+      if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])) {
+          $busca = trim($_POST['busca']);
+          
+          // VERIFICA SE A BUSCA É UM NÚMERO (ID) OU UM NOME
+          if (is_numeric($busca)) {
+              $sql = "SELECT Cod_Cliente, Nome, CPF, Email, Sexo, Nome_Responsavel, Telefone, Data_Nascimento, CEP, UF, Cidade, Bairro, Rua, Num_Residencia, Foto FROM cliente 
+                        WHERE Cod_Cliente = :busca 
+                        ORDER BY Cod_Cliente ASC";
+              
+              $stmt = $pdo->prepare($sql);
+              $stmt->bindParam(":busca", $busca, PDO::PARAM_INT);
+          } else {
+              $sql = "SELECT Cod_Cliente, Nome, CPF, Email, Sexo, Nome_Responsavel, Telefone, Data_Nascimento, CEP, UF, Cidade, Bairro, Rua, Num_Residencia, Foto FROM cliente 
+                        WHERE Nome LIKE :busca_nome 
+                        ORDER BY Cod_Cliente ASC";
+              
+              $stmt = $pdo->prepare($sql);
+              $stmt->bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
+          }
+      } else {
+          // BUSCA TODAS AS CRIANÇAS
+          $sql = "SELECT Cod_Cliente, Nome, CPF, Email, Sexo, Nome_Responsavel, Telefone, Data_Nascimento, CEP, UF, Cidade, Bairro, Rua, Num_Residencia, Foto FROM cliente 
+                    ORDER BY Cod_Cliente ASC";
+          
+          $stmt = $pdo->prepare($sql);
+      }
+
+      $stmt->execute();
+      $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      
+      // GARANTIR QUE $clientes SEJA SEMPRE UM ARRAY
+      if (!is_array($clientes)) {
+          $clientes = [];
+      }
+      
+  } catch (PDOException $e) {
+      $erro = "Erro na consulta: " . $e->getMessage();
+      $clientes = [];
+  }
 ?>
 
 <!DOCTYPE html>
@@ -41,15 +74,23 @@ try {
       <h1>Consultar Crianças</h1>
   </header>
 
-  <div id="search-container">
-    <div class="input-wrapper">
-      <span class="icon">🔎</span>
-      <input type="text" id="search-input" placeholder="Buscar criança..." onkeyup="filtrarTabela()">
+  <form action="consultar_crianca.php" method="POST">
+    <div id="search-container">
+      <div class="input-wrapper">
+        <span class="icon">🔎</span>
+        <input type="text" id="search-input" name="busca" placeholder="Buscar por ID ou nome..." onkeyup="filtrarTabela()">
+      </div>
     </div>
-  </div>
+  </form>
+  
+  <?php if (isset($erro)) { ?>
+      <div style="text-align: center; padding: 20px; color: #d32f2f; background-color: #ffebee; border: 1px solid #f44336; border-radius: 4px; margin: 20px;">
+          <p><strong>Erro:</strong> <?= htmlspecialchars($erro) ?></p>
+      </div>
+  <?php } ?>
   
   <nav>
-    <table id="criancas-table">
+    <table id="funcionarios-table">
       <thead>
         <tr>
           <th>ID</th>
@@ -62,18 +103,19 @@ try {
         </tr>
       </thead>
       <tbody>
-        <?php if (!empty($criancas)): ?>
-          <?php foreach ($criancas as $c): ?>
+        <?php if (!empty($clientes) && is_array($clientes)): ?>
+          <?php foreach ($clientes as $c): ?>
             <tr>
-              <td><?= htmlspecialchars($c['ID Criança']) ?></td>
-              <td><?= htmlspecialchars($c['nome']) ?></td>
-              <td><?= htmlspecialchars($c['sexo']) ?></td>
-              <td><?= date("d/m/Y", strtotime($c['data_nascimento'])) ?></td>
-              <td><?= htmlspecialchars($c['responsavel']) ?></td>
-              <td><?= htmlspecialchars($c['telefone']) ?></td>
+              <td><?= htmlspecialchars($c['Cod_Cliente']) ?></td>
+              <td><?= htmlspecialchars($c['Nome']) ?></td>
+              <td><?= htmlspecialchars($c['Sexo']) ?></td>
+              <td><?= date("d/m/Y", strtotime($c['Data_Nascimento'])) ?></td>
+              <td><?= htmlspecialchars($c['Nome_Responsavel']) ?></td>
+              <td><?= htmlspecialchars($c['Telefone']) ?></td>
               <td>
-                <button onclick="editarCrianca(<?= $c['ID Criança'] ?>)">✏️ Editar</button>
-                <button onclick="excluirCrianca(<?= $c['ID Criança'] ?>)">❌ Excluir</button>
+                <a href="alterar_crianca.php?id=<?= htmlspecialchars($c['Cod_Cliente']) ?>" class="alterar">Alterar</a>
+                |
+                <a href="excluir_crianca.php?id=<?= htmlspecialchars($c['Cod_Cliente']) ?>" class="excluir" onclick="return confirm('Tem certeza que deseja excluir esta criança?')">Excluir</a>
               </td>
             </tr>
           <?php endforeach; ?>
@@ -84,7 +126,7 @@ try {
     </table>
   </nav>
 
-  <script src="subtelas_javascript/telconsultar_criancas.js"></script>
+  <script src="subtelas_javascript/consultas.js"></script>
   <script src="subtelas_javascript/sidebar.js"></script>
   <script>
     // Função para filtrar tabela pelo input de busca
