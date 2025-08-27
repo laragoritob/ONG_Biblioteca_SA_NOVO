@@ -1,3 +1,14 @@
+<?php
+    session_start();
+    require_once 'conexao.php';
+
+    if (!isset($_SESSION['usuario'])) {
+        header('Location: index.php');
+        exit();
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
     <head> 
@@ -8,9 +19,10 @@
     </head>
     <body> 
         <header> 
-            <h1> Bem-Vindo, "Gestor"! </h1>
-            <a href="#" class="logout-btn">🚶🏻‍♂️ Logout</a>
-            <img src="img/logo_trans.png" title="imgs" class="logo"> 
+            <h1> Bem-Vindo, <?php echo $_SESSION['usuario']?>! </h1>
+            <form action="logout.php" method="POST">
+                <button type="submit" class="logout">🚶🏻‍♂️ Logout</a>
+            </form>
         </header>
         <ul class="nav-bar">
             <li><a href="#" class="dropbtn"> Início </a></li>
@@ -25,14 +37,20 @@
             <li class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn"> Livros </a>
                 <div class="dropdown-content">
-                    <a href="subtelas/controleestoque.php"> Consultar Livros </a>
+                    <a href="subtelas/registrar_livro.php"> Registrar Livro </a>
+                    <a href="subtelas/consultar_livro.php"> Consultar Livros </a>
+                    <a href="subtelas/registrar_autor.php"> Registrar Autor </a>
+                    <a href="subtelas/consultar_autor.php"> Consultar Autores </a>
+                    <a href="subtelas/registrar_editora.php"> Registrar Editora </a>
+                    <a href="subtelas/consultar_editora.php"> Consultar Editoras </a>
                 </div>
             </li>
 
             <li class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn"> Doador </a>
                 <div class="dropdown-content">
-                    <a href="#"> Consultar Doadores </a>
+                    <a href="subtelas/registrar_doador.php"> Registrar Doadore </a>
+                    <a href="subtelas/consultar_doador.php"> Consultar Doadores </a>
                 </div>
             </li>
         </ul>

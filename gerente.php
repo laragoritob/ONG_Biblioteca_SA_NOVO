@@ -39,8 +39,7 @@
                 <a href="javascript:void(0)" class="dropbtn"> Clientes </a>
                 <div class="dropdown-content">
                     <a href="subtelas/cadastro_cliente.php"> Registrar Cliente </a>
-                    <a href="subtelas/consultar_crianca.php"> Consultar Crianças </a>
-                    <a href="subtelas/consultar_responsavel.php"> Consultar Responsáveis </a>
+                    <a href="subtelas/consultar_cliente.php"> Consultar Clientes </a>
                 </div>
             </li>
 

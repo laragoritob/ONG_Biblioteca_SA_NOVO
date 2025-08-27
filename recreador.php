@@ -1,3 +1,14 @@
+<?php
+    session_start();
+    require_once 'conexao.php';
+
+    if (!isset($_SESSION['usuario'])) {
+        header('Location: index.php');
+        exit();
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
     <head> 
@@ -8,9 +19,10 @@
     </head>
     <body> 
         <header> 
-            <h1> Bem-Vindo, "Recreador"! </h1>
-            <a href="#" class="logout-btn">🚶🏻‍♂️ Logout</a>
-            <img src="img/logo_trans.png" title="imgs" class="logo"> 
+            <h1> Bem-Vindo, <?php echo $_SESSION['usuario']?>! </h1>
+            <form action="logout.php" method="POST">
+                <button type="submit" class="logout">🚶🏻‍♂️ Logout</a>
+            </form>
         </header>
         <ul class="nav-bar">
             <li><a href="#" class="dropbtn"> Início </a></li>
@@ -19,8 +31,7 @@
                 <a href="javascript:void(0)" class="dropbtn"> Clientes </a>
                 <div class="dropdown-content">
                     <a href="subtelas/cadastro_cliente.php"> Registrar Cliente </a>
-                    <a href="subtelas/ficha_crianca.php"> Consultar Crianças </a>
-                    <a href="subtelas/consultar_responsavel.php"> Consultar Responsáveis </a>
+                    <a href="subtelas/consultar_cliente.php"> Consultar Clientes </a>
                 </div>
             </li>
 
@@ -34,7 +45,8 @@
             <li class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn"> Empréstimos </a>
                 <div class="dropdown-content">
-                    <a href="#"> Consultar Empréstimos </a>
+                    <a href="subtelas/registrar_emprestimo.php"> Registrar Empréstimo </a>
+                    <a href="subtelas/consultar_emprestimo.php"> Consultar Empréstimos </a>
                 </div>
             </li>
         </ul>
