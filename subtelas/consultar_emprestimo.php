@@ -1,7 +1,6 @@
 <?php
-<<<<<<< Updated upstream
-  session_start();
-  require_once '../conexao.php';
+session_start();
+require_once '../conexao.php';
 
   // VERIFICA SE O USUÁRIO TEM PERMISSÃO
   if ($_SESSION['perfil'] != 1) {
@@ -21,7 +20,7 @@
           // VERIFICA SE A BUSCA É UM NÚMERO (ID) OU UM NOME
           if (is_numeric($busca)) {
               $sql = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                             e.Data_Emprestimo, e.Data_Devolucao, e.Status
+                             e.Data_Emprestimo, e.Data_Devolucao
                         FROM emprestimo e 
                         INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
                         INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
@@ -32,7 +31,7 @@
               $stmt->bindParam(":busca", $busca, PDO::PARAM_INT);
           } else {
               $sql = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                             e.Data_Emprestimo, e.Data_Devolucao, e.Status
+                             e.Data_Emprestimo, e.Data_Devolucao
                         FROM emprestimo e 
                         INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
                         INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
@@ -45,7 +44,7 @@
       } else {
           // BUSCA TODOS OS EMPRÉSTIMOS
           $sql = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                         e.Data_Emprestimo, e.Data_Devolucao, e.Status
+                         e.Data_Emprestimo, e.Data_Devolucao
                     FROM emprestimo e 
                     INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
                     INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
@@ -66,9 +65,8 @@
       $erro = "Erro na consulta: " . $e->getMessage();
       $emprestimos = [];
   }
-=======
-session_start();
-require_once '../conexao.php';
+
+
 
 //VERIFCA SE O USARIO TEM PERMISSAO DE adm OU secretaria
 if($_SESSION['perfil'] !=1 && $_SESSION['perfil'] !=2){
@@ -92,13 +90,13 @@ if(is_numeric($busca)){
     $stmt-> bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
 }
 }else {
-    $sql= "SELECT * FROM usuario ORDER BY nome ASC";
+    $sql= "SELECT * FROM emprestimo ORDER BY Cod_Emprestimo ASC";
     $stmt= $pdo-> prepare($sql);
 }
 
 $stmt-> execute();
 $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
->>>>>>> Stashed changes
+
 ?>
 
 <!DOCTYPE html>
@@ -119,15 +117,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
       </form>
       <h1>Consultar Empréstimos</h1>
     </header>
-
-<<<<<<< Updated upstream
     <form action="consultar_emprestimo.php" method="POST">
-      <div id="search-container">
-        <div class="input-wrapper">
-          <span class="icon">🔎</span>
-          <input type="text" id="search-input" name="busca" placeholder="Buscar por ID ou nome do cliente..." onkeyup="filtrarTabela()">
-        </div>
-      </div>
     </form>
     
     <?php if (isset($erro)) { ?>
@@ -136,9 +126,6 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
         </div>
     <?php } ?>
     
-    <nav>
-      <table id="emprestimos-table">
-=======
     <div id="search-container">
       <div class="input-wrapper">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
@@ -150,7 +137,6 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
 
     <nav>
       <table id="funcionarios-table">
->>>>>>> Stashed changes
         <thead>
           <tr>
             <th>ID</th>
@@ -158,15 +144,10 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
             <th>NOME DO LIVRO</th>
             <th>DATA DO EMPRÉSTIMO</th>
             <th>DATA DE DEVOLUÇÃO</th>
-<<<<<<< Updated upstream
-            <th>STATUS</th>
-=======
->>>>>>> Stashed changes
             <th>AÇÕES</th>
           </tr>
         </thead>
         <tbody>
-<<<<<<< Updated upstream
           <?php if (!empty($emprestimos) && is_array($emprestimos)): ?>
             <?php foreach ($emprestimos as $e): ?>
               <tr>
@@ -175,7 +156,6 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
                 <td><?= htmlspecialchars($e['Nome_Livro']) ?></td>
                 <td><?= date("d/m/Y", strtotime($e['Data_Emprestimo'])) ?></td>
                 <td><?= $e['Data_Devolucao'] ? date("d/m/Y", strtotime($e['Data_Devolucao'])) : 'Não devolvido' ?></td>
-                <td><?= htmlspecialchars($e['Status']) ?></td>
                 <td>
                   <a href="alterar_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="alterar">Alterar</a>
                   |
@@ -205,7 +185,6 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
       }
     </script>
     </div>
-=======
           <!-- Dados da tabela serão carregados via JavaScript -->
         </tbody>
       </table>
@@ -214,6 +193,5 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
 
   <script src="subtelas_javascript/telconsultar_funcionarios.js"></script>
   <script src="subtelas_javascript/sidebar.js"></script>
->>>>>>> Stashed changes
 </body>
 </html>
