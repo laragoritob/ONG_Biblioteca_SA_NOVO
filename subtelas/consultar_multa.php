@@ -20,7 +20,7 @@
           // VERIFICA SE A BUSCA É UM NÚMERO (ID) OU UM NOME
           if (is_numeric($busca)) {
               $sql = "SELECT m.Cod_Multa, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                             m.Data_Multa, m.Valor_Multa, m.Status
+                             m.Data_Multa, m.Valor_Multa
                         FROM multa m 
                         INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo 
                         INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
@@ -32,7 +32,7 @@
               $stmt->bindParam(":busca", $busca, PDO::PARAM_INT);
           } else {
               $sql = "SELECT m.Cod_Multa, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                             m.Data_Multa, m.Valor_Multa, m.Status
+                             m.Data_Multa, m.Valor_Multa
                         FROM multa m 
                         INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo 
                         INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
@@ -46,7 +46,7 @@
       } else {
           // BUSCA TODAS AS MULTAS
           $sql = "SELECT m.Cod_Multa, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                         m.Data_Multa, m.Valor_Multa, m.Status
+                         m.Data_Multa, m.Valor_Multa
                     FROM multa m 
                     INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo 
                     INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
@@ -90,12 +90,14 @@
     </header>
 
     <form action="consultar_multa.php" method="POST">
-      <div id="search-container">
-        <div class="input-wrapper">
-          <span class="icon">🔎</span>
-          <input type="text" id="search-input" name="busca" placeholder="Buscar por ID ou nome do cliente..." onkeyup="filtrarTabela()">
+    <div id="search-container">
+      <div class="input-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
+        <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+      </svg>
+          <input type="text" id="search-input" name="nome_funcionario" placeholder="Buscar empréstimo..." required style="padding-left:40px;">
         </div>
-      </div>
+    </div>
     </form>
     
     <?php if (isset($erro)) { ?>
@@ -105,7 +107,7 @@
     <?php } ?>
     
     <nav>
-      <table id="multas-table">
+      <table id="funcionarios-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -113,7 +115,6 @@
             <th>NOME DO LIVRO</th>
             <th>DATA DA MULTA</th>
             <th>VALOR DA MULTA</th>
-            <th>STATUS</th>
             <th>AÇÕES</th>
           </tr>
         </thead>
@@ -126,7 +127,6 @@
                 <td><?= htmlspecialchars($m['Nome_Livro']) ?></td>
                 <td><?= date("d/m/Y", strtotime($m['Data_Multa'])) ?></td>
                 <td>R$ <?= number_format($m['Valor_Multa'], 2, ',', '.') ?></td>
-                <td><?= htmlspecialchars($m['Status']) ?></td>
                 <td>
                   <a href="alterar_multa.php?id=<?= htmlspecialchars($m['Cod_Multa']) ?>" class="alterar">Alterar</a>
                   |
