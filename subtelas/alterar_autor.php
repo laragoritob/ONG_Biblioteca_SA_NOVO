@@ -44,29 +44,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (empty($email)) {
         $erro = "Email é obrigatório";
     } else {
-        try {
-            $sql_update = "UPDATE autor 
-                          SET Nome_Autor = :nome,
-                              Telefone = :telefone,
-                              Email = :email
-                          WHERE Cod_Autor = :id";
-            
-            $stmt_update = $pdo->prepare($sql_update);
-            $stmt_update->bindParam(':nome', $nome);
-            $stmt_update->bindParam(':telefone', $telefone);
-            $stmt_update->bindParam(':email', $email);
-            $stmt_update->bindParam(':id', $id);
-            
-            if ($stmt_update->execute()) {
-                $sucesso = "Autor alterado com sucesso!";
-                // Recarregar dados do autor
-                $stmt->execute();
-                $autor = $stmt->fetch(PDO::FETCH_ASSOC);
-            } else {
-                $erro = "Erro ao alterar autor";
+        // Validação do telefone
+        if (!empty($telefone)) {
+            $telefone_limpo = preg_replace('/\D/', '', $telefone); // Remove caracteres não numéricos
+            if (strlen($telefone_limpo) < 10 || strlen($telefone_limpo) > 11) {
+                $erro = "O telefone deve ter 10 ou 11 dígitos";
             }
-        } catch (PDOException $e) {
-            $erro = "Erro ao alterar autor: " . $e->getMessage();
+        }
+        
+        if (!isset($erro)) {
+            try {
+                $sql_update = "UPDATE autor 
+                              SET Nome_Autor = :nome,
+                                  Telefone = :telefone,
+                                  Email = :email
+                              WHERE Cod_Autor = :id";
+                
+                $stmt_update = $pdo->prepare($sql_update);
+                $stmt_update->bindParam(':nome', $nome);
+                $stmt_update->bindParam(':telefone', $telefone);
+                $stmt_update->bindParam(':email', $email);
+                $stmt_update->bindParam(':id', $id);
+                
+                if ($stmt_update->execute()) {
+                    $sucesso = "Autor alterado com sucesso!";
+                    // Recarregar dados do autor
+                    $stmt->execute();
+                    $autor = $stmt->fetch(PDO::FETCH_ASSOC);
+                } else {
+                    $erro = "Erro ao alterar autor";
+                }
+            } catch (PDOException $e) {
+                $erro = "Erro ao alterar autor: " . $e->getMessage();
+            }
         }
     }
 }
@@ -113,47 +123,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="form-row">
                             <div class="input-group">
-                                <label for="cod_autor">Código do Autor</label>
-                                <div class="input-wrapper">
-                                    <input type="text" id="cod_autor" value="<?= htmlspecialchars($autor['Cod_Autor']) ?>" readonly>
-                                    <span class="input-icon">🆔</span>
-                                </div>
-                            </div>
-
-                            <div class="input-group">
                                 <label for="nome">Nome Completo *</label>
                                 <div class="input-wrapper">
                                     <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($autor['Nome_Autor']) ?>" required>
-                                    <span class="input-icon">👤</span>
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-row">
                             <div class="input-group">
                                 <label for="telefone">Telefone</label>
                                 <div class="input-wrapper">
-                                    <input type="text" id="telefone" name="telefone" value="<?= htmlspecialchars($autor['Telefone']) ?>">
-                                    <span class="input-icon">📞</span>
+                                    <input type="text" id="telefone" name="telefone" value="<?= htmlspecialchars($autor['Telefone']) ?>" maxlength="15" oninput="formatTelefone(this)" placeholder="(00) 00000-0000">
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                    </svg>
                                 </div>
                             </div>
+                        </div>
 
                             <div class="input-group">
                                 <label for="email">Email *</label>
                                 <div class="input-wrapper">
                                     <input type="email" id="email" name="email" value="<?= htmlspecialchars($autor['Email']) ?>" required>
-                                    <span class="input-icon">✉️</span>
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
                     <div class="botao">
                         <button type="submit" id="btn-salvar" class="btn">
-                            💾 Salvar Alterações
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Salvar Alterações
                         </button>
                         <a href="consultar_autor.php" id="cancelar-edicao" class="btn">
-                            ❌ Cancelar
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                <line x1="10" y1="11" x2="10" y2="17"/>
+                                <line x1="14" y1="11" x2="14" y2="17"/>
+                            </svg>
+                            Cancelar
                         </a>
                     </div>
                 </form>
@@ -161,18 +177,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
+    <script src="subtelas_javascript/validaCadastro.js"></script>
     <script>
-        // Validação do formulário
+        // Validação específica para alterar autor
         document.querySelector('form').addEventListener('submit', function(e) {
             const nome = document.getElementById('nome').value.trim();
             const email = document.getElementById('email').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
             
             if (nome === '') {
                 e.preventDefault();
                 Swal.fire({
                     icon: 'error',
                     title: 'Erro de Validação',
-                    text: 'O nome do autor é obrigatório!'
+                    text: 'O nome do autor é obrigatório!',
+                    confirmButtonColor: '#ffbcfc'
                 });
                 return false;
             }
@@ -182,43 +201,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Swal.fire({
                     icon: 'error',
                     title: 'Erro de Validação',
-                    text: 'O email do autor é obrigatório!'
+                    text: 'O email do autor é obrigatório!',
+                    confirmButtonColor: '#ffbcfc'
                 });
                 return false;
             }
             
-            // Confirmação antes de salvar
-            if (!confirm('Tem certeza que deseja salvar as alterações?')) {
-                e.preventDefault();
-                return false;
-            }
-        });
-
-        // Formatação automática de telefone
-        document.getElementById('telefone').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length <= 11) {
-                if (value.length === 11) {
-                    value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                } else if (value.length === 10) {
-                    value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+            // Validação do telefone
+            if (telefone !== '') {
+                const telefoneLimpo = telefone.replace(/\D/g, '');
+                if (telefoneLimpo.length < 10 || telefoneLimpo.length > 11) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Telefone Inválido',
+                        text: 'O telefone deve ter 10 ou 11 dígitos!',
+                        confirmButtonColor: '#ffbcfc'
+                    });
+                    return false;
                 }
-                e.target.value = value;
             }
-        });
-
-        // Validação de email
-        document.getElementById('email').addEventListener('blur', function() {
-            const email = this.value.trim();
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email && !emailRegex.test(email)) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Formato de Email Inválido',
-                    text: 'Por favor, insira um email válido!'
-                });
-                this.focus();
-            }
+            
+            // Confirmação antes de salvar
+            Swal.fire({
+                title: 'Confirmar Alteração',
+                text: 'Tem certeza que deseja salvar as alterações?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, Salvar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#ffbcfc',
+                cancelButtonColor: '#d33'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Continua com o envio do formulário
+                } else {
+                    e.preventDefault();
+                    return false;
+                }
+            });
         });
     </script>
 </body>
