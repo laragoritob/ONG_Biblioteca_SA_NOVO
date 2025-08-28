@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 25/08/2025 às 21:55
+-- Tempo de geração: 28/08/2025 às 18:38
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -39,7 +39,8 @@ CREATE TABLE `autor` (
 --
 
 INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`) VALUES
-(1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com');
+(1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com'),
+(2, 'Collen Hoover', '(28) 47286-2786', 'collenhoover@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -71,7 +72,9 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`Cod_Cliente`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Nome_Responsavel`, `Telefone`, `Data_Nascimento`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Foto`) VALUES
-(2, 1, 'Guilherme Vinicius Schwarz', '928.759.274-87', 'guilhermevinicius@gmail.com', 'Ma', 'Johnny Schwarz', '(87) 53386-5862', '2007-08-17', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 0x6c6f676f5f7472616e732e706e67);
+(2, 1, 'Guilherme Vinicius Schwarz', '928.759.274-87', 'guilhermevinicius@gmail.com', 'Ma', 'Johnny Schwarz', '(87) 53386-5862', '2007-08-17', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 0x6c6f676f5f7472616e732e706e67),
+(3, 1, 'Ian Lucas Borba', '985.672.685-78', 'ianlucas@gmail.com', 'Masculino', 'Joice Cristina dos Santos Borba', '(47) 99685-5520', '2009-03-10', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 342, 0x6c6f676f5f7472616e732e706e67),
+(4, 2, 'TESTE', '287.352.976-28', 'teste@gmail.com', 'Feminino', 'UAEHFAHFKAFAFAFAFAFAFAFAF', '(32) 33684-9384', '2025-08-27', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 1234, 0x6c6f676f75742e6a7067);
 
 -- --------------------------------------------------------
 
@@ -111,7 +114,8 @@ CREATE TABLE `editora` (
 --
 
 INSERT INTO `editora` (`Cod_Editora`, `Nome_Editora`, `Telefone`, `Email`) VALUES
-(1, 'Moderna', '(47) 98231-2647', 'moderna_editora@gmail.com');
+(1, 'Moderna', '(47) 98231-2647', 'moderna_editora@gmail.com'),
+(2, 'Panini', '(78) 35627-8562', 'panini@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -126,6 +130,13 @@ CREATE TABLE `emprestimo` (
   `Data_Emprestimo` date NOT NULL,
   `Data_Devolucao` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `emprestimo`
+--
+
+INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`) VALUES
+(1, 2, 1, '2025-08-13', '2025-07-31');
 
 -- --------------------------------------------------------
 
@@ -159,7 +170,8 @@ CREATE TABLE `funcionario` (
 --
 
 INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Foto`) VALUES
-(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', '');
+(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', ''),
+(7, 3, 'Bruno Henrique Ribeiro', '568.328.325-62', 'brunohribeiro@gmail.com', 'Masculino', '(27) 83562-3856', '2009-03-11', '2025-08-27', '82640-490', 'PR', 'Curitiba', 'Santa Cândida', 'Praça Semen Uniga', 1234, 'bruno_ribeiro', '$2y$10$CHOY/49469q7u', 0x6b61747970657272792e6a7067);
 
 -- --------------------------------------------------------
 
@@ -186,7 +198,8 @@ INSERT INTO `genero` (`Cod_Genero`, `Nome_Genero`) VALUES
 (7, 'Educacional'),
 (8, 'Horror'),
 (9, 'Fantasia'),
-(10, 'Autobiografia');
+(10, 'Autobiografia'),
+(11, 'Infanto Juvenil');
 
 -- --------------------------------------------------------
 
@@ -208,6 +221,13 @@ CREATE TABLE `livro` (
   `Foto` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Despejando dados para a tabela `livro`
+--
+
+INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`) VALUES
+(1, 1, 1, 1, 5, 'Harry Potter', '2025-08-12', '2025-08-27', 10, '3', 0x6c6f676f5f7472616e732e706e67);
+
 -- --------------------------------------------------------
 
 --
@@ -216,8 +236,6 @@ CREATE TABLE `livro` (
 
 CREATE TABLE `multa` (
   `Cod_Multa` int(11) NOT NULL,
-  `Cod_Cliente` int(11) NOT NULL,
-  `Cod_Livro` int(11) NOT NULL,
   `Cod_Emprestimo` int(11) NOT NULL,
   `Data_Multa` date NOT NULL,
   `Valor_Multa` decimal(10,2) NOT NULL
@@ -263,20 +281,6 @@ INSERT INTO `perfil_funcionario` (`Cod_Perfil`, `Nome_Perfil`) VALUES
 (3, 'Bibliotecário'),
 (4, 'Recreador'),
 (5, 'Repositor');
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `relatorio`
---
-
-CREATE TABLE `relatorio` (
-  `Cod_Relatorio` int(11) NOT NULL,
-  `Cod_Funcionario` int(11) NOT NULL,
-  `Nome` varchar(100) NOT NULL,
-  `Data_Relatorio` date NOT NULL,
-  `Tipo_Arquivo` varchar(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Índices para tabelas despejadas
@@ -343,8 +347,6 @@ ALTER TABLE `livro`
 --
 ALTER TABLE `multa`
   ADD PRIMARY KEY (`Cod_Multa`),
-  ADD KEY `FK_Cliente_Multa` (`Cod_Cliente`),
-  ADD KEY `FK_Livro_Multa` (`Cod_Livro`),
   ADD KEY `FK_Multa_Emprestimo` (`Cod_Emprestimo`);
 
 --
@@ -360,13 +362,6 @@ ALTER TABLE `perfil_funcionario`
   ADD PRIMARY KEY (`Cod_Perfil`);
 
 --
--- Índices de tabela `relatorio`
---
-ALTER TABLE `relatorio`
-  ADD PRIMARY KEY (`Cod_Relatorio`),
-  ADD KEY `FK_Relatorio_Funcionario` (`Cod_Funcionario`);
-
---
 -- AUTO_INCREMENT para tabelas despejadas
 --
 
@@ -374,49 +369,49 @@ ALTER TABLE `relatorio`
 -- AUTO_INCREMENT de tabela `autor`
 --
 ALTER TABLE `autor`
-  MODIFY `Cod_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Cod_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `doador`
 --
 ALTER TABLE `doador`
-  MODIFY `Cod_Doador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Cod_Doador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `editora`
 --
 ALTER TABLE `editora`
-  MODIFY `Cod_Editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Cod_Editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `emprestimo`
 --
 ALTER TABLE `emprestimo`
-  MODIFY `Cod_Emprestimo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Cod_Emprestimo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `funcionario`
 --
 ALTER TABLE `funcionario`
-  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `genero`
 --
 ALTER TABLE `genero`
-  MODIFY `Cod_Genero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `Cod_Genero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de tabela `livro`
 --
 ALTER TABLE `livro`
-  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `multa`
@@ -435,12 +430,6 @@ ALTER TABLE `perfil_cliente`
 --
 ALTER TABLE `perfil_funcionario`
   MODIFY `Cod_Perfil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT de tabela `relatorio`
---
-ALTER TABLE `relatorio`
-  MODIFY `Cod_Relatorio` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restrições para tabelas despejadas
@@ -478,15 +467,7 @@ ALTER TABLE `livro`
 -- Restrições para tabelas `multa`
 --
 ALTER TABLE `multa`
-  ADD CONSTRAINT `FK_Cliente_Multa` FOREIGN KEY (`Cod_Cliente`) REFERENCES `cliente` (`Cod_Cliente`),
-  ADD CONSTRAINT `FK_Livro_Multa` FOREIGN KEY (`Cod_Livro`) REFERENCES `livro` (`Cod_Livro`),
   ADD CONSTRAINT `FK_Multa_Emprestimo` FOREIGN KEY (`Cod_Emprestimo`) REFERENCES `emprestimo` (`Cod_Emprestimo`);
-
---
--- Restrições para tabelas `relatorio`
---
-ALTER TABLE `relatorio`
-  ADD CONSTRAINT `FK_Relatorio_Funcionario` FOREIGN KEY (`Cod_Funcionario`) REFERENCES `funcionario` (`Cod_Funcionario`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
