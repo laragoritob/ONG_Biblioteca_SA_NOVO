@@ -2,6 +2,11 @@
 session_start();
 require_once '../conexao.php';
 
+if ($_SESSION['perfil'] != 1) {
+    echo "<script>alert('Acesso Negado!');window.location.href='../gerente.php';</script>";
+    exit();
+}
+
 // Verificar se foi passado um ID
 if (!isset($_GET['id'])) {
     header('Location: consultar_funcionario.php');

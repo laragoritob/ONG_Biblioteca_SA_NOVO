@@ -2,8 +2,8 @@
 session_start();
 require_once '../conexao.php';
 
-//VERIFCA SE O USARIO TEM PERMISSAO DE adm OU secretaria
-if($_SESSION['perfil'] !=1){
+//VERIFICA SE O USUARIO TEM PERMISSAO DE GERENTE
+if(!isset($_SESSION['perfil']) || $_SESSION['perfil'] != 1){
   echo "<script>alert('Acesso negado!');window.location.href='../gerente.php';</script>";
   exit();
 }
@@ -53,6 +53,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    a {
+        text-decoration: none;
+    }
+    </style>
 </head>
 
 <body>
@@ -89,19 +94,31 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
                 <td> <?=htmlspecialchars($autor_item['Nome_Autor'])?></td>
                 <td> <?=htmlspecialchars($autor_item['Telefone'])?></td>
                 <td> <?=htmlspecialchars($autor_item['Email'])?></td>
-                <td> 
-                    <a href="alterar_autor.php?id=<?=htmlspecialchars($autor_item['Cod_Autor'])?>">Alterar</a>
-                    <a href="excluir_autor.php?id=<?=htmlspecialchars($autor_item['Cod_Autor'])?>" onclick="return confirm('Tem certeza que deseja excluir este autor?')">Excluir</a>
-                </td>
-            </tr>
+                <td>
+                <button style="margin-right: 0.01rem;" onclick="editarAutor(<?= $autor_item['Cod_Autor'] ?>)">✏️</button>
+                <button style="margin-left: 0.01rem;" onclick="excluirAutor(<?= $autor_item['Cod_Autor'] ?>)">🗑️</button>
+              </td>
+             </tr>
             <?php endforeach;?>
         </table>
         <?php else:?>
             <p> Nenhum autor encontrado.</p>
         <?php endif;?>
-                 <br>
+              <br>
          </nav>
     </div>
   <script src="subtelas_javascript/sidebar.js"></script>
 </body>
+  <script>
+    function editarAutor(id) {
+      window.location.href = 'alterar_autor.php?id=' + id;
+    }
+// Função para excluir funcionário
+function excluirAutor(id) {
+    if (confirm('Tem certeza que deseja excluir este autor?')) {
+        // Redirecionar para a página de exclusão com o ID do autor
+        window.location.href = 'excluir_autor.php?id=' + id;
+    }
+}
+  </script>
 </html>
