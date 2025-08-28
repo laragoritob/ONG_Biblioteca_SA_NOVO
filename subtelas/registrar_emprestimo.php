@@ -30,6 +30,11 @@
             echo "<script>alert('Erro ao cadastrar empréstimo!');</script>";
         }
     }
+
+    // Definir data atual como padrão para data de empréstimo
+    $data_atual = date('Y-m-d');
+    // Definir data de devolução como uma semana após a data atual
+    $data_devolucao_padrao = date('Y-m-d', strtotime('+1 week'));
 ?>
 
 
@@ -262,7 +267,7 @@
                         <div class="input-group">
                             <label>Data Empréstimo</label>
                             <div class="input-wrapper">
-                                <input type="date" name="data_emprestimo" required id="data_emprestimo" min="1925-01-01">
+                                <input type="date" name="data_emprestimo" required id="data_emprestimo" min="1925-01-01" value="<?php echo $data_atual; ?>">
                                 <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                     <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -273,9 +278,9 @@
                         </div>
 
                         <div class="input-group">
-                            <label>Data Devolução</label>
+                            <label>Data Devolução (Automática - 7 dias)</label>
                             <div class="input-wrapper">
-                                <input type="date" name="data_devolucao" required id="data_devolucao" min="1925-01-01">
+                                <input type="date" name="data_devolucao" required id="data_devolucao" min="1925-01-01" value="<?php echo $data_devolucao_padrao; ?>" readonly style="background-color: #f8f9fa; color: #6c757d; cursor: not-allowed;">
                                 <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                     <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -297,7 +302,7 @@
                         </button>
 
 
-                        <button type="reset" class="btn btn-secondary" onclick="document.getElementById('form_pessoal').reset(); document.getElementById('arquivo').value = '';">
+                        <button type="reset" class="btn btn-secondary" onclick="document.getElementById('form_emprestimo').reset();">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                                 <line x1="10" y1="11" x2="10" y2="17"/>
@@ -313,4 +318,39 @@
     <script src="subtelas_javascript/validaCadastro.js"></script>
     <script src="subtelas_javascript/buscarID.js"></script>
     <script src="subtelas_javascript/sidebar.js"></script>
+    <script>
+        // Função para calcular automaticamente a data de devolução
+        function calcularDataDevolucao() {
+            const dataEmprestimo = document.getElementById('data_emprestimo');
+            const campoDataDevolucao = document.getElementById('data_devolucao');
+            
+            if (dataEmprestimo && campoDataDevolucao && dataEmprestimo.value) {
+                // Adiciona 7 dias à data de empréstimo
+                const data = new Date(dataEmprestimo.value);
+                data.setDate(data.getDate() + 7);
+                
+                // Formata a data para o formato YYYY-MM-DD
+                const ano = data.getFullYear();
+                const mes = String(data.getMonth() + 1).padStart(2, '0');
+                const dia = String(data.getDate()).padStart(2, '0');
+                const dataFormatada = `${ano}-${mes}-${dia}`;
+                
+                campoDataDevolucao.value = dataFormatada;
+            }
+        }
+
+        // Adicionar evento quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            const campoDataEmprestimo = document.getElementById('data_emprestimo');
+            
+            if (campoDataEmprestimo) {
+                // Calcular data de devolução inicial
+                setTimeout(calcularDataDevolucao, 100);
+                
+                // Calcular data de devolução sempre que a data de empréstimo mudar
+                campoDataEmprestimo.addEventListener('change', calcularDataDevolucao);
+                campoDataEmprestimo.addEventListener('input', calcularDataDevolucao);
+            }
+        });
+    </script>
 </html>
