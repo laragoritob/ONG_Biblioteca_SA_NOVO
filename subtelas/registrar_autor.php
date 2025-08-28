@@ -10,22 +10,28 @@
     }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $nome_autor = $_POST['nome_autor'];
-        $telefone = $_POST['telefone'];
-        $email = $_POST['email'];
+        $nome_autor = trim($_POST['nome_autor']);
+        $telefone = trim($_POST['telefone']);
+        $email = trim($_POST['email']);
 
-        $sql = "INSERT INTO autor (nome_autor,telefone,email) 
-                    VALUES (:nome_autor,:telefone,:email)";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':nome_autor', $nome_autor);
-        $stmt->bindParam(':telefone', $telefone);
-        $stmt->bindParam(':email', $email);
-
-        if ($stmt->execute()) {
-            echo "<script>alert('Autor cadastrado com sucesso!');</script>";
+        // Validação do telefone
+        $telefone_limpo = preg_replace('/\D/', '', $telefone); // Remove caracteres não numéricos
+        if (strlen($telefone_limpo) < 10 || strlen($telefone_limpo) > 11) {
+            echo "<script>alert('O telefone deve ter 10 ou 11 dígitos!');</script>";
         } else {
-            echo "<script>alert('Erro ao cadastrar autor!');</script>";
+            $sql = "INSERT INTO autor (nome_autor,telefone,email) 
+                        VALUES (:nome_autor,:telefone,:email)";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':nome_autor', $nome_autor);
+            $stmt->bindParam(':telefone', $telefone);
+            $stmt->bindParam(':email', $email);
+
+            if ($stmt->execute()) {
+                echo "<script>alert('Autor cadastrado com sucesso!');</script>";
+            } else {
+                echo "<script>alert('Erro ao cadastrar autor!');</script>";
+            }
         }
     }
 ?>
@@ -37,6 +43,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 <body>
@@ -67,7 +74,7 @@
                         <div class="input-group">
                             <label>Nome do Autor</label>
                             <div class="input-wrapper">
-                                <input type="text" name="nome_autor" required id="nome_autor" placeholder="Digite o nome do autor">
+                                <input type="text" name="nome_autor" required id="nome_autor" placeholder="Digite o nome do autor" oninput="validarNome(this)">
                                 <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                                         <circle cx="12" cy="7" r="4"/>
@@ -120,4 +127,64 @@
     </div>
 </body>
     <script src="subtelas_javascript/validaCadastro.js"></script>
+    <script>
+        // Função para validar nome em tempo real
+        function validarNome(input) {
+            const nome = input.value.trim();
+            
+            if (nome.length > 0 && nome.length < 3) {
+                input.style.borderColor = '#dc2626';
+                input.style.backgroundColor = '#fef2f2';
+            } else {
+                input.style.borderColor = '';
+                input.style.backgroundColor = '';
+            }
+        }
+        
+        // Validação específica para registrar autor
+        document.getElementById('form_autor').addEventListener('submit', function(e) {
+            const nome = document.getElementById('nome_autor').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            
+            // Validação do nome
+            if (nome.length < 3) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Nome Inválido',
+                    text: 'O nome deve conter pelo menos 3 letras!',
+                    confirmButtonColor: '#ffbcfc'
+                });
+                return false;
+            }
+            
+            // Validação do email
+            if (email === '') {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Email Obrigatório',
+                    text: 'O email do autor é obrigatório!',
+                    confirmButtonColor: '#ffbcfc'
+                });
+                return false;
+            }
+            
+            // Validação do telefone
+            if (telefone !== '') {
+                const telefoneLimpo = telefone.replace(/\D/g, '');
+                if (telefoneLimpo.length < 10 || telefoneLimpo.length > 11) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Telefone Inválido',
+                        text: 'O telefone deve ter 10 ou 11 dígitos!',
+                        confirmButtonColor: '#ffbcfc'
+                    });
+                    return false;
+                }
+            }
+        });
+    </script>
 </html>
