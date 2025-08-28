@@ -26,7 +26,7 @@ try {
   <meta charset="UTF-8">
   <title>ONG Biblioteca - Consultar Doadores</title>
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
-  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -47,7 +47,7 @@ try {
   </div>
   
   <nav>
-    <table id="doadores-table">
+    <table id="funcionarios-table">
         <tr>
           <th>ID</th>
           <th>NOME COMPLETO</th>
