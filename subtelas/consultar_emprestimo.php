@@ -157,9 +157,9 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
                 <td><?= date("d/m/Y", strtotime($e['Data_Emprestimo'])) ?></td>
                 <td><?= $e['Data_Devolucao'] ? date("d/m/Y", strtotime($e['Data_Devolucao'])) : 'Não devolvido' ?></td>
                 <td>
-                  <a href="alterar_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="alterar">Alterar</a>
+                  <a href="renovar_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="renovar">Renovar</a>
                   |
-                  <a href="excluir_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="excluir" onclick="return confirm('Tem certeza que deseja excluir este empréstimo?')">Excluir</a>
+                  <a href=devolver_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="devolver" onclick="return confirm('Tem certeza que deseja marcacr como devolvido este empréstimo?')">Devolvido</a>
                 </td>
               </tr>
             <?php endforeach; ?>
