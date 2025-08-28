@@ -191,11 +191,12 @@
       <h1>Consultar Clientes</h1>
   </header>
 
-  <form action="consultar_cliente.php" method="POST">
     <div class="filtro-container">
       <div id="search-container">
         <div class="input-wrapper">
-          <span class="icon">🔎</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
+          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+        </svg>
           <input type="text" id="search-input" name="busca" placeholder="Buscar por ID ou nome..." value="<?= htmlspecialchars(isset($_POST['busca']) ? $_POST['busca'] : '') ?>" onkeyup="filtrarTabela()">
         </div>
         
@@ -243,9 +244,8 @@
                   <td><?= htmlspecialchars($c['Nome_Responsavel']) ?></td>
                   <td><?= htmlspecialchars($c['Telefone']) ?></td>
                   <td>
-                    <a href="alterar_cliente.php?id=<?= htmlspecialchars($c['Cod_Cliente']) ?>" class="alterar">Alterar</a>
-                    |
-                    <a href="excluir_cliente.php?id=<?= htmlspecialchars($c['Cod_Cliente']) ?>" class="excluir" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">Excluir</a>
+                    <button onclick="editarCliente(<?= $c['Cod_Cliente'] ?>)">✏️</button>
+                    <button onclick="excluirCliente(<?= $c['Cod_Cliente'] ?>)">🗑️</button>
                   </td>
                 </tr>
             <?php endforeach; ?>
@@ -258,6 +258,7 @@
 
   <script src="subtelas_javascript/consultas.js"></script>
   <script src="subtelas_javascript/sidebar.js"></script>
+  <script src="subtelas_javascript/telconsultar_clientes.js"></script>
   <script>
     // Função para filtrar tabela pelo input de busca
     function filtrarTabela() {

@@ -16,7 +16,7 @@
             // LOGIN BEM SUCEDIDO DEFINE VARIÁVEIS DE SESSÃO
             $_SESSION['usuario'] = $usuario['Nome'];
             $_SESSION['perfil'] = $usuario['Cod_Perfil'];
-            $_SESSION['cod_func'] = $usuario['Cod_usuario'];
+            $_SESSION['cod_funcionario'] = $usuario['Cod_usuario'];
 
             // REDIRECIONA PARA A PÁGINA CORRESPONDENTE AO PERFIL
             switch ($usuario['Cod_Perfil']) {
@@ -42,9 +42,9 @@
             }
             exit();
         } else {
-            // USUÁRIO NÃO ENCONTRADO, REDIRECIONA PARA LOGIN
-            header("Location: index.php");
-            exit();
+            // LOGIN INVÁLIDO
+            echo "<script>alert('Usuário ou senha incorretos.');
+                          window.location.href='index.php';</script>";
         }
     }
 ?>
