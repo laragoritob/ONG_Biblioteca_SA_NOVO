@@ -119,7 +119,61 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
     </header>
    
     
-    <?php if (isset($erro)) { ?>
+    <?php 
+    // Variáveis para SweetAlert2
+    $sucesso_swal = '';
+    $erro_swal = '';
+    
+    // Verificar mensagens de sucesso ou erro
+    if (isset($_GET['sucesso'])) {
+        if (isset($_GET['multa']) && isset($_GET['dias'])) {
+            $multa = number_format($_GET['multa'], 2, ',', '.');
+            $dias = $_GET['dias'];
+            $sucesso_swal = "{
+                title: '🎉 Devolução Realizada com Sucesso!',
+                html: `
+                    <div style='text-align: center;'>
+                        <p style='margin: 20px 0; font-size: 16px; color: #059669;'>O livro foi devolvido e o acervo foi atualizado.</p>
+                        <div style='background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 15px; margin: 15px 0;'>
+                            <p style='margin: 8px 0; font-size: 14px;'><strong>📅 Dias de atraso:</strong> $dias dias</p>
+                            <p style='margin: 8px 0; font-size: 14px;'><strong>💰 Multa aplicada:</strong> R$ $multa</p>
+                        </div>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonColor: '#10b981',
+                confirmButtonText: 'OK'
+            }";
+        } else {
+            $sucesso_swal = "{
+                title: '✨ Devolução Concluída!',
+                html: `
+                    <div style='text-align: center;'>
+                        <p style='margin: 20px 0; font-size: 16px; color: #2563eb;'>O livro foi devolvido com sucesso. Sem multas aplicadas!</p>
+                        <div style='background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 15px; margin: 15px 0;'>
+                            <p style='margin: 8px 0; font-size: 14px;'><strong>✅ Status:</strong> Devolução no prazo</p>
+                            <p style='margin: 8px 0; font-size: 14px;'><strong>📚 Acervo:</strong> Atualizado automaticamente</p>
+                        </div>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonColor: '#3b82f6',
+                confirmButtonText: 'OK'
+            }";
+        }
+    }
+    
+    if (isset($_GET['erro'])) {
+        $erro_swal = "{
+            title: '❌ Erro na Operação',
+            text: '" . htmlspecialchars($_GET['erro']) . "',
+            icon: 'error',
+            confirmButtonColor: '#ef4444',
+            confirmButtonText: 'OK'
+        }";
+    }
+    
+    if (isset($erro)) { ?>
         <div style="text-align: center; padding: 20px; color: #d32f2f; background-color: #ffebee; border: 1px solid #f44336; border-radius: 4px; margin: 20px;">
             <p><strong>Erro:</strong> <?= htmlspecialchars($erro) ?></p>
         </div>
@@ -159,7 +213,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
                 <td>
                   <a href="renovar_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="renovar">Renovar</a>
                   |
-                  <a href=devolver_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="devolver" onclick="return confirm('Tem certeza que deseja marcacr como devolvido este empréstimo?')">Devolvido</a>
+                  <a href="devolver_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="devolver">Devolver</a>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -193,5 +247,16 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
 
   <script src="subtelas_javascript/telconsultar_funcionarios.js"></script>
   <script src="subtelas_javascript/sidebar.js"></script>
+  
+  <script>
+    // Exibir SweetAlert2 para mensagens de sucesso ou erro
+    <?php if (!empty($sucesso_swal)): ?>
+      Swal.fire(<?php echo $sucesso_swal; ?>);
+    <?php endif; ?>
+    
+    <?php if (!empty($erro_swal)): ?>
+      Swal.fire(<?php echo $erro_swal; ?>);
+    <?php endif; ?>
+  </script>
 </body>
 </html>
