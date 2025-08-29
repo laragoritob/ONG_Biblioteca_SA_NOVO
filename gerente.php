@@ -252,241 +252,264 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head> 
-         <meta charset="UTF-8">
-         <title> ONG Bilbioteca - Gerente </title>
-         <link rel ="stylesheet" type="text/css" href="css/style.css" />
-         <link rel="stylesheet" type="text/css" href="css/relatorios.css" />
-                   <script src="javascript/JS_Logout.js" defer></script>
-          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    </head>
-    <body> 
-        <header> 
+<head> 
+    <meta charset="UTF-8">
+    <title> ONG Bilbioteca - Gerente </title>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/relatorios.css" />
+    <script src="javascript/JS_Logout.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body> 
+    <header> 
         <h1> Bem-Vindo, <?php echo $_SESSION['usuario']?>! </h1>
         <form action="logout.php" method="POST">
-            <button type="submit" class="logout">🚶🏻‍♂️ Logout</a>
+            <button type="submit" class="logout">🚶🏻‍♂️ Logout</button> 
         </form>
-        </header>
+    </header>
 
-        <!-- Seção de Relatórios em Destaque -->
-        <div class="relatorios-section">
-            <h2>📊 Relatórios de Auditoria - Última Semana</h2>
-            
-            <!-- Quadros de operações -->
-            <div class="operacoes-grid">
-                <div class="operacao-card" onclick="filtrarPorOperacao('INSERT')">
-                    <div class="texto-container">
-                        <div class="operacao-title">Cadastros</div>
-                        <div class="operacao-count"><?= $cadastros ?></div>
+    <!-- Seção de Relatórios em Destaque -->
+    <div class="relatorios-section">
+        <h2>📊 Relatórios de Auditoria - Última Semana</h2>
+
+<!-- Botões de Navegação por Tabela -->
+                    <div class="tabelas-grid">
+                        <button class="tabela-btn tabela-btn-autor" onclick="mostrarTabela('autor')">
+                            📚 Autor
+                        </button>
+                        <button class="tabela-btn tabela-btn-cliente" onclick="mostrarTabela('cliente')">
+                            👥 Cliente
+                        </button>
+                        <button class="tabela-btn tabela-btn-funcionario" onclick="mostrarTabela('funcionario')">
+                            👨‍💼 Funcionário
+                        </button>
+                        <button class="tabela-btn tabela-btn-livro" onclick="mostrarTabela('livro')">
+                            📖 Livro
+                        </button>
+                        <button class="tabela-btn tabela-btn-emprestimo" onclick="mostrarTabela('emprestimo')">
+                            🔄 Empréstimo
+                        </button>
+                        <button class="tabela-btn tabela-btn-todas active" onclick="mostrarTodasTabelas()">
+                            🌐 Todas as Tabelas
+                        </button>
                     </div>
-                    <div class="operacao-icon">📝</div>
-                </div>
-                
-                <div class="operacao-card" onclick="filtrarPorOperacao('TODOS')">
-                    <div class="texto-container">
-                        <div class="operacao-title">Todos</div>
-                        <div class="operacao-count"><?= $total_operacoes ?></div>
-                    </div>
-                    <div class="operacao-icon">📊</div>
-                </div>
-                
-                <div class="operacao-card" onclick="filtrarPorOperacao('DELETE')">
-                    <div class="texto-container">
-                        <div class="operacao-title">Excluídos</div>
-                        <div class="operacao-count"><?= $exclusoes ?></div>
-                    </div>
-                    <div class="operacao-icon">🗑️</div>
-                </div>
-                
-                <div class="operacao-card" onclick="filtrarPorOperacao('UPDATE')">
-                    <div class="texto-container">
-                        <div class="operacao-title">Alterações</div>
-                        <div class="operacao-count"><?= $alteracoes ?></div>
-                    </div>
-                    <div class="operacao-icon">✏️</div>
-                </div>
+
+        <!-- Container flex para gráfico e filtros -->
+        <div style="display: flex; align-items: flex-start; gap: 30px; margin: 20px;">
+
+            <!-- Gráfico à esquerda -->
+            <div class="grafico" style="width: 350px;">
+                <canvas id="graficoOperacoes"></canvas>
             </div>
 
-            <!-- Filtros -->
-            <div class="filter-container">
-                <label for="filter-tabela">Filtrar por Tabela:</label>
-                <select id="filter-tabela" class="filter-select" onchange="filtrarLogs()">
-                    <option value="">Todas as Tabelas</option>
-                    <?php foreach (array_keys($logs_por_tabela) as $tabela): ?>
-                        <option value="<?= htmlspecialchars($tabela) ?>"><?= ucfirst(htmlspecialchars($tabela)) ?></option>
-                    <?php endforeach; ?>
-                </select>
-
-                <label for="filter-operacao">Filtrar por Operação:</label>
-                <select id="filter-operacao" class="filter-select" onchange="filtrarLogs()">
-                    <option value="">Todas as Operações</option>
-                    <option value="INSERT">Cadastros</option>
-                    <option value="UPDATE">Alterações</option>
-                    <option value="DELETE">Exclusões</option>
-                </select>
-            </div>
-
-            <?php if (empty($logs)): ?>
-                <div class="no-logs">
-                    <h3>📊 Nenhuma operação registrada na última semana</h3>
-                    <p>O sistema de auditoria está funcionando perfeitamente!</p>
-                    <p><strong>Triggers criados:</strong> ✅ autor, cliente, funcionario, livro, emprestimo</p>
-                    <p><strong>Próximos passos:</strong> Realize algumas operações (cadastros, alterações, exclusões) e elas aparecerão aqui automaticamente.</p>
-                </div>
-            <?php else: ?>
-                <!-- Logs agrupados por tabela -->
-                <?php foreach ($logs_por_tabela as $tabela => $logs_tabela): ?>
-                    <div class="tabela-section">
-                        <h2 class="tabela-title">📋 <?= ucfirst(htmlspecialchars($tabela)) ?></h2>
-                        <div class="tabela-content">
-                            <?php foreach ($logs_tabela as $log): ?>
-                                <div class="log-entry" data-tabela="<?= htmlspecialchars($log['tabela']) ?>" data-operacao="<?= htmlspecialchars($log['operacao']) ?>">
-                                    <div class="log-header">
-                                        <div>
-                                            <span class="log-type <?= strtolower($log['operacao']) ?>"><?= htmlspecialchars($log['operacao_pt']) ?></span>
-                                            <strong>ID: <?= htmlspecialchars($log['id_registro']) ?></strong>
-                                        </div>
-                                        <div style="text-align: right; font-size: 0.9em;">
-                                            <div><strong>Usuário:</strong> <?= htmlspecialchars($log['usuario']) ?></div>
-                                            <div><strong>Data:</strong> <?= date("d/m/Y H:i:s", strtotime($log['data_operacao'])) ?></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <?php if ($log['dados_anteriores'] || $log['dados_novos']): ?>
-                                        <div class="log-details">
-                                            <?php if ($log['dados_anteriores']): ?>
-                                                <div><strong>Dados Anteriores:</strong> <?= htmlspecialchars($log['dados_anteriores']) ?></div>
-                                            <?php endif; ?>
-                                            <?php if ($log['dados_novos']): ?>
-                                                <div><strong>Dados Novos:</strong> <?= htmlspecialchars($log['dados_novos']) ?></div>
-                                            <?php endif; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endforeach; ?>
+            <!-- Cards e botões à direita -->
+            <div style="flex: 1;">
+                
+                <!-- Quadros de operações -->
+                <div class="operacoes-grid">
+                    <div class="operacao-card" onclick="filtrarPorOperacao('INSERT')">
+                        <div class="texto-container">
+                            <div class="operacao-title">Cadastros</div>
+                            <div class="operacao-count"><?= $cadastros ?></div>
                         </div>
+                        <div class="operacao-icon">📝</div>
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                    
+                    <div class="operacao-card" onclick="filtrarPorOperacao('TODOS')">
+                        <div class="texto-container">
+                            <div class="operacao-title">Todos</div>
+                            <div class="operacao-count"><?= $total_operacoes ?></div>
+                        </div>
+                        <div class="operacao-icon">📊</div>
+                    </div>
+                    
+                    <div class="operacao-card" onclick="filtrarPorOperacao('DELETE')">
+                        <div class="texto-container">
+                            <div class="operacao-title">Excluídos</div>
+                            <div class="operacao-count"><?= $exclusoes ?></div>
+                        </div>
+                        <div class="operacao-icon">🗑️</div>
+                    </div>
+                    
+                    <div class="operacao-card" onclick="filtrarPorOperacao('UPDATE')">
+                        <div class="texto-container">
+                            <div class="operacao-title">Alterações</div>
+                            <div class="operacao-count"><?= $alteracoes ?></div>
+                        </div>
+                        <div class="operacao-icon">✏️</div>
+                    </div>
+                </div>
 
-
-
-
+                
+            </div>
         </div>
 
-        <ul class="nav-bar">
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"> Funcionários </a>
-                <div class="dropdown-content">
-                    <a href="subtelas/cadastro_funcionario.php"> Registrar Funcionário </a>
-                    <a href="subtelas/consultar_funcionario.php"> Consultar Funcionários </a>
+        <?php if (empty($logs)): ?>
+            <div class="no-logs">
+                <h3>📊 Nenhuma operação registrada na última semana</h3>
+                <p>O sistema de auditoria está funcionando perfeitamente!</p>
+                <p><strong>Triggers criados:</strong> ✅ autor, cliente, funcionario, livro, emprestimo</p>
+                <p><strong>Próximos passos:</strong> Realize algumas operações (cadastros, alterações, exclusões) e elas aparecerão aqui automaticamente.</p>
+            </div>
+        <?php else: ?>
+            <!-- Logs agrupados por tabela -->
+            <?php foreach ($logs_por_tabela as $tabela => $logs_tabela): ?>
+                <div class="tabela-section">
+                    <h2 class="tabela-title">📋 <?= ucfirst(htmlspecialchars($tabela)) ?></h2>
+                    <div class="tabela-content">
+                        <?php foreach ($logs_tabela as $log): ?>
+                            <div class="log-entry" data-tabela="<?= htmlspecialchars($log['tabela']) ?>" data-operacao="<?= htmlspecialchars($log['operacao']) ?>">
+                                <div class="log-header">
+                                    <div>
+                                        <span class="log-type <?= strtolower($log['operacao']) ?>"><?= htmlspecialchars($log['operacao_pt']) ?></span>
+                                        <strong>ID: <?= htmlspecialchars($log['id_registro']) ?></strong>
+                                    </div>
+                                    <div style="text-align: right; font-size: 0.9em;">
+                                        <div><strong>Usuário:</strong> <?= htmlspecialchars($log['usuario']) ?></div>
+                                        <div><strong>Data:</strong> <?= date("d/m/Y H:i:s", strtotime($log['data_operacao'])) ?></div>
+                                    </div>
+                                </div>
+                                
+                                <?php if ($log['dados_anteriores'] || $log['dados_novos']): ?>
+                                    <div class="log-details">
+                                        <?php if ($log['dados_anteriores']): ?>
+                                            <div><strong>Dados Anteriores:</strong> <?= htmlspecialchars($log['dados_anteriores']) ?></div>
+                                        <?php endif; ?>
+                                        <?php if ($log['dados_novos']): ?>
+                                            <div><strong>Dados Novos:</strong> <?= htmlspecialchars($log['dados_novos']) ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-            </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
 
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"> Clientes </a>
-                <div class="dropdown-content">
-                    <a href="subtelas/cadastro_cliente.php"> Registrar Cliente </a>
-                    <a href="subtelas/consultar_cliente.php"> Consultar Clientes </a>
-                </div>
-            </li>
+    <ul class="nav-bar">
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn"> Funcionários </a>
+            <div class="dropdown-content">
+                <a href="subtelas/cadastro_funcionario.php"> Registrar Funcionário </a>
+                <a href="subtelas/consultar_funcionario.php"> Consultar Funcionários </a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn"> Clientes </a>
+            <div class="dropdown-content">
+                <a href="subtelas/cadastro_cliente.php"> Registrar Cliente </a>
+                <a href="subtelas/consultar_cliente.php"> Consultar Clientes </a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn"> Livros </a>
+            <div class="dropdown-content">
+                <a href="subtelas/registrar_livro.php"> Registrar Livro </a>
+                <a href="subtelas/consultar_livro.php"> Consultar Livros </a>
+                <a href="subtelas/registrar_autor.php"> Registrar Autor </a>
+                <a href="subtelas/consultar_autor.php"> Consultar Autores </a>
+                <a href="subtelas/registrar_editora.php"> Registrar Editora </a>
+                <a href="subtelas/consultar_editora.php"> Consultar Editoras </a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn"> Empréstimos </a>
+            <div class="dropdown-content">
+                <a href="subtelas/registrar_emprestimo.php"> Registrar Empréstimo </a>
+                <a href="subtelas/consultar_emprestimo.php"> Consultar Empréstimos </a>
+                <a href="subtelas/consultar_multa.php"> Consultar Multas </a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn"> Doador </a>
+            <div class="dropdown-content">
+                <a href="subtelas/registrar_doador.php"> Registrar Doador </a>
+                <a href="subtelas/consultar_doador.php"> Consultar Doadores </a>
+            </div>
+        </li>
+    </ul>
 
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"> Livros </a>
-                <div class="dropdown-content">
-                    <a href="subtelas/registrar_livro.php"> Registrar Livro </a>
-                    <a href="subtelas/consultar_livro.php"> Consultar Livros </a>
-                    <a href="subtelas/registrar_autor.php"> Registrar Autor </a>
-                    <a href="subtelas/consultar_autor.php"> Consultar Autores </a>
-                    <a href="subtelas/registrar_editora.php"> Registrar Editora </a>
-                    <a href="subtelas/consultar_editora.php"> Consultar Editoras </a>
-                </div>
-            </li>
+    <script>
+        let grafico;
 
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"> Empréstimos </a>
-                <div class="dropdown-content">
-                    <a href="subtelas/registrar_emprestimo.php"> Registrar Empréstimo </a>
-                    <a href="subtelas/consultar_emprestimo.php"> Consultar Empréstimos </a>
-                    <a href="subtelas/consultar_multa.php"> Consultar Multas </a>
-                </div>
-            </li>
+        function atualizarGrafico() {
+            let qtdInsert = 0, qtdUpdate = 0, qtdDelete = 0;
 
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"> Doador </a>
-                <div class="dropdown-content">
-                    <a href="subtelas/registrar_doador.php"> Registrar Doador </a>
-                    <a href="subtelas/consultar_doador.php"> Consultar Doadores </a>
-                </div>
-            </li>
-        </ul>
-
-        <script>
-            function filtrarLogs() {
-                const tabela = document.getElementById('filter-tabela').value;
-                const operacao = document.getElementById('filter-operacao').value;
-                const logs = document.querySelectorAll('.log-entry');
-                
-                logs.forEach(log => {
-                    const logTabela = log.dataset.tabela;
-                    const logOperacao = log.dataset.operacao;
-                    
-                    let mostrar = true;
-                    
-                    if (tabela && logTabela !== tabela) {
-                        mostrar = false;
-                    }
-                    
-                    if (operacao && logOperacao !== operacao) {
-                        mostrar = false;
-                    }
-                    
-                    log.style.display = mostrar ? 'block' : 'none';
-                });
-                
-                // Mostrar/ocultar seções de tabela baseado nos filtros
-                const secoes = document.querySelectorAll('.tabela-section');
-                secoes.forEach(secao => {
-                    const logsVisiveis = secao.querySelectorAll('.log-entry[style*="display: block"], .log-entry:not([style*="display: none"])');
-                    if (logsVisiveis.length === 0) {
-                        secao.style.display = 'none';
-                    } else {
-                        secao.style.display = 'block';
-                    }
-                });
-            }
-            
-            function filtrarPorOperacao(operacao) {
-                // Resetar filtros de tabela
-                document.getElementById('filter-tabela').value = '';
-                
-                // Aplicar filtro de operação
-                if (operacao === 'TODOS') {
-                    document.getElementById('filter-operacao').value = '';
-                } else {
-                    document.getElementById('filter-operacao').value = operacao;
+            document.querySelectorAll('.log-entry').forEach(entry => {
+                if (entry.style.display !== "none") {
+                    if (entry.dataset.operacao === "INSERT") qtdInsert++;
+                    if (entry.dataset.operacao === "UPDATE") qtdUpdate++;
+                    if (entry.dataset.operacao === "DELETE") qtdDelete++;
                 }
-                
-                // Aplicar filtros
-                filtrarLogs();
-                
-                // Destacar o card selecionado
-                document.querySelectorAll('.operacao-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-                
-                if (operacao === 'TODOS') {
-                    document.querySelector('.operacao-card:last-child').classList.add('active');
-                } else {
-                    const targetCard = document.querySelector(`[onclick="filtrarPorOperacao('${operacao}')"]`);
-                    if (targetCard) targetCard.classList.add('active');
-                }
-            }
-            
-            // Filtrar automaticamente ao carregar a página
-            document.addEventListener('DOMContentLoaded', function() {
-                filtrarLogs();
             });
-        </script>
-    </body>
-    </html>
+
+            const ctx = document.getElementById("graficoOperacoes").getContext("2d");
+            if (grafico) grafico.destroy();
+
+            grafico = new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: ["Cadastrados", "Alterados", "Excluídos"],
+                    datasets: [{
+                        data: [qtdInsert, qtdUpdate, qtdDelete],
+                        backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: "bottom" }
+                    }
+                }
+            });
+        }
+
+        function filtrarPorOperacao(operacao) {
+            document.querySelectorAll('.operacao-card').forEach(card => card.classList.remove('active'));
+
+            if (operacao === 'TODOS') {
+                const cardTodos = document.querySelector('.operacao-card[onclick="filtrarPorOperacao(\'TODOS\')"]');
+                if (cardTodos) cardTodos.classList.add('active');
+            } else {
+                const targetCard = document.querySelector(`[onclick="filtrarPorOperacao('${operacao}')"]`);
+                if (targetCard) targetCard.classList.add('active');
+            }
+
+            document.querySelectorAll('.log-entry').forEach(entry => {
+                if (operacao === 'TODOS') {
+                    entry.style.display = 'block';
+                } else {
+                    entry.style.display = (entry.dataset.operacao === operacao) ? 'block' : 'none';
+                }
+            });
+
+            atualizarGrafico();
+        }
+
+        function mostrarTabela(tabelaNome) {
+            document.querySelectorAll('.tabela-section').forEach(secao => secao.style.display = 'none');
+            const tabelaSelecionada = document.querySelector(`[data-tabela="${tabelaNome}"]`)?.closest('.tabela-section');
+            if (tabelaSelecionada) tabelaSelecionada.style.display = 'block';
+
+            document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            atualizarGrafico();
+        }
+
+        function mostrarTodasTabelas() {
+            document.querySelectorAll('.tabela-section').forEach(secao => secao.style.display = 'block');
+            document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            atualizarGrafico();
+        }
+
+        window.onload = atualizarGrafico;
+    </script>
+
+</body>
+</html>
