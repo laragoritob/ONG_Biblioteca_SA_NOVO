@@ -1,134 +1,140 @@
 <?php
-session_start();
-require_once '../conexao.php';
+    session_start();
+    require_once '../conexao.php';
 
-// Verificar se foi passado um ID
-if (!isset($_GET['id'])) {
-    header('Location: consultar_cliente.php');
-    exit();
-}
-
-$id = intval($_GET['id']);
-
-// Buscar dados do Cliente com todos os campos
-$sql = "SELECT 
-          c.Cod_cliente,
-          c.Cod_Perfil,
-          c.Nome,
-          c.CPF,
-          c.Email,
-          c.Sexo,
-          c.Telefone,
-          c.Data_Nascimento,
-          c.CEP,
-          c.UF,
-          c.Cidade,
-          c.Bairro,
-          c.Rua,
-          c.Num_Residencia,
-          c.Foto,
-          c.Nome_Responsavel,
-          p.Nome_Perfil
-        FROM cliente c
-        JOIN perfil_cliente p ON c.Cod_Perfil = p.Cod_Perfil
-        WHERE c.Cod_cliente = :id";
-
-try {
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-    $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if (!$cliente) {
-        header('Location: consultar_cliente.php');
-        exit;
+    // VERIFICA SE O USUÁRIO TEM PERMISSÃO
+    if ($_SESSION['perfil'] != 1) {
+        echo "<script>alert('Acesso Negado!'); window.location.href='../gerente.php';</script>";
+        exit();
     }
-} catch (PDOException $e) {
-    die("Erro na consulta: " . $e->getMessage());
-}
 
-// Buscar todos os perfis para o select
-$sql_perfis = "SELECT Cod_Perfil, Nome_Perfil FROM perfil_cliente ORDER BY Nome_Perfil";
-try {
-    $stmt_perfis = $pdo->prepare($sql_perfis);
-    $stmt_perfis->execute();
-    $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Erro ao buscar perfis: " . $e->getMessage());
-}
+    // Verificar se foi passado um ID
+    if (!isset($_GET['id'])) {
+        header('Location: consultar_cliente.php');
+        exit();
+    }
 
-// Processar formulário de alteração
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome = trim($_POST['nome']);
-    $cpf = trim($_POST['cpf']);
-    $email = trim($_POST['email']);
-    $sexo = $cliente['Sexo']; // Usar valor atual do banco
-    $telefone = trim($_POST['telefone']);
-    $data_nascimento = $_POST['data_nascimento'];
-    $cep = trim($_POST['cep']);
-    $uf = $_POST['uf'];
-    $cidade = trim($_POST['cidade']);
-    $bairro = trim($_POST['bairro']);
-    $rua = trim($_POST['rua']);
-    $num_residencia = trim($_POST['num_residencia']);
-    $nome_responsavel = trim($_POST['nome_responsavel']);
-    $cod_perfil = $cliente['Cod_Perfil']; // Usar valor atual do banco
-    
-    if (empty($nome)) {
-        $erro = "Nome é obrigatório";
-    } elseif (empty($cpf)) {
-        $erro = "CPF é obrigatório";
-    } elseif (empty($email)) {
-        $erro = "Email é obrigatório";
-    } else {
-        try {
-            $sql_update = "UPDATE cliente 
-                          SET Nome = :nome,
-                              Nome_Responsavel = :nome_responsavel,
-                              CPF = :cpf,
-                              Email = :email,
-                              Sexo = :sexo,
-                              Telefone = :telefone,
-                              Data_Nascimento = :data_nascimento,
-                              CEP = :cep,
-                              UF = :uf,
-                              Cidade = :cidade,
-                              Bairro = :bairro,
-                              Rua = :rua,
-                              Num_Residencia = :num_residencia,
-                              Cod_Perfil = :cod_perfil
-                          WHERE Cod_cliente = :id";
-            
-            $stmt_update = $pdo->prepare($sql_update);
-            $stmt_update->bindParam(':nome', $nome);
-            $stmt_update->bindParam(':nome_responsavel', $nome_responsavel);
-            $stmt_update->bindParam(':cpf', $cpf);
-            $stmt_update->bindParam(':email', $email);
-            $stmt_update->bindParam(':sexo', $sexo);
-            $stmt_update->bindParam(':telefone', $telefone);
-            $stmt_update->bindParam(':data_nascimento', $data_nascimento);
-            $stmt_update->bindParam(':cep', $cep);
-            $stmt_update->bindParam(':uf', $uf);
-            $stmt_update->bindParam(':cidade', $cidade);
-            $stmt_update->bindParam(':bairro', $bairro);
-            $stmt_update->bindParam(':rua', $rua);
-            $stmt_update->bindParam(':num_residencia', $num_residencia);
-            $stmt_update->bindParam(':cod_perfil', $cod_perfil);
-            $stmt_update->bindParam(':id', $id);
-            
-            if ($stmt_update->execute()) {
-                $sucesso = "success";
-                // Recarregar dados do Cliente
-                $stmt->execute();
-                $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
-            } else {
+    $id = intval($_GET['id']);
+
+    // Buscar dados do Cliente com todos os campos
+    $sql = "SELECT 
+            c.Cod_cliente,
+            c.Cod_Perfil,
+            c.Nome,
+            c.CPF,
+            c.Email,
+            c.Sexo,
+            c.Telefone,
+            c.Data_Nascimento,
+            c.CEP,
+            c.UF,
+            c.Cidade,
+            c.Bairro,
+            c.Rua,
+            c.Num_Residencia,
+            c.Foto,
+            c.Nome_Responsavel,
+            p.Nome_Perfil
+            FROM cliente c
+            JOIN perfil_cliente p ON c.Cod_Perfil = p.Cod_Perfil
+            WHERE c.Cod_cliente = :id";
+
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$cliente) {
+            header('Location: consultar_cliente.php');
+            exit;
+        }
+    } catch (PDOException $e) {
+        die("Erro na consulta: " . $e->getMessage());
+    }
+
+    // Buscar todos os perfis para o select
+    $sql_perfis = "SELECT Cod_Perfil, Nome_Perfil FROM perfil_cliente ORDER BY Nome_Perfil";
+    try {
+        $stmt_perfis = $pdo->prepare($sql_perfis);
+        $stmt_perfis->execute();
+        $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        die("Erro ao buscar perfis: " . $e->getMessage());
+    }
+
+    // Processar formulário de alteração
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $nome = trim($_POST['nome']);
+        $cpf = trim($_POST['cpf']);
+        $email = trim($_POST['email']);
+        $sexo = $cliente['Sexo']; // Usar valor atual do banco
+        $telefone = trim($_POST['telefone']);
+        $data_nascimento = $_POST['data_nascimento'];
+        $cep = trim($_POST['cep']);
+        $uf = $_POST['uf'];
+        $cidade = trim($_POST['cidade']);
+        $bairro = trim($_POST['bairro']);
+        $rua = trim($_POST['rua']);
+        $num_residencia = trim($_POST['num_residencia']);
+        $nome_responsavel = trim($_POST['nome_responsavel']);
+        $cod_perfil = $cliente['Cod_Perfil']; // Usar valor atual do banco
+        
+        if (empty($nome)) {
+            $erro = "Nome é obrigatório";
+        } elseif (empty($cpf)) {
+            $erro = "CPF é obrigatório";
+        } elseif (empty($email)) {
+            $erro = "Email é obrigatório";
+        } else {
+            try {
+                $sql_update = "UPDATE cliente 
+                            SET Nome = :nome,
+                                Nome_Responsavel = :nome_responsavel,
+                                CPF = :cpf,
+                                Email = :email,
+                                Sexo = :sexo,
+                                Telefone = :telefone,
+                                Data_Nascimento = :data_nascimento,
+                                CEP = :cep,
+                                UF = :uf,
+                                Cidade = :cidade,
+                                Bairro = :bairro,
+                                Rua = :rua,
+                                Num_Residencia = :num_residencia,
+                                Cod_Perfil = :cod_perfil
+                            WHERE Cod_cliente = :id";
+                
+                $stmt_update = $pdo->prepare($sql_update);
+                $stmt_update->bindParam(':nome', $nome);
+                $stmt_update->bindParam(':nome_responsavel', $nome_responsavel);
+                $stmt_update->bindParam(':cpf', $cpf);
+                $stmt_update->bindParam(':email', $email);
+                $stmt_update->bindParam(':sexo', $sexo);
+                $stmt_update->bindParam(':telefone', $telefone);
+                $stmt_update->bindParam(':data_nascimento', $data_nascimento);
+                $stmt_update->bindParam(':cep', $cep);
+                $stmt_update->bindParam(':uf', $uf);
+                $stmt_update->bindParam(':cidade', $cidade);
+                $stmt_update->bindParam(':bairro', $bairro);
+                $stmt_update->bindParam(':rua', $rua);
+                $stmt_update->bindParam(':num_residencia', $num_residencia);
+                $stmt_update->bindParam(':cod_perfil', $cod_perfil);
+                $stmt_update->bindParam(':id', $id);
+                
+                if ($stmt_update->execute()) {
+                    $sucesso = "success";
+                    // Recarregar dados do Cliente
+                    $stmt->execute();
+                    $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+                } else {
+                    $erro = "error";
+                }
+            } catch (PDOException $e) {
                 $erro = "error";
             }
-        } catch (PDOException $e) {
-            $erro = "error";
         }
     }
-}
 ?>
 
 <!DOCTYPE html>
