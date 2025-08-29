@@ -799,3 +799,41 @@ nav {
 #search-container .input-wrapper { position: relative !important; }
 #search-container .input-wrapper svg { position: absolute !important; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; pointer-events: none; z-index: 1; }
 #search-container .input-wrapper input { padding-left: 40px !important; }
+
+/* Estilos para links de ação na tabela */
+#funcionarios-table .renovar,
+#funcionarios-table .devolver {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+#funcionarios-table .renovar {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#funcionarios-table .renovar:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#funcionarios-table .devolver {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#funcionarios-table .devolver:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
