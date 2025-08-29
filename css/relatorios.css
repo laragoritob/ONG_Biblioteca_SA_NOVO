@@ -17,21 +17,19 @@
     text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-
-
 .operacoes-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    margin: 30px 0 30px auto;
+    margin: 0 0 0 140px;
     max-width: 50%;
 }
 
 .operacao-card {
     background: white;
     border: 2px solid #667eea;
-    border-radius: 20px;
-    padding: 50px;
+    border-radius: 15px;
+    padding: 25px 40px;
     text-align: left;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -75,14 +73,14 @@
 }
 
 .operacao-icon {
-    font-size: 5em;
-    margin-left: 25px;
+    font-size: 4em;
+    margin-left: 20px;
 }
 
 .operacao-title {
-    font-size: 1.8em;
+    font-size: 1em;
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     color: #480b85;
 }
 
@@ -91,7 +89,7 @@
 }
 
 .operacao-count {
-    font-size: 4.5em;
+    font-size: 4em;
     font-weight: bold;
     color: #667eea;
     margin: 0;
@@ -99,38 +97,6 @@
 
 .operacao-card.active .operacao-count {
     color: white;
-}
-
-.filter-container {
-    margin: 25px 0;
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.filter-container label {
-    font-weight: 600;
-    color: #555;
-    font-size: 1.1em;
-}
-
-.filter-select {
-    padding: 12px 20px;
-    border: 2px solid #667eea;
-    border-radius: 30px;
-    background: white;
-    font-size: 14px;
-    min-width: 150px;
-    transition: all 0.3s ease;
-}
-
-.filter-select:focus {
-    outline: none;
-    border-color: #764ba2;
-    box-shadow: 0 0 15px rgba(118, 75, 162, 0.4);
-    transform: translateY(-2px);
 }
 
 .log-entry {
@@ -247,8 +213,6 @@
     background: white;
 }
 
-
-
 /* Responsividade */
 @media (max-width: 768px) {
     .relatorios-section {
@@ -318,9 +282,135 @@
         margin-bottom: 0;
     }
     
-
-    
     .log-entry {
         padding: 15px;
+    }
+}
+
+/* Botões de Navegação por Tabela - CORRIGIDO */
+.tabelas-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin: 30px 0;
+    text-align: center;
+}
+
+.tabelas-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;    
+    width: 100%;
+}
+
+.tabela-btn {
+    background: white;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+    min-width: 150px;
+    border: 2px solid;
+    text-align: center;
+    flex: 0 0 auto;
+}
+
+.tabela-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    color: white;
+}
+
+.tabela-btn.active {
+    color: white;
+    box-shadow: 0 6px 20px rgba(118, 75, 162, 0.3);
+}
+
+/* Botões específicos por tabela */
+.tabela-btn-autor {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.tabela-btn-autor:hover,
+.tabela-btn-autor.active {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border-color: #c0392b;
+}
+
+.tabela-btn-cliente {
+    border-color: #3498db;
+    color: #3498db;
+}
+
+.tabela-btn-cliente:hover,
+.tabela-btn-cliente.active {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border-color: #2980b9;
+}
+
+.tabela-btn-funcionario {
+    border-color: #f39c12;
+    color: #f39c12;
+}
+
+.tabela-btn-funcionario:hover,
+.tabela-btn-funcionario.active {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    border-color: #e67e22;
+}
+
+.tabela-btn-livro {
+    border-color: #9b59b6;
+    color: #9b59b6;
+}
+
+.tabela-btn-livro:hover,
+.tabela-btn-livro.active {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    border-color: #8e44ad;
+}
+
+.tabela-btn-emprestimo {
+    border-color: #1abc9c;
+    color: #1abc9c;
+}
+
+.tabela-btn-emprestimo:hover,
+.tabela-btn-emprestimo.active {
+    background: linear-gradient(135deg, #1abc9c, #16a085);
+    border-color: #16a085;
+}
+
+.tabelas-buttons { 
+    display: flex;
+    flex-direction: row; /* altera de coluna para linha */
+    justify-content: center; /* centraliza horizontalmente */
+    gap: 10px; /* espaço entre os botões */
+    margin: 30px 0;
+    text-align: center;
+}
+
+.tabela-btn-todas:hover,
+.tabela-btn-todas.active {
+    background: linear-gradient(135deg, #20c997, #17a2b8);
+    border-color: #17a2b8;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .tabelas-grid {
+        justify-content: center;    
+    }
+    
+    .tabela-btn {
+        min-width: 120px;
+        font-size: 12px;
+        padding: 8px 15px;
     }
 }
