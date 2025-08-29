@@ -4,27 +4,31 @@ require_once '../conexao.php';
 
 // Verificar se foi passado um ID
 if (!isset($_GET['id'])) {
-    header('Location: consultar_autor.php');
+    header('Location: consultar_emprestimo.php');
     exit;
 }
 
 $id = intval($_GET['id']);
 
-// Buscar dados do autor
+// Buscar dados do emprestimo
 $sql = "SELECT 
-          Cod_Emprestimo,
-          Data_Emprestimo,
-          Data_Devolucao,
-        FROM emprestimo 
-        WHERE Cod_Emprestimo = :id";
+          e.Cod_Emprestimo,
+          e.Data_Emprestimo,
+          e.Data_Devolucao,
+          c.Nome as Nome_Cliente,
+          l.Titulo as Nome_Livro
+        FROM emprestimo e
+        INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+        INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+        WHERE e.Cod_Emprestimo = :id";
 
 try {
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
-    $autor = $stmt->fetch(PDO::FETCH_ASSOC);
+    $emprestimo = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if (!$autor) {
+    if (!$emprestimo) {
         header('Location: consultar_emprestimo.php');
         exit;
     }
@@ -32,119 +36,312 @@ try {
     die("Erro na consulta: " . $e->getMessage());
 }
 
-// Processar formulário de alteração
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome = trim($_POST['nome']);
-    $telefone = trim($_POST['telefone']);
-    $email = trim($_POST['email']);
-    
-    if (empty($nome)) {
-        $erro = "Nome é obrigatório";
-    } elseif (empty($email)) {
-        $erro = "Email é obrigatório";
-    } else {
-        // Validação do telefone
-        if (!empty($telefone)) {
-            $telefone_limpo = preg_replace('/\D/', '', $telefone); // Remove caracteres não numéricos
-            if (strlen($telefone_limpo) < 10 || strlen($telefone_limpo) > 11) {
-                $erro = "O telefone deve ter 10 ou 11 dígitos";
-            }
-        }
+// Processar renovação automática
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['renovar_automatico'])) {
+    try {
+        // Calcular nova data de devolução (adicionar 7 dias à data atual de devolução)
+        $data_devolucao_atual = new DateTime($emprestimo['Data_Devolucao']);
+        $nova_data_devolucao = $data_devolucao_atual->add(new DateInterval('P7D'))->format('Y-m-d');
         
-        if (!isset($erro)) {
+        $sql_update = "UPDATE emprestimo 
+                      SET Data_Devolucao = :nova_data_devolucao
+                      WHERE Cod_Emprestimo = :id";
+        
+        $stmt_update = $pdo->prepare($sql_update);
+        $stmt_update->bindParam(':nova_data_devolucao', $nova_data_devolucao);
+        $stmt_update->bindParam(':id', $id);
+        
+        if ($stmt_update->execute()) {
+            $sucesso = "Empréstimo renovado com sucesso! Nova data: " . date('d/m/Y', strtotime($nova_data_devolucao));
+            // Recarregar dados do emprestimo
+            $stmt->execute();
+            $emprestimo = $stmt->fetch(PDO::FETCH_ASSOC);
+        } else {
+            $erro = "Erro ao renovar empréstimo";
+        }
+    } catch (PDOException $e) {
+        $erro = "Erro ao renovar empréstimo: " . $e->getMessage();
+    }
+}
+
+// Processar formulário de alteração manual
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
+    $data_devolucao = trim($_POST['data_devolucao']);
+    
+    if (empty($data_devolucao)) {
+        $erro = "Data de devolução é obrigatória";
+    } else {
+        // Validar formato da data
+        $data_obj = DateTime::createFromFormat('Y-m-d', $data_devolucao);
+        if (!$data_obj) {
+            $erro = "Formato de data inválido. Use YYYY-MM-DD";
+        } else {
             try {
-                $sql_update = "UPDATE autor 
-                              SET Nome_Autor = :nome,
-                                  Telefone = :telefone,
-                                  Email = :email
-                              WHERE Cod_Autor = :id";
+                $sql_update = "UPDATE emprestimo 
+                              SET Data_Devolucao = :data_devolucao
+                              WHERE Cod_Emprestimo = :id";
                 
                 $stmt_update = $pdo->prepare($sql_update);
-                $stmt_update->bindParam(':nome', $nome);
-                $stmt_update->bindParam(':telefone', $telefone);
-                $stmt_update->bindParam(':email', $email);
+                $stmt_update->bindParam(':data_devolucao', $data_devolucao);
                 $stmt_update->bindParam(':id', $id);
                 
                 if ($stmt_update->execute()) {
-                    $sucesso = "Autor alterado com sucesso!";
-                    // Recarregar dados do autor
+                    $sucesso = "Data de devolução alterada com sucesso!";
+                    // Recarregar dados do emprestimo
                     $stmt->execute();
-                    $autor = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $emprestimo = $stmt->fetch(PDO::FETCH_ASSOC);
                 } else {
-                    $erro = "Erro ao alterar autor";
+                    $erro = "Erro ao alterar data de devolução";
                 }
             } catch (PDOException $e) {
-                $erro = "Erro ao alterar autor: " . $e->getMessage();
+                $erro = "Erro ao alterar data de devolução: " . $e->getMessage();
             }
         }
     }
 }
 ?>
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renovar Empréstimo</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="subtelas_css/cadastros.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+        }
+        
+        .main-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #480b85;
+            margin: 0;
+        }
+        
+        .formulario {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            border: 1px solid #e5e7eb;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .formulario {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1>Renovar Empréstimo #<?php echo $emprestimo['Cod_Emprestimo']; ?></h1>
+        </div>
+
+        <?php if (isset($erro)): ?>
+            <div class="alert alert-error">
+                <?php echo $erro; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($sucesso)): ?>
+            <div class="alert alert-success">
+                <?php echo $sucesso; ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="formulario">
+            <div class="form-section">
+                <div class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                    </svg>
+                    Informações do Empréstimo
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Código do Empréstimo</label>
+                        <div class="input-wrapper">
+                            <input type="text" value="<?php echo $emprestimo['Cod_Emprestimo']; ?>" readonly>
+                            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                 <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Cliente</label>
+                        <div class="input-wrapper">
+                            <input type="text" value="<?php echo $emprestimo['Nome_Cliente']; ?>" readonly>
+                            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                 <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Livro</label>
+                        <div class="input-wrapper">
+                            <input type="text" value="<?php echo $emprestimo['Nome_Livro']; ?>" readonly>
+                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                              <path d="M192 576L512 576C529.7 576 544 561.7 544 544C544 526.3 529.7 512 512 512L512 445.3C530.6 438.7 544 420.9 544 400L544 112C544 85.5 522.5 64 496 64L448 64L448 233.4C448 245.9 437.9 256 425.4 256C419.4 256 413.6 253.6 409.4 249.4L368 208L326.6 249.4C322.4 253.6 316.6 256 310.6 256C298.1 256 288 245.9 288 233.4L288 64L192 64C139 64 96 107 96 160L96 480C96 533 139 576 192 576zM160 480C160 462.3 174.3 448 192 448L448 448L448 512L192 512C174.3 512 160 497.7 160 480z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Data do Empréstimo</label>
+                        <div class="input-wrapper">
+                            <input type="text" value="<?php echo date('d/m/Y', strtotime($emprestimo['Data_Emprestimo'])); ?>" readonly>
+                            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Data de Devolução Atual</label>
+                        <div class="input-wrapper">
+                            <input type="text" value="<?php echo date('d/m/Y', strtotime($emprestimo['Data_Devolucao'])); ?>" readonly>
+                            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" onclick="renovarAutomatico()" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                        <path d="M21 3v5h-5"/>
+                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                        <path d="M3 21v-5h5"/>
+                    </svg>
+                    Renovar (+7 dias)
+                </button>
+                
+                <a href="consultar_emprestimo.php" class="btn btn-back">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                    Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+
     <script src="subtelas_javascript/validaCadastro.js"></script>
     <script>
-        // Validação específica para alterar autor
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const nome = document.getElementById('nome').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const telefone = document.getElementById('telefone').value.trim();
-            
-            if (nome === '') {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erro de Validação',
-                    text: 'O nome do autor é obrigatório!',
-                    confirmButtonColor: '#ffbcfc'
-                });
-                return false;
-            }
-            
-            if (email === '') {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erro de Validação',
-                    text: 'O email do autor é obrigatório!',
-                    confirmButtonColor: '#ffbcfc'
-                });
-                return false;
-            }
-            
-            // Validação do telefone
-            if (telefone !== '') {
-                const telefoneLimpo = telefone.replace(/\D/g, '');
-                if (telefoneLimpo.length < 10 || telefoneLimpo.length > 11) {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Telefone Inválido',
-                        text: 'O telefone deve ter 10 ou 11 dígitos!',
-                        confirmButtonColor: '#ffbcfc'
-                    });
-                    return false;
-                }
-            }
-            
-            // Confirmação antes de salvar
+        function renovarAutomatico() {
             Swal.fire({
-                title: 'Confirmar Alteração',
-                text: 'Tem certeza que deseja salvar as alterações?',
+                title: 'Confirmar Renovação',
+                text: 'Deseja renovar o empréstimo adicionando 7 dias à data de devolução?',
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'Sim, Salvar',
+                confirmButtonText: 'Sim, Renovar',
                 cancelButtonText: 'Cancelar',
                 confirmButtonColor: '#ffbcfc',
                 cancelButtonColor: '#d33'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Continua com o envio do formulário
-                } else {
-                    e.preventDefault();
-                    return false;
+                    // Criar e enviar formulário para renovação automática
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.innerHTML = '<input type="hidden" name="renovar_automatico" value="1">';
+                    document.body.appendChild(form);
+                    form.submit();
                 }
             });
-        });
+        }
+
+        function alterarData() {
+            const data_devolucao = document.getElementById('data_devolucao').value.trim();
+            
+            if (data_devolucao === '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro de Validação',
+                    text: 'A data de devolução é obrigatória!',
+                    confirmButtonColor: '#ffbcfc'
+                });
+                return false;
+            }
+            
+            Swal.fire({
+                title: 'Confirmar Alteração',
+                text: 'Tem certeza que deseja alterar a data de devolução?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, Alterar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#ffbcfc',
+                cancelButtonColor: '#d33'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Criar e enviar formulário para alteração manual
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.innerHTML = '<input type="hidden" name="alterar_manual" value="1"><input type="hidden" name="data_devolucao" value="' + data_devolucao + '">';
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
     </script>
 </body>
 </html>
