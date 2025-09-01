@@ -1,37 +1,58 @@
 <?php
     session_start();
     require_once '../conexao.php';
-    require_once 'funcoes_email.php';  // ARQUIVO COM AS FUNÇÕES QUE GERAM A SENHA E SIMULAM O ENVIO
+    require_once 'funcoes_email.php';
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $email = $_POST['email'];
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $siteBaseUrl = isset($_POST['site_base_url']) ? rtrim(trim($_POST['site_base_url']), '/') : '';
 
-        // VERIFICA SE O EMAIL EXISTE NO BANCO DE DADOS
-        $sql = "SELECT * FROM funcionario WHERE email = :email";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($usuario) {
-            // GERA UMA SENHA TEMPORÁRIA E ALEATÓRIA
-            $senha_temporaria = gerarSenhaTemporaria();
-            $senha_hash = password_hash($senha_temporaria, PASSWORD_DEFAULT);
-
-            // ATUALIZA A SENHA NO BANCO DE DADOS
-            $sql = "UPDATE funcionario SET senha = :senha, senha_temporaria = TRUE WHERE email = :email";
+        if ($email === '') {
+            echo "<script>alert('Informe um email válido.');</script>";
+        } else {
+            $sql = "SELECT Cod_Funcionario, Email, Nome FROM funcionario WHERE Email = :email";
             $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':senha', $senha_hash);
             $stmt->bindParam(':email', $email);
             $stmt->execute();
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // SIMULA O ENVIO DO EMAIL (GRAVA EM TXT)
-            simularEnvioEmail($email, $senha_temporaria);
-            echo "<script>alert('Uma senha temporária foi gerada e enviada.');window.location.href='index.php';</script>";
-        } else {
-            echo "<script>alert('Email não encontrado.');</script>";
+            if ($usuario) {
+                // Garante a existência da tabela de resets
+                $pdo->exec("CREATE TABLE IF NOT EXISTS password_resets (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    Cod_Funcionario INT NOT NULL,
+                    token VARCHAR(255) NOT NULL,
+                    expires_at DATETIME NOT NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    INDEX (token),
+                    INDEX (Cod_Funcionario)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+
+                $token = gerarToken(32);
+                $expiresAt = (new DateTime('+1 hour'))->format('Y-m-d H:i:s');
+
+                $ins = $pdo->prepare("INSERT INTO password_resets (Cod_Funcionario, token, expires_at) VALUES (:cid, :token, :exp)");
+                $ins->bindParam(':cid', $usuario['Cod_Funcionario']);
+                $ins->bindParam(':token', $token);
+                $ins->bindParam(':exp', $expiresAt);
+                $ins->execute();
+
+                if ($siteBaseUrl === '') {
+                    // Fallback: tenta construir base a partir do host
+                    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                    $siteBaseUrl = $scheme . '://' . $host;
+                }
+
+                $resetLink = $siteBaseUrl . '/subtelas/redefinir_senha.php?token=' . urlencode($token);
+                simularEnvioEmailReset($email, $resetLink);
+                echo "<script>alert('Enviamos um link de redefinição. Confira o arquivo de emails simulado.');window.location.href='../index.php';</script>";
+                exit();
+            } else {
+                echo "<script>alert('Email não encontrado.');</script>";
+            }
         }
-    } 
+    }
 ?>
 
 
@@ -60,6 +81,7 @@
                 <div class="links">
                     <button type="submit" class="btn"> Enviar </button>
                 </div>
+                <input type="hidden" name="site_base_url" id="site_base_url" value="">
             </form>
             <a href="../index.php"> ← Voltar </a>
         </div>
@@ -69,3 +91,5 @@
     <p>Copyright © 2024 - ONG Biblioteca - Sala Arco-íris</p>
 </footer>
 </html>
+
+<script src="subtelas_javascript/recuperar_senha.js"></script>
