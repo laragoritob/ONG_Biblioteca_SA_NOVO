@@ -1,0 +1,310 @@
+/* CSS Variables */
+:root {
+  --primary-color: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #a5b4fc;
+  --secondary-color: #f59e0b;
+  --secondary-dark: #d97706;
+  --accent-color: #ec4899;
+  --accent-light: #f9a8d4;
+  
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  
+  --border-color: #e5e7eb;
+  --border-focus: #6366f1;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Candara', Arial, sans-serif;
+  background: linear-gradient(135deg, #82dcff 0%, rgb(247, 167, 204) 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  min-height: 0;
+}
+
+.logodiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.logodiv img {
+  width: 391px;
+  height: 391px;
+  padding: 0;
+  border-radius: 24px 0 0 24px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+}
+
+.conteudo-direito {
+  background: rgba(255,255,255,0.95);
+  border-radius: 0 24px 24px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  padding: 99px 220px 32px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 320px;
+  max-width: 350px;
+  width: 100%;
+  margin-left: 0;
+}
+/* Header Styles */
+header {
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  padding: 25px 105px;
+  margin: 0 auto 2rem;
+  min-width: 510px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  color: #480b85;
+  margin: 0;
+}
+
+.btn-voltar {
+  position: absolute;
+  left: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.btn-voltar:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+  transform: translateY(-50%) translateX(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Main Content */
+.main-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.formulario {
+  background: var(--bg-primary);
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  min-width: 510px;
+  border: 1px solid var(--border-color);
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+}
+
+.input-group .icon {
+  position: absolute;
+  left: 65px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #884b85;
+  opacity: 0.7;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 50px 12px 45px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 18px;
+  background: #f7fafd;
+  color: #333;
+  font-size: 1rem;
+  transition: border 0.2s;
+  margin-left: 50px;
+}
+
+.input-group input:focus {
+  border: 1.5px solid #884b85;
+  background: #fff;
+}
+
+.btn {
+  background: #d794f1;
+  color: #000000;
+  padding: 12px 50px;
+  border: none;
+  cursor: pointer;
+  border-radius: 18px;
+  font-size: 17px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(136,75,133,0.10);
+  transition: background 0.2s, transform 0.1s;
+  margin-top: 8px;
+  margin-left: 130px;
+}
+
+.btn:hover {
+  background: #aa63c7;
+  transform: translateY(-2px) scale(1.03);
+}
+
+.links {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.conteudo-direito a {
+  color: #f36262;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 12px;
+  transition: color 0.2s;
+  margin-left: 190px;
+}
+
+.conteudo-direito a:hover {
+  color: #db5050;
+  text-decoration: underline;
+}
+
+.verification-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.verification-input {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  font-size: 24px;
+  border: 2px solid #7076c9;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.verification-input:focus {
+  outline: none;
+  border-color: #4c52a7;
+  box-shadow: 0 0 5px rgba(112, 118, 201, 0.5);
+}
+
+footer {
+  text-align: center;
+  padding: 12px 0 8px 0;
+  font-size: 15px;
+  background: transparent;
+  color: #884b85;
+  margin-top: auto;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .logodiv img {
+    width: 220px;
+    height: 220px;
+  }
+}
+
+@media (max-width: 700px) {
+  .container {
+    flex-direction: column;
+    gap: 0;
+  }
+  .logodiv img, .conteudo-direito {
+    border-radius: 24px;
+  }
+  .logodiv {
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .conteudo-direito {
+    padding: 24px 8px 24px 8px;
+    min-width: unset;
+    max-width: 98vw;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  .logodiv img {
+    width: 80px;
+    height: 80px;
+  }
+}
