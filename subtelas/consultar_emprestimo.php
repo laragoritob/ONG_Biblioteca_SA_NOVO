@@ -212,7 +212,6 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
                 <td><?= $e['Data_Devolucao'] ? date("d/m/Y", strtotime($e['Data_Devolucao'])) : 'Não devolvido' ?></td>
                 <td>
                   <a href="renovar_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="renovar">Renovar</a>
-                  |
                   <a href="devolver_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="devolver">Devolver</a>
                 </td>
               </tr>
