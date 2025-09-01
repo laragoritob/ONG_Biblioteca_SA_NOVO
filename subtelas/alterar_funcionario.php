@@ -324,7 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="form-row">
                             <div class="input-group">
-                                <label for="usuario">Usuário *</label>
+                                <label for="usuario">Usuário</label>
                                 <div class="input-wrapper">
                                     <input type="text" id="usuario" name="usuario" value="<?= htmlspecialchars($funcionario['Usuario']) ?>" required>
                                     <span class="input-icon">👤</span>
@@ -421,12 +421,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     title: 'Erro de Validação',
                     text: 'O usuário do funcionário é obrigatório!'
                 });
-                return false;
-            }
-            
-            // Confirmação antes de salvar
-            if (!confirm('Tem certeza que deseja salvar as alterações?')) {
-                e.preventDefault();
                 return false;
             }
         });
