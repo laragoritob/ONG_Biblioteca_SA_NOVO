@@ -103,7 +103,7 @@
                     <button type="submit" class="btn"> Acessar </button>
                 </div>
             </form>
-            <a href="subtelas/recuperar_senha.html"> Esqueceu sua senha? </a>
+            <a href="subtelas/recuperar_senha.php"> Esqueceu sua senha? </a>
         </div>
     </div>
 </body>
