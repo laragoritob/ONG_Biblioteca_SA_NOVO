@@ -15,7 +15,7 @@
 
         if ($usuario) {
             // GERA UMA SENHA TEMPORÁRIA E ALEATÓRIA
-            $senha_temporaria = gerarSenhaTemporaria();
+            $senha_temporaria = gerarCodigoRecuperacao();
             $senha_hash = password_hash($senha_temporaria, PASSWORD_DEFAULT);
 
             // ATUALIZA A SENHA NO BANCO DE DADOS
@@ -27,9 +27,9 @@
 
             // SIMULA O ENVIO DO EMAIL (GRAVA EM TXT)
             simularEnvioEmail($email, $senha_temporaria);
-            echo "<script>alert('Uma senha temporária foi gerada e enviada.');window.location.href='index.php';</script>";
+            echo "<script>alert('Uma senha temporária foi gerada e enviada.');window.location.href='codigo_verificacao.php';</script>";
         } else {
-            echo "<script>alert('Email não encontrado.');</script>";
+            echo "<script>alert('Email não encontrado.');window.location.href='recuperar_senha.php';</script>";
         }
     } 
 ?>
@@ -42,6 +42,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/recuperarsenha.css">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
