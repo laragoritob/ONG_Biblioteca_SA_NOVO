@@ -7,6 +7,16 @@
         exit();
     }
 
+    try {
+        $usuarioLogado = $_SESSION['usuario'];
+        $ipUsuario = $_SERVER['REMOTE_ADDR'];
+
+        $pdo->exec("SET @usuario_sistema = " . $pdo->quote($usuarioLogado));
+        $pdo->exec("SET @ip_usuario = " . $pdo->quote($ipUsuario));
+    } catch (PDOException $e) {
+        die("Erro ao definir variáveis de auditoria: " . $e->getMessage());
+    }
+
     // Criar tabela de logs de auditoria se não existir
     $createLogTable = "
     CREATE TABLE IF NOT EXISTS `logs_auditoria` (
@@ -40,8 +50,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('autor', 'INSERT', NEW.Cod_Autor, 
-                     CONCAT('Nome: ', NEW.Nome_Autor, ', Telefone: ', NEW.Telefone, ', Email: ', NEW.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', NEW.Nome_Autor),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_autor_update_audit
@@ -50,9 +60,9 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('autor', 'UPDATE', NEW.Cod_Autor,
-                     CONCAT('Nome: ', OLD.Nome_Autor, ', Telefone: ', OLD.Telefone, ', Email: ', OLD.Email),
-                     CONCAT('Nome: ', NEW.Nome_Autor, ', Telefone: ', NEW.Telefone, ', Email: ', NEW.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome_Autor),
+                     CONCAT('Nome: ', NEW.Nome_Autor),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_autor_delete_audit
@@ -61,8 +71,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('autor', 'DELETE', OLD.Cod_Autor,
-                     CONCAT('Nome: ', OLD.Nome_Autor, ', Telefone: ', OLD.Telefone, ', Email: ', OLD.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome_Autor),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         // Triggers para tabela cliente
@@ -72,8 +82,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('cliente', 'INSERT', NEW.Cod_Cliente, 
-                     CONCAT('Nome: ', NEW.Nome, ', CPF: ', NEW.CPF, ', Email: ', NEW.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_cliente_update_audit
@@ -82,9 +92,9 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('cliente', 'UPDATE', NEW.Cod_Cliente,
-                     CONCAT('Nome: ', OLD.Nome, ', CPF: ', OLD.CPF, ', Email: ', OLD.Email),
-                     CONCAT('Nome: ', NEW.Nome, ', CPF: ', NEW.CPF, ', Email: ', NEW.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome),
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_cliente_delete_audit
@@ -93,8 +103,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('cliente', 'DELETE', OLD.Cod_Cliente,
-                     CONCAT('Nome: ', OLD.Nome, ', CPF: ', OLD.CPF, ', Email: ', OLD.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         // Triggers para tabela funcionario
@@ -104,8 +114,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('funcionario', 'INSERT', NEW.Cod_Funcionario, 
-                     CONCAT('Nome: ', NEW.Nome, ', Data Nascimento: ', NEW.Data_Nascimento),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_funcionario_update_audit
@@ -114,9 +124,9 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('funcionario', 'UPDATE', NEW.Cod_Funcionario,
-                     CONCAT('Nome: ', OLD.Nome, ', Data Nascimento: ', OLD.Data_Nascimento),
-                     CONCAT('Nome: ', NEW.Nome, ', Data Nascimento: ', NEW.Data_Nascimento),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome),
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_funcionario_delete_audit
@@ -125,8 +135,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('funcionario', 'DELETE', OLD.Cod_Funcionario,
-                     CONCAT('Nome: ', OLD.Nome, ', Data Nascimento: ', OLD.Data_Nascimento),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         // Triggers para tabela livro
@@ -136,8 +146,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('livro', 'INSERT', NEW.Cod_Livro, 
-                     CONCAT('Título: ', NEW.Titulo, ', ISBN: ', NEW.ISBN),
-                     USER(), @ip_usuario);
+                     CONCAT('Título: ', NEW.Titulo),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_livro_update_audit
@@ -146,9 +156,9 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('livro', 'UPDATE', NEW.Cod_Livro,
-                     CONCAT('Título: ', OLD.Titulo, ', ISBN: ', OLD.ISBN),
-                     CONCAT('Título: ', NEW.Titulo, ', ISBN: ', NEW.ISBN),
-                     USER(), @ip_usuario);
+                     CONCAT('Título: ', OLD.Titulo),
+                     CONCAT('Título: ', NEW.Titulo),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_livro_delete_audit
@@ -157,8 +167,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('livro', 'DELETE', OLD.Cod_Livro,
-                     CONCAT('Título: ', OLD.Titulo, ', ISBN: ', OLD.ISBN),
-                     USER(), @ip_usuario);
+                     CONCAT('Título: ', OLD.Titulo),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         // Triggers para tabela emprestimo
@@ -168,8 +178,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('emprestimo', 'INSERT', NEW.Cod_Emprestimo, 
-                     CONCAT('Cliente: ', NEW.Cod_Cliente, ', Livro: ', NEW.Cod_Livro, ', Data: ', NEW.Data_Emprestimo),
-                     USER(), @ip_usuario);
+                     CONCAT('Cliente: ', NEW.Cod_Cliente),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_emprestimo_update_audit
@@ -178,9 +188,9 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('emprestimo', 'UPDATE', NEW.Cod_Emprestimo,
-                     CONCAT('Cliente: ', OLD.Cod_Cliente, ', Livro: ', OLD.Cod_Livro, ', Data: ', OLD.Data_Emprestimo),
-                     CONCAT('Cliente: ', NEW.Cod_Cliente, ', Livro: ', NEW.Cod_Livro, ', Data: ', NEW.Data_Emprestimo),
-                     USER(), @ip_usuario);
+                     CONCAT('Cliente: ', OLD.Cod_Cliente),
+                     CONCAT('Cliente: ', NEW.Cod_Cliente),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_emprestimo_delete_audit
@@ -189,8 +199,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('emprestimo', 'DELETE', OLD.Cod_Emprestimo,
-                     CONCAT('Cliente: ', OLD.Cod_Cliente, ', Livro: ', OLD.Cod_Livro, ', Data: ', OLD.Data_Emprestimo),
-                     USER(), @ip_usuario);
+                     CONCAT('Cliente: ', OLD.Cod_Cliente),
+                     @usuario_sistema, @ip_usuario);
          END"
     ];
 
@@ -248,7 +258,6 @@
         $logs_por_tabela[$tabela][] = $log;
     }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -365,10 +374,6 @@
                                         <span class="log-type <?= strtolower($log['operacao']) ?>"><?= htmlspecialchars($log['operacao_pt']) ?></span>
                                         <strong>ID: <?= htmlspecialchars($log['id_registro']) ?></strong>
                                     </div>
-                                    <div style="text-align: right; font-size: 0.9em;">
-                                        <div><strong>Usuário:</strong> <?= htmlspecialchars($log['usuario']) ?></div>
-                                        <div><strong>Data:</strong> <?= date("d/m/Y H:i:s", strtotime($log['data_operacao'])) ?></div>
-                                    </div>
                                 </div>
                                 
                                 <?php if ($log['dados_anteriores'] || $log['dados_novos']): ?>
@@ -433,83 +438,93 @@
     </ul>
 
     <script>
-        let grafico;
+    let grafico;
 
-        function atualizarGrafico() {
-            let qtdInsert = 0, qtdUpdate = 0, qtdDelete = 0;
+    function atualizarGrafico() {
+        let qtdInsert = 0, qtdUpdate = 0, qtdDelete = 0;
 
-            document.querySelectorAll('.log-entry').forEach(entry => {
-                if (entry.style.display !== "none") {
-                    if (entry.dataset.operacao === "INSERT") qtdInsert++;
-                    if (entry.dataset.operacao === "UPDATE") qtdUpdate++;
-                    if (entry.dataset.operacao === "DELETE") qtdDelete++;
-                }
-            });
-
-            const ctx = document.getElementById("graficoOperacoes").getContext("2d");
-            if (grafico) grafico.destroy();
-
-            grafico = new Chart(ctx, {
-                type: "pie",
-                data: {
-                    labels: ["Cadastrados", "Alterados", "Excluídos"],
-                    datasets: [{
-                        data: [qtdInsert, qtdUpdate, qtdDelete],
-                        backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: "bottom" }
-                    }
-                }
-            });
-        }
-
-        function filtrarPorOperacao(operacao) {
-            document.querySelectorAll('.operacao-card').forEach(card => card.classList.remove('active'));
-
-            if (operacao === 'TODOS') {
-                const cardTodos = document.querySelector('.operacao-card[onclick="filtrarPorOperacao(\'TODOS\')"]');
-                if (cardTodos) cardTodos.classList.add('active');
-            } else {
-                const targetCard = document.querySelector(`[onclick="filtrarPorOperacao('${operacao}')"]`);
-                if (targetCard) targetCard.classList.add('active');
+        document.querySelectorAll('.log-entry').forEach(entry => {
+            if (entry.offsetParent !== null) {  // Verifica se o elemento está visível
+                const operacao = entry.dataset.operacao;
+                if (operacao === "INSERT") qtdInsert++;
+                if (operacao === "UPDATE") qtdUpdate++;
+                if (operacao === "DELETE") qtdDelete++;
             }
+        });
 
-            document.querySelectorAll('.log-entry').forEach(entry => {
-                if (operacao === 'TODOS') {
-                    entry.style.display = 'block';
-                } else {
-                    entry.style.display = (entry.dataset.operacao === operacao) ? 'block' : 'none';
+        const ctx = document.getElementById("graficoOperacoes").getContext("2d");
+        if (grafico) grafico.destroy();
+
+        grafico = new Chart(ctx, {
+            type: "pie",
+            data: {
+                labels: ["Cadastrados", "Alterados", "Excluídos"],
+                datasets: [{
+                    data: [qtdInsert, qtdUpdate, qtdDelete],
+                    backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: "bottom" }
                 }
-            });
+            }
+        });
+    }
 
-            atualizarGrafico();
-        }
+    function filtrarPorOperacao(operacao) {
+        document.querySelectorAll('.operacao-card').forEach(card => card.classList.remove('active'));
 
-        function mostrarTabela(tabelaNome) {
-            document.querySelectorAll('.tabela-section').forEach(secao => secao.style.display = 'none');
-            const tabelaSelecionada = document.querySelector(`[data-tabela="${tabelaNome}"]`)?.closest('.tabela-section');
-            if (tabelaSelecionada) tabelaSelecionada.style.display = 'block';
+        const clickedCard = event.currentTarget;
+        clickedCard.classList.add('active');
 
-            document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        document.querySelectorAll('.log-entry').forEach(entry => {
+            const operacaoMatch = operacao === 'TODOS' || entry.dataset.operacao === operacao;
+            const estaVisivelTabela = entry.closest('.tabela-section')?.style.display !== 'none';
 
-            atualizarGrafico();
-        }
+            entry.style.display = (operacaoMatch && estaVisivelTabela) ? 'block' : 'none';
+        });
 
-        function mostrarTodasTabelas() {
-            document.querySelectorAll('.tabela-section').forEach(secao => secao.style.display = 'block');
-            document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        atualizarGrafico();
+    }
 
-            atualizarGrafico();
-        }
+    function mostrarTabela(tabelaNome) {
+        document.querySelectorAll('.tabela-section').forEach(secao => {
+            const contemTabela = secao.querySelectorAll('.log-entry[data-tabela="' + tabelaNome + '"]').length > 0;
+            secao.style.display = contemTabela ? 'block' : 'none';
+        });
 
-        window.onload = atualizarGrafico;
-    </script>
+        document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        // Mostrar todas as operações da tabela
+        document.querySelectorAll('.log-entry').forEach(entry => {
+            entry.style.display = (entry.dataset.tabela === tabelaNome) ? 'block' : 'none';
+        });
+
+        atualizarGrafico();
+    }
+
+    function mostrarTodasTabelas() {
+        document.querySelectorAll('.tabela-section').forEach(secao => secao.style.display = 'block');
+
+        document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        document.querySelectorAll('.log-entry').forEach(entry => {
+            entry.style.display = 'block';
+        });
+
+        atualizarGrafico();
+    }
+
+    // Inicializa o gráfico ao carregar a página
+    window.onload = () => {
+        atualizarGrafico();
+    };
+</script>
+
 
 </body>
 </html>
