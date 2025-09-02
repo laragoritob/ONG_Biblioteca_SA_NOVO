@@ -2,11 +2,33 @@
   session_start();
   require_once '../conexao.php';
 
-  // VERIFICA SE O USUÁRIO TEM PERMISSÃO
-  if ($_SESSION['perfil'] != 1) {
-    echo "<script>alert('Acesso Negado!'); window.location.href='../gerente.php';</script>";
-    exit();
-  }
+  if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3) {
+        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+        exit();
+    }
+
+    // Determina a página de "voltar" dependendo do perfil do usuário
+    switch ($_SESSION['perfil']) {
+        case 1: // Gerente
+            $linkVoltar = "../gerente.php";
+            break;
+        case 2: // Gestor
+            $linkVoltar = "../gestor.php";
+            break;
+        case 3: // Bibliotecário
+            $linkVoltar = "../bibliotecario.php";
+            break;
+        case 4: // Recreador
+            $linkVoltar = "../recreador.php";
+            break;
+        case 5: // Repositor
+            $linkVoltar = "../repositor.php";
+            break;
+        default:
+            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
+            $linkVoltar = "../index.php";
+            break;
+    }
 
   // INICIALIZA VARIÁVEIS
   $editoras = [];
@@ -153,9 +175,12 @@
 <body>
     <div class="page-wrapper">
     <header>
-        <form action="../gerente.php" method="POST">
-            <button class="btn-voltar">← Voltar</button>
-        </form>
+        <a href="<?= $linkVoltar ?>" class="btn-voltar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Voltar
+                </a>
         <h1>Consultar Editoras</h1>
     </header>
 

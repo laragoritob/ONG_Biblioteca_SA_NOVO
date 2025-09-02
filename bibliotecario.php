@@ -548,13 +548,6 @@
 
     <ul class="nav-bar">
         <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn"> Funcionários </a>
-            <div class="dropdown-content">
-                <a href="subtelas/cadastro_funcionario.php"> Registrar Funcionário </a>
-                <a href="subtelas/consultar_funcionario.php"> Consultar Funcionários </a>
-            </div>
-        </li>
-        <li class="dropdown">
             <a href="javascript:void(0)" class="dropbtn"> Clientes </a>
             <div class="dropdown-content">
                 <a href="subtelas/cadastro_cliente.php"> Registrar Cliente </a>

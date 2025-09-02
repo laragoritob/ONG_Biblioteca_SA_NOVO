@@ -47,6 +47,7 @@
                 <div class="dropdown-content">
                     <a href="subtelas/registrar_emprestimo.php"> Registrar Empréstimo </a>
                     <a href="subtelas/consultar_emprestimo.php"> Consultar Empréstimos </a>
+                    <a href="subtelas/consultar_multa.php"> Consultar Multas </a>
                 </div>
             </li>
         </ul>
