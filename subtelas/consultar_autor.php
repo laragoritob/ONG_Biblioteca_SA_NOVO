@@ -190,13 +190,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
                 <td> <?=htmlspecialchars($autor_item['Telefone'])?></td>
                 <td> <?=htmlspecialchars($autor_item['Email'])?></td>
                 <td>
-                    <a href="alterar_cliente.php?id=<?= $c['Cod_Cliente'] ?>" class="btn-action btn-edit" title="Alterar">
+                    <a href="alterar_autor.php?id=<?= $autor_item['Cod_Autor'] ?>" class="btn-action btn-edit" title="Alterar">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                         <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                       </svg>
                     </a>
-                    <a href="excluir_cliente.php?id=<?= $c['Cod_Cliente'] ?>" class="btn-action btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
+                    <a href="excluir_autor.php?id=<?= $autor_item['Cod_Autor'] ?>" class="btn-action btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 6h18"/>
                         <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>

@@ -25,9 +25,9 @@
         $stmt->bindParam(':data_devolucao', $data_devolucao);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Empréstimo cadastrado com sucesso!');</script>";
+            $sucesso = "Empréstimo cadastrado com sucesso!";
         } else {
-            echo "<script>alert('Erro ao cadastrar empréstimo!');</script>";
+            $erro = "Erro ao cadastrar empréstimo!";
         }
     }
 
@@ -46,6 +46,7 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
 
 </head>
 <body>
@@ -352,5 +353,21 @@
                 campoDataEmprestimo.addEventListener('input', calcularDataDevolucao);
             }
         });
+    </script>
+    
+    <script src="subtelas_javascript/notification-modal.js"></script>
+    <script>
+        // Mostrar notificações baseadas no PHP
+        <?php if (isset($sucesso)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('success', 'Sucesso!', '<?= addslashes($sucesso) ?>');
+            });
+        <?php endif; ?>
+        
+        <?php if (isset($erro)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('error', 'Erro!', '<?= addslashes($erro) ?>');
+            });
+        <?php endif; ?>
     </script>
 </html>

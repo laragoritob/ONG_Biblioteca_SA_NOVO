@@ -24,7 +24,32 @@
         $bairro = $_POST['bairro'];
         $rua = $_POST['rua'];
         $num_residencia = $_POST['num_residencia'];
-        $foto = $_POST['foto'];
+        // Processar upload da foto
+        $foto = ''; // Valor padrão vazio
+        
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $arquivo_tmp = $_FILES['foto']['tmp_name'];
+            $nome_arquivo = $_FILES['foto']['name'];
+            $extensao = strtolower(pathinfo($nome_arquivo, PATHINFO_EXTENSION));
+            
+            // Verificar se é uma extensão válida
+            $extensoes_validas = ['jpg', 'jpeg', 'png'];
+            if (in_array($extensao, $extensoes_validas)) {
+                // Gerar nome único para o arquivo
+                $novo_nome = uniqid() . '.' . $extensao;
+                $destino = 'subtelas_img/' . $novo_nome;
+                
+                // Mover arquivo para a pasta de imagens
+                if (move_uploaded_file($arquivo_tmp, $destino)) {
+                    $foto = $novo_nome;
+                }
+            }
+        }
+        
+        // Se não há foto, usar um valor padrão
+        if (empty($foto)) {
+            $foto = 'Perna de Grilo.png'; // Valor padrão para evitar NULL
+        }
 
         $sql = "INSERT INTO cliente (cod_perfil, nome, nome_responsavel, cpf, sexo, email, telefone, data_nascimento, cep, uf, cidade, bairro, rua, num_residencia, foto) 
                     VALUES (:cod_perfil, :nome, :nome_responsavel, :cpf, :sexo, :email, :telefone, :data_nascimento, :cep, :uf, :cidade, :bairro, :rua, :num_residencia, :foto)";
@@ -47,9 +72,9 @@
         $stmt->bindParam(':foto', $foto);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Cliente cadastrado com sucesso!');</script>";
+            $sucesso = "Cliente cadastrado com sucesso!";
         } else {
-            echo "<script>alert('Erro ao cadastrar cliente!');</script>";
+            $erro = "Erro ao cadastrar cliente!";
         }
     }
 ?>
@@ -63,6 +88,7 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -200,7 +226,7 @@
         
         <main class="main-content">
             <div class="container">
-                <form class="formulario" id="form_pessoal" action="cadastro_cliente.php" method="post" onsubmit="return validaFormulario()">
+                <form class="formulario" id="form_pessoal" action="cadastro_cliente.php" method="post" enctype="multipart/form-data" onsubmit="return validaFormulario()">
                     
                     <section class="form-section">
                         <h2 class="section-title">
@@ -300,7 +326,7 @@
                                 <label for="foto">Foto do Cliente</label>
                                 <div class="file-upload-wrapper">
                                     <input type="text" name="seletor_arquivo" id="seletor_arquivo" readonly placeholder="Nenhum arquivo selecionado" class="file-display">
-                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" multiple onchange="atualizarNomeArquivo()">
+                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" onchange="atualizarNomeArquivo()">
                                     <button type="button" class="file-select-btn" onclick="document.getElementById('foto').click()">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -452,7 +478,24 @@
             </div>
         </main>
     </div>
+
+    <script src="subtelas_javascript/validaCadastro.js"></script>
+    <script src="subtelas_javascript/sidebar.js"></script>
+    <script src="subtelas_javascript/notification-modal.js"></script>
+    
+    <script>
+        // Mostrar notificações baseadas no PHP
+        <?php if (isset($sucesso)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('success', 'Sucesso!', '<?= addslashes($sucesso) ?>');
+            });
+        <?php endif; ?>
+        
+        <?php if (isset($erro)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('error', 'Erro!', '<?= addslashes($erro) ?>');
+            });
+        <?php endif; ?>
+    </script>
 </body>
-<script src="subtelas_javascript/validaCadastro.js"></script>
-<script src="subtelas_javascript/sidebar.js"></script>
 </html>

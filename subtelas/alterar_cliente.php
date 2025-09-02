@@ -80,6 +80,32 @@
         $nome_responsavel = trim($_POST['nome_responsavel']);
         $cod_perfil = $cliente['Cod_Perfil']; // Usar valor atual do banco
         
+        // Processar upload da foto
+        $foto = $cliente['Foto']; // Manter foto atual por padrão
+        
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $arquivo_tmp = $_FILES['foto']['tmp_name'];
+            $nome_arquivo = $_FILES['foto']['name'];
+            $extensao = strtolower(pathinfo($nome_arquivo, PATHINFO_EXTENSION));
+            
+            // Verificar se é uma extensão válida
+            $extensoes_validas = ['jpg', 'jpeg', 'png'];
+            if (in_array($extensao, $extensoes_validas)) {
+                // Gerar nome único para o arquivo
+                $novo_nome = uniqid() . '.' . $extensao;
+                $destino = 'subtelas_img/' . $novo_nome;
+                
+                // Mover arquivo para a pasta de imagens
+                if (move_uploaded_file($arquivo_tmp, $destino)) {
+                    // Se havia uma foto anterior, deletar
+                    if (!empty($cliente['Foto']) && file_exists('subtelas_img/' . $cliente['Foto'])) {
+                        unlink('subtelas_img/' . $cliente['Foto']);
+                    }
+                    $foto = $novo_nome;
+                }
+            }
+        }
+        
         if (empty($nome)) {
             $erro = "Nome é obrigatório";
         } elseif (empty($cpf)) {
@@ -102,7 +128,8 @@
                                 Bairro = :bairro,
                                 Rua = :rua,
                                 Num_Residencia = :num_residencia,
-                                Cod_Perfil = :cod_perfil
+                                Cod_Perfil = :cod_perfil,
+                                Foto = :foto
                             WHERE Cod_cliente = :id";
                 
                 $stmt_update = $pdo->prepare($sql_update);
@@ -120,6 +147,7 @@
                 $stmt_update->bindParam(':rua', $rua);
                 $stmt_update->bindParam(':num_residencia', $num_residencia);
                 $stmt_update->bindParam(':cod_perfil', $cod_perfil);
+                $stmt_update->bindParam(':foto', $foto);
                 $stmt_update->bindParam(':id', $id);
                 
                 if ($stmt_update->execute()) {
@@ -145,6 +173,7 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -163,7 +192,7 @@
         
         <main class="main-content">
             <div class="container">
-                <form class="formulario" id="form_pessoal" action="alterar_cliente.php?id=<?= $id ?>" method="post" onsubmit="return validaFormulario()">
+                <form class="formulario" id="form_pessoal" action="alterar_cliente.php?id=<?= $id ?>" method="post" enctype="multipart/form-data" onsubmit="return validaFormulario()">
                     <section class="form-section">
                         <h2 class="section-title">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -399,34 +428,26 @@
         </main>
     </div>
 </body>
-<script src="subtelas_javascript/validaCadastro.js"></script>
-<script src="subtelas_javascript/sidebar.js"></script>
+    <script src="subtelas_javascript/validaAlterar.js"></script>
+    <script src="subtelas_javascript/sidebar.js"></script>
+    <script src="subtelas_javascript/notification-modal.js"></script>
 
-<script>
-// Verificar se há mensagem de sucesso ou erro
-<?php if (isset($sucesso) && $sucesso === "success"): ?>
-    Swal.fire({
-        icon: 'success',
-        title: 'Sucesso!',
-        text: 'Cliente alterado com sucesso!',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#3085d6'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Redirecionar para a página de consulta
-            window.location.href = 'consultar_cliente.php';
-        }
-    });
-<?php endif; ?>
+    <script>
+        // Mostrar notificações baseadas no PHP
+        <?php if (isset($sucesso) && $sucesso === "success"): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('success', 'Sucesso!', 'Cliente alterado com sucesso!');
+                // Redirecionar após 2 segundos
+                setTimeout(function() {
+                    window.location.href = 'consultar_cliente.php';
+                }, 2000);
+            });
+        <?php endif; ?>
 
-<?php if (isset($erro) && $erro === "error"): ?>
-    Swal.fire({
-        icon: 'error',
-        title: 'Erro!',
-        text: 'Erro ao alterar cliente. Tente novamente.',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#d33'
-    });
-<?php endif; ?>
-</script>
+        <?php if (isset($erro) && $erro === "error"): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('error', 'Erro!', 'Erro ao alterar cliente. Tente novamente.');
+            });
+        <?php endif; ?>
+    </script>
 </html>

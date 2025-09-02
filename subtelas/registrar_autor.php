@@ -17,7 +17,7 @@
         // Validação do telefone
         $telefone_limpo = preg_replace('/\D/', '', $telefone); // Remove caracteres não numéricos
         if (strlen($telefone_limpo) < 10 || strlen($telefone_limpo) > 11) {
-            echo "<script>alert('O telefone deve ter 10 ou 11 dígitos!');</script>";
+            $erro = "O telefone deve ter 10 ou 11 dígitos!";
         } else {
             $sql = "INSERT INTO autor (nome_autor,telefone,email) 
                         VALUES (:nome_autor,:telefone,:email)";
@@ -28,9 +28,9 @@
             $stmt->bindParam(':email', $email);
 
             if ($stmt->execute()) {
-                echo "<script>alert('Autor cadastrado com sucesso!');</script>";
+                $sucesso = "Autor cadastrado com sucesso!";
             } else {
-                echo "<script>alert('Erro ao cadastrar autor!');</script>";
+                $erro = "Erro ao cadastrar autor!";
             }
         }
     }
@@ -43,6 +43,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
@@ -186,5 +187,21 @@
                 }
             }
         });
+    </script>
+    
+    <script src="subtelas_javascript/notification-modal.js"></script>
+    <script>
+        // Mostrar notificações baseadas no PHP
+        <?php if (isset($sucesso)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('success', 'Sucesso!', '<?= addslashes($sucesso) ?>');
+            });
+        <?php endif; ?>
+        
+        <?php if (isset($erro)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('error', 'Erro!', '<?= addslashes($erro) ?>');
+            });
+        <?php endif; ?>
     </script>
 </html>

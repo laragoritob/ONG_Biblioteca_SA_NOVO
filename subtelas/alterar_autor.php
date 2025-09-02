@@ -89,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>ONG Biblioteca - Alterar Autor</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -103,17 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="main-content">
             <div class="formulario">
-                <?php if (isset($erro)): ?>
-                    <div class="alert alert-error" style="background: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #fecaca;">
-                        <?= htmlspecialchars($erro) ?>
-                    </div>
-                <?php endif; ?>
 
-                <?php if (isset($sucesso)): ?>
-                    <div class="alert alert-success" style="background: #dcfce7; color: #16a34a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #bbf7d0;">
-                        <?= htmlspecialchars($sucesso) ?>
-                    </div>
-                <?php endif; ?>
 
                 <form method="POST" action="">
                     <div class="form-section">
@@ -241,6 +232,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             });
         });
+    </script>
+    
+    <script src="subtelas_javascript/notification-modal.js"></script>
+    <script>
+        // Mostrar notificações baseadas no PHP
+        <?php if (isset($sucesso)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('success', 'Sucesso!', '<?= addslashes($sucesso) ?>');
+            });
+        <?php endif; ?>
+        
+        <?php if (isset($erro)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('error', 'Erro!', '<?= addslashes($erro) ?>');
+            });
+        <?php endif; ?>
     </script>
 </body>
 </html>

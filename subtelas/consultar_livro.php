@@ -41,6 +41,12 @@ try {
       a {
         text-decoration: none;
     }
+    
+    .titulo-clicavel {
+      cursor: pointer;
+      color: #667eea;
+      text-decoration: none;
+    }
 
     .filtro-container {
       display: flex;
@@ -176,7 +182,7 @@ try {
           <?php foreach ($livros as $livro): ?>
             <tr>
               <td><?= htmlspecialchars($livro['id_livro']) ?></td>
-              <td><?= htmlspecialchars($livro['titulo']) ?></td>
+              <td class="titulo-clicavel" data-livro-id="<?= $livro['id_livro'] ?>"><?= htmlspecialchars($livro['titulo']) ?></td>
               <td><?= htmlspecialchars($livro['autor'] ?? 'Não informado') ?></td>
               <td><?= htmlspecialchars($livro['editora'] ?? 'Não informado') ?></td>
               <td><?= htmlspecialchars($livro['doador'] ?? 'Não informado') ?></td>
@@ -185,13 +191,13 @@ try {
               <td><?= htmlspecialchars($livro['quantidade'] ?? '0') ?></td>
               <td><?= htmlspecialchars($livro['prateleira'] ?? '') ?></td>
               <td>
-                    <a href="alterar_cliente.php?id=<?= $c['Cod_Cliente'] ?>" class="btn-action btn-edit" title="Alterar">
+                    <a href="alterar_livro.php?id=<?= $livro['id_livro'] ?>" class="btn-action btn-edit" title="Alterar">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                         <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                       </svg>
                     </a>
-                    <a href="excluir_cliente.php?id=<?= $c['Cod_Cliente'] ?>" class="btn-action btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
+                    <a href="excluir_livro.php?id=<?= $livro['id_livro'] ?>" class="btn-action btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este livro?')">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 6h18"/>
                         <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
@@ -208,16 +214,36 @@ try {
   </nav>
   <script src="subtelas_javascript/sidebar.js"></script>
     </div>
+    
     <script>
-      function editarLivro(id) {
-        window.location.href = 'alterar_livro.php?id=' + id;
-      }
-      function excluirLivro(id) {
-    if (confirm('Tem certeza que deseja excluir este livro?')) {
+    document.addEventListener('DOMContentLoaded', function() {
+      // Selecionar todos os títulos clicáveis
+      const titulosClicaveis = document.querySelectorAll('.titulo-clicavel');
+      
+      // Adicionar evento de clique para cada título
+      titulosClicaveis.forEach(function(titulo) {
+        titulo.addEventListener('click', function() {
+          const livroId = this.getAttribute('data-livro-id');
+          abrirFichaLivro(livroId);
+        });
+      });
+    });
+    
+    // Função para abrir a ficha do livro
+    function abrirFichaLivro(livroId) {
+      window.location.href = `ficha_livro.php?id=${livroId}`;
+    }
+    
+    function editarLivro(id) {
+      window.location.href = 'alterar_livro.php?id=' + id;
+    }
+    
+    function excluirLivro(id) {
+      if (confirm('Tem certeza que deseja excluir este livro?')) {
         // Redirecionar para a página de exclusão com o ID do livro
         window.location.href = 'excluir_livro.php?id=' + id;
+      }
     }
-  }
     </script>
 </body>
 </html>

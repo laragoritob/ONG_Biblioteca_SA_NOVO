@@ -23,9 +23,9 @@
         $stmt->bindParam(':email', $email);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Editora cadastrada com sucesso!');</script>";
+            $sucesso = "Editora cadastrada com sucesso!";
         } else {
-            echo "<script>alert('Erro ao cadastrar editora!');</script>";
+            $erro = "Erro ao cadastrar editora!";
         }
     }
 ?>
@@ -38,6 +38,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
 
 </head>
 <body>
@@ -118,6 +119,22 @@
             </form>
         </div>
     </div>
-</body>
+
     <script src="subtelas_javascript/validaCadastro.js"></script>
+    <script src="subtelas_javascript/notification-modal.js"></script>
+    <script>
+        // Mostrar notificações baseadas no PHP
+        <?php if (isset($sucesso)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('success', 'Sucesso!', '<?= addslashes($sucesso) ?>');
+            });
+        <?php endif; ?>
+        
+        <?php if (isset($erro)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('error', 'Erro!', '<?= addslashes($erro) ?>');
+            });
+        <?php endif; ?>
+    </script>
+</body>
 </html>

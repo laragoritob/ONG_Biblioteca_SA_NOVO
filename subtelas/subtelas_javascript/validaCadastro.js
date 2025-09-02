@@ -164,27 +164,16 @@ document.addEventListener('DOMContentLoaded', function () {
     function atualizarNomeArquivo() {
         const inputArquivo = document.getElementById('foto');
         const nomeArquivo = document.getElementById('seletor_arquivo');
-        const listaArquivos = document.getElementById('lista-arquivos');
-        const arquivoBox = document.getElementById('arquivo-box');
         const arquivosSelecionados = inputArquivo.files;
   
         // Verifica se há arquivos selecionados
         if (arquivosSelecionados.length > 0) {
           // Exibe o nome do primeiro arquivo selecionado
           nomeArquivo.value = arquivosSelecionados[0].name;
-          arquivoBox.style.display = 'block';
-          listaArquivos.innerHTML = '';
-          
-          // Lista os arquivos selecionados
-          for (let i = 0; i < arquivosSelecionados.length; i++) {
-            const li = document.createElement('li');
-            li.textContent = arquivosSelecionados[i].name;
-            listaArquivos.appendChild(li);
-          }
+          console.log('Arquivo selecionado:', arquivosSelecionados[0].name);
         } else {
           // Caso nenhum arquivo seja selecionado
           nomeArquivo.value = 'Nenhum arquivo selecionado';
-          arquivoBox.style.display = 'none';
         }
       };
 

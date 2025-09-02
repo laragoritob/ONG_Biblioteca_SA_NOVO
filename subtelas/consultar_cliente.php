@@ -150,6 +150,16 @@
       background: #c53030;
     }
     
+    a {
+      text-decoration: none;
+    }
+    
+    .nome-clicavel {
+      cursor: pointer;
+      color: #667eea;
+      text-decoration: none;
+    }
+    
     /* Responsividade */
     @media (max-width: 768px) {
       .filtro-container {
@@ -230,7 +240,7 @@
             <?php foreach ($clientes as $c): ?>
                 <tr>
                   <td><?= htmlspecialchars($c['Cod_Cliente']) ?></td>
-                  <td><?= htmlspecialchars($c['Nome']) ?></td>
+                  <td class="nome-clicavel" data-cliente-id="<?= $c['Cod_Cliente'] ?>"><?= htmlspecialchars($c['Nome']) ?></td>
                   <td><?= htmlspecialchars($c['Nome_Perfil'] ?? 'Não definido') ?></td>
                   <td><?= htmlspecialchars($c['Sexo']) ?></td>
                   <td><?= date("d/m/Y", strtotime($c['Data_Nascimento'])) ?></td>
@@ -254,7 +264,7 @@
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
-            <tr><td colspan="8">Nenhum cliente encontrado.</td></tr>
+            <tr><td colspan="7">Nenhum cliente encontrado.</td></tr>
         <?php endif; ?>
       </tbody>
     </table>
@@ -270,6 +280,25 @@
       document.querySelector("select[name='filtro_perfil']").value = "";
       window.location.href = "consultar_cliente.php";
     }
+    
+    // Função para abrir ficha do cliente
+    function abrirFichaCliente(clienteId) {
+      window.location.href = `ficha_cliente.php?id=${clienteId}`;
+    }
+    
+    // Event listeners para nomes clicáveis
+    document.addEventListener('DOMContentLoaded', function() {
+      const nomesClicaveis = document.querySelectorAll('.nome-clicavel');
+      
+      nomesClicaveis.forEach(function(nome) {
+        nome.addEventListener('click', function() {
+          const clienteId = this.getAttribute('data-cliente-id');
+          abrirFichaCliente(clienteId);
+        });
+        
+        
+      });
+    });
   </script>
     </div>
 </body>

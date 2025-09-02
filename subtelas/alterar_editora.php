@@ -87,12 +87,13 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="page-wrapper">
         <header class="header">
-            <form action="../gerente.php" method="POST">
+            <form action="consultar_editora.php" method="POST">
                 <button class="btn-voltar">← Voltar</button>
             </form>
             <h1>Alterar Editora</h1>
@@ -171,31 +172,23 @@
 <script src="subtelas_javascript/validaCadastro.js"></script>
 <script src="subtelas_javascript/sidebar.js"></script>
 
+<script src="subtelas_javascript/notification-modal.js"></script>
 <script>
-// Verificar se há mensagem de sucesso ou erro
-<?php if (isset($sucesso) && $sucesso === "success"): ?>
-    Swal.fire({
-        icon: 'success',
-        title: 'Sucesso!',
-        text: 'Editora alterada com sucesso!',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#3085d6'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Redirecionar para a página de consulta
-            window.location.href = 'consultar_editora.php';
-        }
-    });
-<?php endif; ?>
+    // Mostrar notificações baseadas no PHP
+    <?php if (isset($sucesso) && $sucesso === "success"): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification('success', 'Sucesso!', 'Editora alterada com sucesso!');
+            // Redirecionar após 2 segundos
+            setTimeout(function() {
+                window.location.href = 'consultar_editora.php';
+            }, 2000);
+        });
+    <?php endif; ?>
 
-<?php if (isset($erro) && $erro === "error"): ?>
-    Swal.fire({
-        icon: 'error',
-        title: 'Erro!',
-        text: 'Erro ao alterar editora. Tente novamente.',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#d33'
-    });
-<?php endif; ?>
+    <?php if (isset($erro) && $erro === "error"): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification('error', 'Erro!', 'Erro ao alterar editora. Tente novamente.');
+        });
+    <?php endif; ?>
 </script>
 </html>
