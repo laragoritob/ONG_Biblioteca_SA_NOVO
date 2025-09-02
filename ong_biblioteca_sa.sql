@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 02/09/2025 às 18:45
+-- Tempo de geração: 02/09/2025 às 21:24
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -258,6 +258,7 @@ CREATE TABLE `funcionario` (
   `Num_Residencia` int(11) NOT NULL,
   `Usuario` varchar(20) NOT NULL,
   `Senha` varchar(20) NOT NULL,
+  `senha_temporaria` varchar(255) NOT NULL,
   `Foto` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -265,9 +266,9 @@ CREATE TABLE `funcionario` (
 -- Despejando dados para a tabela `funcionario`
 --
 
-INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Foto`) VALUES
-(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', ''),
-(7, 3, 'Bruno Henrique Ribeiro', '568.328.325-62', 'brunohribeiro@gmail.com', 'Masculino', '(27) 83562-3856', '2009-03-11', '2025-08-27', '82640-490', 'PR', 'Curitiba', 'Santa Cândida', 'Praça Semen Uniga', 1234, 'bruno_ribeiro', '$2y$10$CHOY/49469q7u', 0x6b61747970657272792e6a7067);
+INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `senha_temporaria`, `Foto`) VALUES
+(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', '', ''),
+(7, 3, 'Bruno Henrique Ribeiro', '568.328.325-62', 'brunohribeiro@gmail.com', 'Masculino', '(27) 83562-3856', '2009-03-11', '2025-08-27', '82640-490', 'PR', 'Curitiba', 'Santa Cândida', 'Praça Semen Uniga', 1234, 'bruno_ribeiro', '$2y$10$CSp11vLw5wapF', '1', 0x6b61747970657272792e6a7067);
 
 --
 -- Acionadores `funcionario`
@@ -405,6 +406,23 @@ CREATE TABLE `logs_auditoria` (
   `data_operacao` timestamp NOT NULL DEFAULT current_timestamp(),
   `ip_usuario` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `logs_auditoria`
+--
+
+INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_anteriores`, `dados_novos`, `usuario`, `data_operacao`, `ip_usuario`) VALUES
+(1, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 16:55:19', NULL),
+(2, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 16:58:51', NULL),
+(3, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 16:59:03', NULL),
+(4, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:06:09', NULL),
+(5, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:08:32', NULL),
+(6, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:09:10', NULL),
+(7, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:10:08', NULL),
+(8, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:13:20', NULL),
+(9, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:15:27', NULL),
+(10, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:16:36', NULL),
+(11, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 18:08:47', NULL);
 
 -- --------------------------------------------------------
 
@@ -604,7 +622,7 @@ ALTER TABLE `livro`
 -- AUTO_INCREMENT de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de tabela `multa`
