@@ -7,6 +7,16 @@
         exit();
     }
 
+    try {
+        $usuarioLogado = $_SESSION['usuario'];
+        $ipUsuario = $_SERVER['REMOTE_ADDR'];
+
+        $pdo->exec("SET @usuario_sistema = " . $pdo->quote($usuarioLogado));
+        $pdo->exec("SET @ip_usuario = " . $pdo->quote($ipUsuario));
+    } catch (PDOException $e) {
+        die("Erro ao definir variáveis de auditoria: " . $e->getMessage());
+    }
+
     // Criar tabela de logs de auditoria se não existir
     $createLogTable = "
     CREATE TABLE IF NOT EXISTS `logs_auditoria` (
@@ -40,8 +50,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('autor', 'INSERT', NEW.Cod_Autor, 
-                     CONCAT('Nome: ', NEW.Nome_Autor, ', Telefone: ', NEW.Telefone, ', Email: ', NEW.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', NEW.Nome_Autor),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_autor_update_audit
@@ -50,9 +60,9 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('autor', 'UPDATE', NEW.Cod_Autor,
-                     CONCAT('Nome: ', OLD.Nome_Autor, ', Telefone: ', OLD.Telefone, ', Email: ', OLD.Email),
-                     CONCAT('Nome: ', NEW.Nome_Autor, ', Telefone: ', NEW.Telefone, ', Email: ', NEW.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome_Autor),
+                     CONCAT('Nome: ', NEW.Nome_Autor),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_autor_delete_audit
@@ -61,8 +71,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('autor', 'DELETE', OLD.Cod_Autor,
-                     CONCAT('Nome: ', OLD.Nome_Autor, ', Telefone: ', OLD.Telefone, ', Email: ', OLD.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome_Autor),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         // Triggers para tabela cliente
@@ -72,8 +82,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('cliente', 'INSERT', NEW.Cod_Cliente, 
-                     CONCAT('Nome: ', NEW.Nome, ', CPF: ', NEW.CPF, ', Email: ', NEW.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_cliente_update_audit
@@ -82,9 +92,9 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('cliente', 'UPDATE', NEW.Cod_Cliente,
-                     CONCAT('Nome: ', OLD.Nome, ', CPF: ', OLD.CPF, ', Email: ', OLD.Email),
-                     CONCAT('Nome: ', NEW.Nome, ', CPF: ', NEW.CPF, ', Email: ', NEW.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome),
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_cliente_delete_audit
@@ -93,8 +103,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('cliente', 'DELETE', OLD.Cod_Cliente,
-                     CONCAT('Nome: ', OLD.Nome, ', CPF: ', OLD.CPF, ', Email: ', OLD.Email),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         // Triggers para tabela funcionario
@@ -104,8 +114,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('funcionario', 'INSERT', NEW.Cod_Funcionario, 
-                     CONCAT('Nome: ', NEW.Nome, ', Data Nascimento: ', NEW.Data_Nascimento),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_funcionario_update_audit
@@ -114,9 +124,9 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('funcionario', 'UPDATE', NEW.Cod_Funcionario,
-                     CONCAT('Nome: ', OLD.Nome, ', Data Nascimento: ', OLD.Data_Nascimento),
-                     CONCAT('Nome: ', NEW.Nome, ', Data Nascimento: ', NEW.Data_Nascimento),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome),
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_funcionario_delete_audit
@@ -125,8 +135,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('funcionario', 'DELETE', OLD.Cod_Funcionario,
-                     CONCAT('Nome: ', OLD.Nome, ', Data Nascimento: ', OLD.Data_Nascimento),
-                     USER(), @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         // Triggers para tabela livro
@@ -136,8 +146,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('livro', 'INSERT', NEW.Cod_Livro, 
-                     CONCAT('Título: ', NEW.Titulo, ', ISBN: ', NEW.ISBN),
-                     USER(), @ip_usuario);
+                     CONCAT('Título: ', NEW.Titulo),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_livro_update_audit
@@ -146,9 +156,9 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('livro', 'UPDATE', NEW.Cod_Livro,
-                     CONCAT('Título: ', OLD.Titulo, ', ISBN: ', OLD.ISBN),
-                     CONCAT('Título: ', NEW.Titulo, ', ISBN: ', NEW.ISBN),
-                     USER(), @ip_usuario);
+                     CONCAT('Título: ', OLD.Titulo),
+                     CONCAT('Título: ', NEW.Titulo),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_livro_delete_audit
@@ -157,8 +167,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('livro', 'DELETE', OLD.Cod_Livro,
-                     CONCAT('Título: ', OLD.Titulo, ', ISBN: ', OLD.ISBN),
-                     USER(), @ip_usuario);
+                     CONCAT('Título: ', OLD.Titulo),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         // Triggers para tabela emprestimo
@@ -168,8 +178,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('emprestimo', 'INSERT', NEW.Cod_Emprestimo, 
-                     CONCAT('Cliente: ', NEW.Cod_Cliente, ', Livro: ', NEW.Cod_Livro, ', Data: ', NEW.Data_Emprestimo),
-                     USER(), @ip_usuario);
+                     CONCAT('Cliente: ', NEW.Cod_Cliente),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_emprestimo_update_audit
@@ -178,9 +188,9 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('emprestimo', 'UPDATE', NEW.Cod_Emprestimo,
-                     CONCAT('Cliente: ', OLD.Cod_Cliente, ', Livro: ', OLD.Cod_Livro, ', Data: ', OLD.Data_Emprestimo),
-                     CONCAT('Cliente: ', NEW.Cod_Cliente, ', Livro: ', NEW.Cod_Livro, ', Data: ', NEW.Data_Emprestimo),
-                     USER(), @ip_usuario);
+                     CONCAT('Cliente: ', OLD.Cod_Cliente),
+                     CONCAT('Cliente: ', NEW.Cod_Cliente),
+                     @usuario_sistema, @ip_usuario);
          END",
         
         "CREATE TRIGGER IF NOT EXISTS tr_emprestimo_delete_audit
@@ -189,8 +199,8 @@
          BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('emprestimo', 'DELETE', OLD.Cod_Emprestimo,
-                     CONCAT('Cliente: ', OLD.Cod_Cliente, ', Livro: ', OLD.Cod_Livro, ', Data: ', OLD.Data_Emprestimo),
-                     USER(), @ip_usuario);
+                     CONCAT('Cliente: ', OLD.Cod_Cliente),
+                     @usuario_sistema, @ip_usuario);
          END"
     ];
 
@@ -255,9 +265,11 @@
     <head> 
          <meta charset="UTF-8">
          <title> ONG Bilbioteca - Bibliotecário </title>
-         <link rel ="stylesheet" type="text/css" href="css/style.css" />
-         <script src="javascript/JS_Logout.js" defer></script>
-         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+         <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <link rel="stylesheet" type="text/css" href="css/relatorios.css" />
+        <script src="javascript/JS_Logout.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
          <style>
              .stats-container {
                  display: flex;
@@ -419,189 +431,251 @@
         </header>
 
         <!-- Seção de Relatórios em Destaque -->
-        <div class="relatorios-section">
-            <h2>📊 Relatórios de Auditoria - Última Semana</h2>
-            
-            <!-- Caixa de informações -->
-            <div class="info-box">
-                <h3>📋 Sistema de Auditoria Ativo</h3>
-                <ul>
-                    <li><strong>Status:</strong> Sistema funcionando e capturando todas as operações automaticamente</li>
-                    <li><strong>Cobertura:</strong> Tabelas: autor, cliente, funcionario, livro, emprestimo</li>
-                    <li><strong>Operações:</strong> INSERT (cadastros), UPDATE (alterações), DELETE (exclusões)</li>
-                    <li><strong>Período:</strong> Últimos 7 dias</li>
-                    <li><strong>Triggers:</strong> Criados automaticamente para captura em tempo real</li>
-                </ul>
-            </div>
+    <div class="relatorios-section">
+        <h2>📊 Relatórios de Auditoria - Última Semana</h2>
 
-            <!-- Estatísticas -->
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-number"><?= $total_operacoes ?></div>
-                    <div class="stat-label">Total de Operações</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number"><?= $cadastros ?></div>
-                    <div class="stat-label">Cadastros</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number"><?= $alteracoes ?></div>
-                    <div class="stat-label">Alterações</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number"><?= $exclusoes ?></div>
-                    <div class="stat-label">Exclusões</div>
-                </div>
-            </div>
-
-            <!-- Filtros -->
-            <div class="filter-container">
-                <label for="filter-tabela">Filtrar por Tabela:</label>
-                <select id="filter-tabela" class="filter-select" onchange="filtrarLogs()">
-                    <option value="">Todas as Tabelas</option>
-                    <?php foreach (array_keys($logs_por_tabela) as $tabela): ?>
-                        <option value="<?= htmlspecialchars($tabela) ?>"><?= ucfirst(htmlspecialchars($tabela)) ?></option>
-                    <?php endforeach; ?>
-                </select>
-
-                <label for="filter-operacao">Filtrar por Operação:</label>
-                <select id="filter-operacao" class="filter-select" onchange="filtrarLogs()">
-                    <option value="">Todas as Operações</option>
-                    <option value="INSERT">Cadastros</option>
-                    <option value="UPDATE">Alterações</option>
-                    <option value="DELETE">Exclusões</option>
-                </select>
-            </div>
-
-            <?php if (empty($logs)): ?>
-                <div class="no-logs">
-                    <h3>📊 Nenhuma operação registrada na última semana</h3>
-                    <p>O sistema de auditoria está funcionando perfeitamente!</p>
-                    <p><strong>Triggers criados:</strong> ✅ autor, cliente, funcionario, livro, emprestimo</p>
-                    <p><strong>Próximos passos:</strong> Realize algumas operações (cadastros, alterações, exclusões) e elas aparecerão aqui automaticamente.</p>
-                </div>
-            <?php else: ?>
-                <!-- Logs agrupados por tabela -->
-                <?php foreach ($logs_por_tabela as $tabela => $logs_tabela): ?>
-                    <div class="tabela-section">
-                        <h2 class="tabela-title">📋 <?= ucfirst(htmlspecialchars($tabela)) ?></h2>
-                        <div class="tabela-content">
-                            <?php foreach ($logs_tabela as $log): ?>
-                                <div class="log-entry" data-tabela="<?= htmlspecialchars($log['tabela']) ?>" data-operacao="<?= htmlspecialchars($log['operacao']) ?>">
-                                    <div class="log-header">
-                                        <div>
-                                            <span class="log-type <?= strtolower($log['operacao']) ?>"><?= htmlspecialchars($log['operacao_pt']) ?></span>
-                                            <strong>ID: <?= htmlspecialchars($log['id_registro']) ?></strong>
-                                        </div>
-                                        <div style="text-align: right; font-size: 0.9em;">
-                                            <div><strong>Usuário:</strong> <?= htmlspecialchars($log['usuario']) ?></div>
-                                            <div><strong>Data:</strong> <?= date("d/m/Y H:i:s", strtotime($log['data_operacao'])) ?></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <?php if ($log['dados_anteriores'] || $log['dados_novos']): ?>
-                                        <div class="log-details">
-                                            <?php if ($log['dados_anteriores']): ?>
-                                                <div><strong>Dados Anteriores:</strong> <?= htmlspecialchars($log['dados_anteriores']) ?></div>
-                                            <?php endif; ?>
-                                            <?php if ($log['dados_novos']): ?>
-                                                <div><strong>Dados Novos:</strong> <?= htmlspecialchars($log['dados_novos']) ?></div>
-                                            <?php endif; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
+<!-- Botões de Navegação por Tabela -->
+                    <div class="tabelas-grid">
+                        <button class="tabela-btn tabela-btn-autor" onclick="mostrarTabela('autor')">
+                            📚 Autor
+                        </button>
+                        <button class="tabela-btn tabela-btn-cliente" onclick="mostrarTabela('cliente')">
+                            👥 Cliente
+                        </button>
+                        <button class="tabela-btn tabela-btn-funcionario" onclick="mostrarTabela('funcionario')">
+                            👨‍💼 Funcionário
+                        </button>
+                        <button class="tabela-btn tabela-btn-livro" onclick="mostrarTabela('livro')">
+                            📖 Livro
+                        </button>
+                        <button class="tabela-btn tabela-btn-emprestimo" onclick="mostrarTabela('emprestimo')">
+                            🔄 Empréstimo
+                        </button>
+                        <button class="tabela-btn tabela-btn-todas active" onclick="mostrarTodasTabelas()">
+                            🌐 Todas as Tabelas
+                        </button>
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
+
+        <!-- Container flex para gráfico e filtros -->
+        <div style="display: flex; align-items: flex-start; gap: 30px; margin: 20px;">
+
+            <!-- Gráfico à esquerda -->
+            <div class="grafico" style="width: 350px;">
+                <canvas id="graficoOperacoes"></canvas>
+            </div>
+
+            <!-- Cards e botões à direita -->
+            <div style="flex: 1;">
+                
+                <!-- Quadros de operações -->
+                <div class="operacoes-grid">
+                    <div class="operacao-card" onclick="filtrarPorOperacao('INSERT')">
+                        <div class="texto-container">
+                            <div class="operacao-title">Cadastros</div>
+                            <div class="operacao-count"><?= $cadastros ?></div>
+                        </div>
+                        <div class="operacao-icon">📝</div>
+                    </div>
+                    
+                    <div class="operacao-card" onclick="filtrarPorOperacao('TODOS')">
+                        <div class="texto-container">
+                            <div class="operacao-title">Todos</div>
+                            <div class="operacao-count"><?= $total_operacoes ?></div>
+                        </div>
+                        <div class="operacao-icon">📊</div>
+                    </div>
+                    
+                    <div class="operacao-card" onclick="filtrarPorOperacao('DELETE')">
+                        <div class="texto-container">
+                            <div class="operacao-title">Excluídos</div>
+                            <div class="operacao-count"><?= $exclusoes ?></div>
+                        </div>
+                        <div class="operacao-icon">🗑️</div>
+                    </div>
+                    
+                    <div class="operacao-card" onclick="filtrarPorOperacao('UPDATE')">
+                        <div class="texto-container">
+                            <div class="operacao-title">Alterações</div>
+                            <div class="operacao-count"><?= $alteracoes ?></div>
+                        </div>
+                        <div class="operacao-icon">✏️</div>
+                    </div>
+                </div>
+
+                
+            </div>
         </div>
 
-        <ul class="nav-bar">
-            <li><a href="#" class="dropbtn"> Início </a></li>
-
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"> Clientes </a>
-                <div class="dropdown-content">
-                    <a href="subtelas/cadastro_cliente.php"> Registrar Cliente </a>
-                    <a href="subtelas/consultar_cliente.php"> Consultar Clientes </a>
+        <?php if (empty($logs)): ?>
+            <div class="no-logs">
+                <h3>📊 Nenhuma operação registrada na última semana</h3>
+                <p>O sistema de auditoria está funcionando perfeitamente!</p>
+                <p><strong>Triggers criados:</strong> ✅ autor, cliente, funcionario, livro, emprestimo</p>
+                <p><strong>Próximos passos:</strong> Realize algumas operações (cadastros, alterações, exclusões) e elas aparecerão aqui automaticamente.</p>
+            </div>
+        <?php else: ?>
+            <!-- Logs agrupados por tabela -->
+            <?php foreach ($logs_por_tabela as $tabela => $logs_tabela): ?>
+                <div class="tabela-section">
+                    <h2 class="tabela-title">📋 <?= ucfirst(htmlspecialchars($tabela)) ?></h2>
+                    <div class="tabela-content">
+                        <?php foreach ($logs_tabela as $log): ?>
+                            <div class="log-entry" data-tabela="<?= htmlspecialchars($log['tabela']) ?>" data-operacao="<?= htmlspecialchars($log['operacao']) ?>">
+                                <div class="log-header">
+                                    <div>
+                                        <span class="log-type <?= strtolower($log['operacao']) ?>"><?= htmlspecialchars($log['operacao_pt']) ?></span>
+                                        <strong>ID: <?= htmlspecialchars($log['id_registro']) ?></strong>
+                                    </div>
+                                </div>
+                                
+                                <?php if ($log['dados_anteriores'] || $log['dados_novos']): ?>
+                                    <div class="log-details">
+                                        <?php if ($log['dados_anteriores']): ?>
+                                            <div><strong>Dados Anteriores:</strong> <?= htmlspecialchars($log['dados_anteriores']) ?></div>
+                                        <?php endif; ?>
+                                        <?php if ($log['dados_novos']): ?>
+                                            <div><strong>Dados Novos:</strong> <?= htmlspecialchars($log['dados_novos']) ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-            </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
 
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"> Livros </a>
-                <div class="dropdown-content">
-                    <a href="subtelas/consultar_livro.php"> Consultar Livros </a>
-                </div>
-            </li>
+    <ul class="nav-bar">
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn"> Funcionários </a>
+            <div class="dropdown-content">
+                <a href="subtelas/cadastro_funcionario.php"> Registrar Funcionário </a>
+                <a href="subtelas/consultar_funcionario.php"> Consultar Funcionários </a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn"> Clientes </a>
+            <div class="dropdown-content">
+                <a href="subtelas/cadastro_cliente.php"> Registrar Cliente </a>
+                <a href="subtelas/consultar_cliente.php"> Consultar Clientes </a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn"> Livros </a>
+            <div class="dropdown-content">
+                <a href="subtelas/registrar_livro.php"> Registrar Livro </a>
+                <a href="subtelas/consultar_livro.php"> Consultar Livros </a>
+                <a href="subtelas/registrar_autor.php"> Registrar Autor </a>
+                <a href="subtelas/consultar_autor.php"> Consultar Autores </a>
+                <a href="subtelas/registrar_editora.php"> Registrar Editora </a>
+                <a href="subtelas/consultar_editora.php"> Consultar Editoras </a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn"> Empréstimos </a>
+            <div class="dropdown-content">
+                <a href="subtelas/registrar_emprestimo.php"> Registrar Empréstimo </a>
+                <a href="subtelas/consultar_emprestimo.php"> Consultar Empréstimos </a>
+                <a href="subtelas/consultar_multa.php"> Consultar Multas </a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn"> Doador </a>
+            <div class="dropdown-content">
+                <a href="subtelas/registrar_doador.php"> Registrar Doador </a>
+                <a href="subtelas/consultar_doador.php"> Consultar Doadores </a>
+            </div>
+        </li>
+    </ul>
 
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"> Empréstimos </a>
-                <div class="dropdown-content">
-                    <a href="subtelas/registro_emprestimo.php"> Registrar Empréstimo </a>
-                    <a href="subtelas/consultar_emprestimo.php"> Consultar Empréstimos </a>
-                </div>
-            </li>
+    <script>
+    let grafico;
 
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"> Doador </a>
-                <div class="dropdown-content">
-                    <a href="subtelas/registro_doador.php"> Registrar Doador </a>
-                    <a href="subtelas/consultar_doador.php"> Consultar Doadores </a>
-                </div>
-            </li>
-        </ul>
+    function atualizarGrafico() {
+        let qtdInsert = 0, qtdUpdate = 0, qtdDelete = 0;
 
-        <script>
-            function filtrarLogs() {
-                const tabela = document.getElementById('filter-tabela').value;
-                const operacao = document.getElementById('filter-operacao').value;
-                const logs = document.querySelectorAll('.log-entry');
-                
-                logs.forEach(log => {
-                    const logTabela = log.dataset.tabela;
-                    const logOperacao = log.dataset.operacao;
-                    
-                    let mostrar = true;
-                    
-                    if (tabela && logTabela !== tabela) {
-                        mostrar = false;
-                    }
-                    
-                    if (operacao && logOperacao !== operacao) {
-                        mostrar = false;
-                    }
-                    
-                    log.style.display = mostrar ? 'block' : 'none';
-                });
-                
-                // Mostrar/ocultar seções de tabela baseado nos filtros
-                const secoes = document.querySelectorAll('.tabela-section');
-                secoes.forEach(secao => {
-                    const logsVisiveis = secao.querySelectorAll('.log-entry[style*="display: block"], .log-entry:not([style*="display: none"])');
-                    if (logsVisiveis.length === 0) {
-                        secao.style.display = 'none';
-                    } else {
-                        secao.style.display = 'block';
-                    }
-                });
+        document.querySelectorAll('.log-entry').forEach(entry => {
+            if (entry.offsetParent !== null) {  // Verifica se o elemento está visível
+                const operacao = entry.dataset.operacao;
+                if (operacao === "INSERT") qtdInsert++;
+                if (operacao === "UPDATE") qtdUpdate++;
+                if (operacao === "DELETE") qtdDelete++;
             }
-            
-            // Filtrar automaticamente ao carregar a página
-            document.addEventListener('DOMContentLoaded', function() {
-                filtrarLogs();
-                
-                // Mostrar mensagem de sucesso se o sistema foi configurado
-                if (document.querySelector('.no-logs')) {
-                    Swal.fire({
-                        title: 'Sistema de Auditoria Ativo! 🎉',
-                        text: 'Todos os triggers foram criados com sucesso. O sistema está capturando operações automaticamente.',
-                        icon: 'success',
-                        confirmButtonText: 'Entendi',
-                        confirmButtonColor: '#ffbcfc'
-                    });
+        });
+
+        const ctx = document.getElementById("graficoOperacoes").getContext("2d");
+        if (grafico) grafico.destroy();
+
+        grafico = new Chart(ctx, {
+            type: "pie",
+            data: {
+                labels: ["Cadastrados", "Alterados", "Excluídos"],
+                datasets: [{
+                    data: [qtdInsert, qtdUpdate, qtdDelete],
+                    backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: "bottom" }
                 }
-            });
-        </script>
+            }
+        });
+    }
+
+    function filtrarPorOperacao(operacao) {
+        document.querySelectorAll('.operacao-card').forEach(card => card.classList.remove('active'));
+
+        const clickedCard = event.currentTarget;
+        clickedCard.classList.add('active');
+
+        document.querySelectorAll('.log-entry').forEach(entry => {
+            const operacaoMatch = operacao === 'TODOS' || entry.dataset.operacao === operacao;
+            const estaVisivelTabela = entry.closest('.tabela-section')?.style.display !== 'none';
+
+            entry.style.display = (operacaoMatch && estaVisivelTabela) ? 'block' : 'none';
+        });
+
+        atualizarGrafico();
+    }
+
+    function mostrarTabela(tabelaNome) {
+        document.querySelectorAll('.tabela-section').forEach(secao => {
+            const contemTabela = secao.querySelectorAll('.log-entry[data-tabela="' + tabelaNome + '"]').length > 0;
+            secao.style.display = contemTabela ? 'block' : 'none';
+        });
+
+        document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        // Mostrar todas as operações da tabela
+        document.querySelectorAll('.log-entry').forEach(entry => {
+            entry.style.display = (entry.dataset.tabela === tabelaNome) ? 'block' : 'none';
+        });
+
+        atualizarGrafico();
+    }
+
+    function mostrarTodasTabelas() {
+        document.querySelectorAll('.tabela-section').forEach(secao => secao.style.display = 'block');
+
+        document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        document.querySelectorAll('.log-entry').forEach(entry => {
+            entry.style.display = 'block';
+        });
+
+        atualizarGrafico();
+    }
+
+    // Inicializa o gráfico ao carregar a página
+    window.onload = () => {
+        atualizarGrafico();
+    };
+</script>
+
     </body>
     </html>
