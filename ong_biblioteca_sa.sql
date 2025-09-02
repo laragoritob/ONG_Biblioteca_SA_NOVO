@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 28/08/2025 às 18:38
+-- Tempo de geração: 02/09/2025 às 18:45
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -42,6 +42,38 @@ INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`) VALUES
 (1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com'),
 (2, 'Collen Hoover', '(28) 47286-2786', 'collenhoover@gmail.com');
 
+--
+-- Acionadores `autor`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_autor_delete_audit` BEFORE DELETE ON `autor` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
+             VALUES ('autor', 'DELETE', OLD.Cod_Autor,
+                     CONCAT('Nome: ', OLD.Nome_Autor),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `tr_autor_insert_audit` AFTER INSERT ON `autor` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
+             VALUES ('autor', 'INSERT', NEW.Cod_Autor, 
+                     CONCAT('Nome: ', NEW.Nome_Autor),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `tr_autor_update_audit` AFTER UPDATE ON `autor` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
+             VALUES ('autor', 'UPDATE', NEW.Cod_Autor,
+                     CONCAT('Nome: ', OLD.Nome_Autor),
+                     CONCAT('Nome: ', NEW.Nome_Autor),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -75,6 +107,38 @@ INSERT INTO `cliente` (`Cod_Cliente`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sex
 (2, 1, 'Guilherme Vinicius Schwarz', '928.759.274-87', 'guilhermevinicius@gmail.com', 'Ma', 'Johnny Schwarz', '(87) 53386-5862', '2007-08-17', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 0x6c6f676f5f7472616e732e706e67),
 (3, 1, 'Ian Lucas Borba', '985.672.685-78', 'ianlucas@gmail.com', 'Masculino', 'Joice Cristina dos Santos Borba', '(47) 99685-5520', '2009-03-10', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 342, 0x6c6f676f5f7472616e732e706e67),
 (4, 2, 'TESTE', '287.352.976-28', 'teste@gmail.com', 'Feminino', 'UAEHFAHFKAFAFAFAFAFAFAFAF', '(32) 33684-9384', '2025-08-27', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 1234, 0x6c6f676f75742e6a7067);
+
+--
+-- Acionadores `cliente`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_cliente_delete_audit` BEFORE DELETE ON `cliente` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
+             VALUES ('cliente', 'DELETE', OLD.Cod_Cliente,
+                     CONCAT('Nome: ', OLD.Nome),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `tr_cliente_insert_audit` AFTER INSERT ON `cliente` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
+             VALUES ('cliente', 'INSERT', NEW.Cod_Cliente, 
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `tr_cliente_update_audit` AFTER UPDATE ON `cliente` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
+             VALUES ('cliente', 'UPDATE', NEW.Cod_Cliente,
+                     CONCAT('Nome: ', OLD.Nome),
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -138,6 +202,38 @@ CREATE TABLE `emprestimo` (
 INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`) VALUES
 (1, 2, 1, '2025-08-13', '2025-07-31');
 
+--
+-- Acionadores `emprestimo`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_emprestimo_delete_audit` BEFORE DELETE ON `emprestimo` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
+             VALUES ('emprestimo', 'DELETE', OLD.Cod_Emprestimo,
+                     CONCAT('Cliente: ', OLD.Cod_Cliente),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `tr_emprestimo_insert_audit` AFTER INSERT ON `emprestimo` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
+             VALUES ('emprestimo', 'INSERT', NEW.Cod_Emprestimo, 
+                     CONCAT('Cliente: ', NEW.Cod_Cliente),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `tr_emprestimo_update_audit` AFTER UPDATE ON `emprestimo` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
+             VALUES ('emprestimo', 'UPDATE', NEW.Cod_Emprestimo,
+                     CONCAT('Cliente: ', OLD.Cod_Cliente),
+                     CONCAT('Cliente: ', NEW.Cod_Cliente),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -172,6 +268,38 @@ CREATE TABLE `funcionario` (
 INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Foto`) VALUES
 (5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', ''),
 (7, 3, 'Bruno Henrique Ribeiro', '568.328.325-62', 'brunohribeiro@gmail.com', 'Masculino', '(27) 83562-3856', '2009-03-11', '2025-08-27', '82640-490', 'PR', 'Curitiba', 'Santa Cândida', 'Praça Semen Uniga', 1234, 'bruno_ribeiro', '$2y$10$CHOY/49469q7u', 0x6b61747970657272792e6a7067);
+
+--
+-- Acionadores `funcionario`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_funcionario_delete_audit` BEFORE DELETE ON `funcionario` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
+             VALUES ('funcionario', 'DELETE', OLD.Cod_Funcionario,
+                     CONCAT('Nome: ', OLD.Nome),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `tr_funcionario_insert_audit` AFTER INSERT ON `funcionario` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
+             VALUES ('funcionario', 'INSERT', NEW.Cod_Funcionario, 
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `tr_funcionario_update_audit` AFTER UPDATE ON `funcionario` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
+             VALUES ('funcionario', 'UPDATE', NEW.Cod_Funcionario,
+                     CONCAT('Nome: ', OLD.Nome),
+                     CONCAT('Nome: ', NEW.Nome),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -227,6 +355,56 @@ CREATE TABLE `livro` (
 
 INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`) VALUES
 (1, 1, 1, 1, 5, 'Harry Potter', '2025-08-12', '2025-08-27', 10, '3', 0x6c6f676f5f7472616e732e706e67);
+
+--
+-- Acionadores `livro`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_livro_delete_audit` BEFORE DELETE ON `livro` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
+             VALUES ('livro', 'DELETE', OLD.Cod_Livro,
+                     CONCAT('Título: ', OLD.Titulo),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `tr_livro_insert_audit` AFTER INSERT ON `livro` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
+             VALUES ('livro', 'INSERT', NEW.Cod_Livro, 
+                     CONCAT('Título: ', NEW.Titulo),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `tr_livro_update_audit` AFTER UPDATE ON `livro` FOR EACH ROW BEGIN
+             INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
+             VALUES ('livro', 'UPDATE', NEW.Cod_Livro,
+                     CONCAT('Título: ', OLD.Titulo),
+                     CONCAT('Título: ', NEW.Titulo),
+                     @usuario_sistema, @ip_usuario);
+         END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `logs_auditoria`
+--
+
+CREATE TABLE `logs_auditoria` (
+  `id` int(11) NOT NULL,
+  `tabela` varchar(50) NOT NULL,
+  `operacao` enum('INSERT','UPDATE','DELETE') NOT NULL,
+  `id_registro` int(11) NOT NULL,
+  `dados_anteriores` text DEFAULT NULL,
+  `dados_novos` text DEFAULT NULL,
+  `usuario` varchar(100) DEFAULT NULL,
+  `data_operacao` timestamp NOT NULL DEFAULT current_timestamp(),
+  `ip_usuario` varchar(45) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -343,6 +521,15 @@ ALTER TABLE `livro`
   ADD KEY `fk_Cod_Genero` (`Cod_Genero`);
 
 --
+-- Índices de tabela `logs_auditoria`
+--
+ALTER TABLE `logs_auditoria`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_data_operacao` (`data_operacao`),
+  ADD KEY `idx_tabela` (`tabela`),
+  ADD KEY `idx_operacao` (`operacao`);
+
+--
 -- Índices de tabela `multa`
 --
 ALTER TABLE `multa`
@@ -412,6 +599,12 @@ ALTER TABLE `genero`
 --
 ALTER TABLE `livro`
   MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de tabela `logs_auditoria`
+--
+ALTER TABLE `logs_auditoria`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `multa`
