@@ -25,7 +25,7 @@
         $perfil = $_POST['perfil'];
         $data_efetivacao = $_POST['data_efetivacao'];
         $usuario = $_POST['usuario'];
-        $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+        $senha = $_POST['senha'];
         $foto = $_POST['foto'];
 
         $sql = "INSERT INTO funcionario (cod_perfil, nome, cpf, sexo, email, telefone, data_nascimento, data_efetivacao, cep, uf, cidade, bairro, rua, num_residencia, usuario, senha, foto) 
