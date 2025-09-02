@@ -15,12 +15,6 @@
         $stmt = $pdo->prepare("SELECT * FROM funcionario WHERE senha_temporaria = :codigo LIMIT 1");
         $stmt->bindParam(':codigo', $codigo, PDO::PARAM_STR);
         $stmt->execute();
-
-        if ($stmt->rowCount() > 0) {
-            // Código válido → redireciona para a tela de redefinição
-            header("Location: alterar_senha.php");
-            exit();
-        }
     } catch (PDOException $e) {
         echo "Erro ao consultar o código: " . $e->getMessage();
     }
@@ -51,7 +45,7 @@
 
     <main class="main-content">
         <div class="container">
-            <form class="formulario" id="form_pessoal" action="codigo_verificacao.php" method="post" onsubmit="return validaFormulario()">
+            <form class="formulario" id="form_pessoal" action="alterar_senha.php" method="post" onsubmit="return validaFormulario()">
                 <p style="text-align: center;">Enviamos um código de 5 dígitos para seu e-mail!</p>
                 <br>
                 <div class="verification-inputs">

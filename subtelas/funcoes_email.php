@@ -12,6 +12,6 @@
         $registro = "Para: $destinatario\n$mensagem\n----------------------\n";
 
         // Salva o "e-mail enviado" em um arquivo de texto para testes
-        file_put_contents("../emails_simulados.txt", $registro, FILE_APPEND);
+        file_put_contents("emails_simulados.txt", $registro, FILE_APPEND);
     }
 ?>
