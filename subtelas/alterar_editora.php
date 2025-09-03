@@ -88,12 +88,12 @@
                 $stmt_update->bindParam(':id', $id);
                 
                 if ($stmt_update->execute()) {
-                    $sucesso = "success";
+                    $sucesso = "Editora alterada com sucesso!";
                     // Recarregar dados do editora
                     $stmt->execute();
                     $editora = $stmt->fetch(PDO::FETCH_ASSOC);
                 } else {
-                    $erro = "error";
+                    $erro = "Erro ao alterar editora";
                 }
             } catch (PDOException $e) {
                 $erro = "Erro ao alterar editora: " . $e->getMessage();
@@ -198,22 +198,38 @@
 <script src="subtelas_javascript/validaCadastro.js"></script>
 <script src="subtelas_javascript/sidebar.js"></script>
 
-<script src="subtelas_javascript/notification-modal.js"></script>
 <script>
     // Mostrar notificações baseadas no PHP
-    <?php if (isset($sucesso) && $sucesso === "success"): ?>
+    <?php if (isset($sucesso)): ?>
         document.addEventListener('DOMContentLoaded', function() {
-            showNotification('success', 'Sucesso!', 'Editora alterada com sucesso!');
-            // Redirecionar após 2 segundos
-            setTimeout(function() {
-                window.location.href = 'consultar_editora.php';
-            }, 2000);
+            Swal.fire({
+                title: 'Sucesso!',
+                text: '<?= addslashes($sucesso) ?>',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                    title: 'swal2-title-arial',
+                    confirmButton: 'swal2-confirm'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'consultar_editora.php';
+                }
+            });
         });
     <?php endif; ?>
 
-    <?php if (isset($erro) && $erro === "error"): ?>
+    <?php if (isset($erro)): ?>
         document.addEventListener('DOMContentLoaded', function() {
-            showNotification('error', 'Erro!', 'Erro ao alterar editora. Tente novamente.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro!',
+                text: '<?= addslashes($erro) ?>',
+                customClass: {
+                    title: 'swal2-title-arial',
+                    confirmButton: 'swal2-confirm'
+                }
+            });
         });
     <?php endif; ?>
 </script>

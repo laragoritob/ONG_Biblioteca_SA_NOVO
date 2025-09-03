@@ -2,39 +2,42 @@
 session_start();
 require_once '../conexao.php';
 
-// Inicializar variáveis de notificação
-$sucesso = null;
-$erro = null;
+// Verificar se é uma confirmação ou execução
+$confirmado = isset($_GET['confirmado']) && $_GET['confirmado'] === 'true';
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
 
-    try {
-        // Primeiro verificar se o doador existe
-        $sql_check = "SELECT Nome_Doador FROM doador WHERE Cod_Doador = :id";
-        $stmt_check = $pdo->prepare($sql_check);
-        $stmt_check->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt_check->execute();
-        
-        $doador = $stmt_check->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$doador) {
-            $erro = "Doador não encontrado!";
-        } else {
-            // Excluir o doador
-            $sql = "DELETE FROM doador WHERE Cod_Doador = :id";
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-            if ($stmt->execute()) {
-                $sucesso = "Doador " . htmlspecialchars($doador['Nome_Doador']) . " excluído com sucesso!";
+    if ($confirmado) {
+        // Executar a exclusão
+        try {
+            // Primeiro verificar se o doador existe
+            $sql_check = "SELECT Nome_Doador FROM doador WHERE Cod_Doador = :id";
+            $stmt_check = $pdo->prepare($sql_check);
+            $stmt_check->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt_check->execute();
+            
+            $doador = $stmt_check->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$doador) {
+                $erro = "Doador não encontrado!";
             } else {
-                $erro = "Erro ao excluir doador.";
+                // Excluir o doador
+                $sql = "DELETE FROM doador WHERE Cod_Doador = :id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+                if ($stmt->execute()) {
+                    $sucesso = "Doador " . htmlspecialchars($doador['Nome_Doador']) . " excluído com sucesso!";
+                } else {
+                    $erro = "Erro ao excluir doador.";
+                }
             }
+        } catch (PDOException $e) {
+            $erro = "Erro ao excluir doador: " . $e->getMessage();
         }
-    } catch (PDOException $e) {
-        $erro = "Erro ao excluir doador: " . $e->getMessage();
     }
+    // Se não for confirmado, apenas mostrar a confirmação
 } else {
     $erro = "ID do doador não informado!";
 }
@@ -81,11 +84,32 @@ if (isset($_GET['id'])) {
             outline: 2px solid #6366f1 !important;
             outline-offset: 2px !important;
         }
+        
+        .swal2-cancel {
+            background: #dc2626 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 0.5rem !important;
+            padding: 0.75rem 1.5rem !important;
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+        }
+        
+        .swal2-cancel:hover {
+            background: #b91c1c !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+        }
     </style>
 </head>
 <body>
     <script>
-        // Mostrar notificações baseadas no PHP
+        // Aguardar o SweetAlert2 carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar notificações baseadas no PHP
         <?php if (isset($sucesso)): ?>
             Swal.fire({
                 icon: 'success',
@@ -117,6 +141,35 @@ if (isset($_GET['id'])) {
                 window.location.href = 'consultar_doador.php';
             });
         <?php endif; ?>
+        
+        // Se não houver sucesso nem erro, mostrar confirmação
+        <?php if (!isset($sucesso) && !isset($erro)): ?>
+            Swal.fire({
+                title: 'Confirmar Exclusão',
+                html: 'Tem certeza que deseja excluir este doador?<br><br><strong>Esta ação não pode ser desfeita!</strong>',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, Excluir',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                customClass: {
+                    title: 'swal2-title-arial',
+                    htmlContainer: 'swal2-html-arial',
+                    confirmButton: 'swal2-confirm',
+                    cancelButton: 'swal2-cancel'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirecionar para a exclusão com confirmação
+                    window.location.href = 'excluir_doador.php?id=<?= $id ?>&confirmado=true';
+                } else {
+                    // Cancelar e voltar para consulta
+                    window.location.href = 'consultar_doador.php';
+                }
+            });
+        <?php endif; ?>
+        });
     </script>
 </body>
 </html>

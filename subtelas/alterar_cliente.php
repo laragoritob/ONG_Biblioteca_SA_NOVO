@@ -174,15 +174,15 @@
                 $stmt_update->bindParam(':id', $id);
                 
                 if ($stmt_update->execute()) {
-                    $sucesso = "success";
+                    $sucesso = "Cliente alterado com sucesso!";
                     // Recarregar dados do Cliente
                     $stmt->execute();
                     $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
                 } else {
-                    $erro = "error";
+                    $erro = "Erro ao alterar cliente";
                 }
             } catch (PDOException $e) {
-                $erro = "error";
+                $erro = "Erro ao alterar cliente: " . $e->getMessage();
             }
         }
     }
@@ -451,23 +451,38 @@
 </body>
     <script src="subtelas_javascript/validaAlterar.js"></script>
     <script src="subtelas_javascript/sidebar.js"></script>
-    <script src="subtelas_javascript/notification-modal.js"></script>
-
     <script>
         // Mostrar notificações baseadas no PHP
-        <?php if (isset($sucesso) && $sucesso === "success"): ?>
+        <?php if (isset($sucesso)): ?>
             document.addEventListener('DOMContentLoaded', function() {
-                showNotification('success', 'Sucesso!', 'Cliente alterado com sucesso!');
-                // Redirecionar após 2 segundos
-                setTimeout(function() {
-                    window.location.href = 'consultar_cliente.php';
-                }, 2000);
+                Swal.fire({
+                    title: 'Sucesso!',
+                    text: '<?= addslashes($sucesso) ?>',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        title: 'swal2-title-arial',
+                        confirmButton: 'swal2-confirm'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'consultar_cliente.php';
+                    }
+                });
             });
         <?php endif; ?>
 
-        <?php if (isset($erro) && $erro === "error"): ?>
+        <?php if (isset($erro)): ?>
             document.addEventListener('DOMContentLoaded', function() {
-                showNotification('error', 'Erro!', 'Erro ao alterar cliente. Tente novamente.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: '<?= addslashes($erro) ?>',
+                    customClass: {
+                        title: 'swal2-title-arial',
+                        confirmButton: 'swal2-confirm'
+                    }
+                });
             });
         <?php endif; ?>
     </script>

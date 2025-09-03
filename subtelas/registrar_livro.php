@@ -76,8 +76,43 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
-    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .swal2-title-arial {
+            font-family: Arial, sans-serif !important;
+            font-weight: bold !important;
+        }
+        
+        .swal2-html-arial {
+            font-family: Arial, sans-serif !important;
+            font-size: 16px !important;
+        }
+        
+        /* Estilo dos botões igual ao cadastro_funcionario */
+        .swal2-confirm {
+            background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 0.5rem !important;
+            padding: 0.75rem 1.5rem !important;
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+        }
+        
+        .swal2-confirm:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+        }
+        
+        .swal2-confirm:focus {
+            outline: 2px solid #6366f1 !important;
+            outline-offset: 2px !important;
+        }
+    </style>
 </head>
 <body>
     <div class="page-wrapper">
@@ -328,19 +363,36 @@
     <script src="subtelas_javascript/validaLivro.js"></script>
     <script src="subtelas_javascript/buscarID.js"></script>
     <script src="subtelas_javascript/sidebar.js"></script>
-    <script src="subtelas_javascript/notification-modal.js"></script>
     
     <script>
         // Mostrar notificações baseadas no PHP
         <?php if (isset($sucesso)): ?>
             document.addEventListener('DOMContentLoaded', function() {
-                showNotification('success', 'Sucesso!', '<?= addslashes($sucesso) ?>');
+                Swal.fire({
+                    title: 'Sucesso!',
+                    text: '<?= addslashes($sucesso) ?>',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        title: 'swal2-title-arial',
+                        confirmButton: 'swal2-confirm'
+                    }
+                });
             });
         <?php endif; ?>
         
         <?php if (isset($erro)): ?>
             document.addEventListener('DOMContentLoaded', function() {
-                showNotification('error', 'Erro!', '<?= addslashes($erro) ?>');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: '<?= addslashes($erro) ?>',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        title: 'swal2-title-arial',
+                        confirmButton: 'swal2-confirm'
+                    }
+                });
             });
         <?php endif; ?>
     </script>

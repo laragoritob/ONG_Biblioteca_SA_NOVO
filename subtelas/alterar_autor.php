@@ -332,18 +332,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     </script>
     
-    <script src="subtelas_javascript/notification-modal.js"></script>
     <script>
         // Mostrar notificações baseadas no PHP
         <?php if (isset($sucesso)): ?>
             document.addEventListener('DOMContentLoaded', function() {
-                showNotification('success', 'Sucesso!', '<?= addslashes($sucesso) ?>');
+                Swal.fire({
+                    title: 'Sucesso!',
+                    text: '<?= addslashes($sucesso) ?>',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        title: 'swal2-title-arial',
+                        confirmButton: 'swal2-confirm'
+                    }
+                });
             });
         <?php endif; ?>
         
         <?php if (isset($erro)): ?>
             document.addEventListener('DOMContentLoaded', function() {
-                showNotification('error', 'Erro!', '<?= addslashes($erro) ?>');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: '<?= addslashes($erro) ?>',
+                    customClass: {
+                        title: 'swal2-title-arial',
+                        confirmButton: 'swal2-confirm'
+                    }
+                });
             });
         <?php endif; ?>
     </script>

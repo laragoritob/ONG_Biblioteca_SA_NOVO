@@ -214,13 +214,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="container">
                     <form class="formulario" method="POST" action="">
                     <?php if (isset($erro)): ?>
-                        <div class="alert alert-error" style="background: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #fecaca;">
+                        <div class="alert alert-error" style="display: none;">
                             <?= htmlspecialchars($erro) ?>
                         </div>
                     <?php endif; ?>
 
                     <?php if (isset($sucesso)): ?>
-                        <div class="alert alert-success" style="background: #dcfce7; color: #16a34a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #bbf7d0;">
+                        <div class="alert alert-success" style="display: none;">
                             <?= htmlspecialchars($sucesso) ?>
                         </div>
                     <?php endif; ?>
@@ -522,5 +522,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 return false;
             }
         });
+
+        // Mostrar notificações baseadas no PHP
+        <?php if (isset($sucesso)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Sucesso!',
+                    text: '<?= addslashes($sucesso) ?>',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        title: 'swal2-title-arial',
+                        confirmButton: 'swal2-confirm'
+                    }
+                });
+            });
+        <?php endif; ?>
+        
+        <?php if (isset($erro)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: '<?= addslashes($erro) ?>',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        title: 'swal2-title-arial',
+                        confirmButton: 'swal2-confirm'
+                    }
+                });
+            });
+        <?php endif; ?>
+    </script>
 </body>
 </html>
