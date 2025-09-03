@@ -1,11 +1,11 @@
 <?php
-session_start();
-require_once '../conexao.php';
+  session_start();
+  require_once '../conexao.php';
 
-if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
-    }
+  if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2) {
+          echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+          exit();
+      }
 
     // Determina a página de "voltar" dependendo do perfil do usuário
     switch ($_SESSION['perfil']) {
