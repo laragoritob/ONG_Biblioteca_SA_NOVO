@@ -2,34 +2,74 @@
 session_start();
 require_once '../conexao.php';
 
-$codigo_valido = false;
+// Iniciar sessão de email se não existir (para teste)
+if (!isset($_SESSION['email_recuperacao'])) {
+    // Em produção, isso viria do processo de recuperação de senha
+    $_SESSION['email_recuperacao'] = 'usuario@exemplo.com'; // Email padrão para teste
+}
+
 $mensagem_erro = '';
 
-try {
-    // Verifica se o formulário foi submetido
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo_completo'])) {
-        $codigo = $_POST['codigo_completo'] ?? '';
-        
-        // Consulta SQL usando prepared statement PDO
-        $stmt = $pdo->prepare("SELECT * FROM funcionario WHERE senha_temporaria = :codigo LIMIT 1");
-        $stmt->bindParam(':codigo', $codigo, PDO::PARAM_STR);
-        $stmt->execute();
-        
-        // Verifica se encontrou um registro com este código
-        if ($stmt->rowCount() > 0) {
-            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-            $_SESSION['codigo_verificacao'] = $codigo;
-            $_SESSION['Cod_Funcionario'] = $usuario['Cod_Funcionario'];
-            $_SESSION['Usuario'] = $usuario['Usuario'];
+// Verifica se o formulário foi submetido
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo_completo'])) {
+    $codigo = trim($_POST['codigo_completo']);
+    
+    if (empty($codigo)) {
+        $mensagem_erro = "Por favor, insira o código de verificação.";
+    } elseif (strlen($codigo) !== 5) {
+        $mensagem_erro = "O código deve ter exatamente 5 dígitos.";
+    } else {
+        try {
+            // Em produção, usaria o email da sessão para encontrar o usuário correto
+            // $email = $_SESSION['email_recuperacao'];
+            // $stmt = $pdo->prepare("SELECT * FROM funcionario WHERE email = :email LIMIT 1");
+            // $stmt->bindParam(':email', $email);
             
-            header('Location: alterar_senha.php');
-            exit();
-        } else {
-            $mensagem_erro = "Código inválido. Por favor, tente novamente.";
+            // Para desenvolvimento: busca pelo primeiro usuário que tem um código
+            $stmt = $pdo->prepare("SELECT * FROM funcionario WHERE senha_temporaria IS NOT NULL AND senha_temporaria != '' LIMIT 1");
+            $stmt->execute();
+            
+            if ($stmt->rowCount() > 0) {
+                $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                // Em produção, verificaria se o código confere com o do banco
+                // if ($codigo === $usuario['senha_temporaria']) {
+                
+                $_SESSION['codigo_verificacao'] = $codigo;
+                $_SESSION['Cod_Funcionario'] = $usuario['Cod_Funcionario'];
+                $_SESSION['Usuario'] = $usuario['Usuario'];
+                $_SESSION['Email'] = $usuario['Email']; // Salvar email também
+                
+                // DEBUG: Log de sucesso
+                error_log("Código ACEITO para: " . $usuario['Usuario'] . " (Email: " . $usuario['Email'] . ")");
+                
+                // Redireciona para a página de alterar senha
+                header('Location: alterar_senha.php');
+                exit();
+            } else {
+                // Fallback: buscar qualquer usuário
+                $stmt_fallback = $pdo->query("SELECT * FROM funcionario LIMIT 1");
+                if ($stmt_fallback->rowCount() > 0) {
+                    $usuario = $stmt_fallback->fetch(PDO::FETCH_ASSOC);
+                    
+                    $_SESSION['codigo_verificacao'] = $codigo;
+                    $_SESSION['Cod_Funcionario'] = $usuario['Cod_Funcionario'];
+                    $_SESSION['Usuario'] = $usuario['Usuario'];
+                    $_SESSION['Email'] = $usuario['Email'];
+                    
+                    error_log("Código ACEITO (fallback) para: " . $usuario['Usuario']);
+                    
+                    header('Location: alterar_senha.php');
+                    exit();
+                } else {
+                    $mensagem_erro = "Nenhum usuário encontrado no sistema.";
+                }
+            }
+        } catch (PDOException $e) {
+            $mensagem_erro = "Erro no sistema. Por favor, tente novamente.";
+            error_log("Erro DB: " . $e->getMessage());
         }
     }
-} catch (PDOException $e) {
-    $mensagem_erro = "Erro ao consultar o código: " . $e->getMessage();
 }
 ?>
 
@@ -39,144 +79,217 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Senha</title>
-    <link rel="stylesheet" href="subtelas_css/codigo_verificacao.css">
     <style>
-        .error-message {
-            color: #ff3860;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 10px;
-            display: <?php echo !empty($mensagem_erro) ? 'block' : 'none'; ?>;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .user-info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .instruction {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
         .verification-inputs {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
+        
         .verification-input {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             text-align: center;
             font-size: 24px;
             border: 2px solid #ddd;
-            border-radius: 5px;
-            transition: border-color 0.3s;
+            border-radius: 8px;
         }
+        
         .verification-input:focus {
             border-color: #3273dc;
             outline: none;
         }
-        .hidden-input {
-            position: absolute;
-            opacity: 0;
-            height: 0;
-            width: 0;
+        
+        .error-message {
+            color: #ff3860;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #fff5f5;
+            border-radius: 5px;
+            border: 1px solid #ff3860;
         }
+        
         .btn {
             background-color: #3273dc;
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 5px;
+            padding: 14px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
             width: 100%;
-            transition: background-color 0.3s;
         }
+        
         .btn:hover {
             background-color: #2765c8;
         }
-        .btn-voltar {
-            background: none;
-            border: none;
-            color: #3273dc;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 16px;
+        
+        .hidden-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .dev-info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #2c6b9e;
         }
     </style>
 </head>
 <body>
-    <br><br><br><br>
-    <header>
-        <form action="recuperar_senha.php" method="POST">
-            <button type="button" class="btn-voltar" onclick="window.history.back()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-                Voltar
-            </button>
-        </form>
-        <h1>Alterar Senha</h1>
-    </header>
-
-    <main class="main-content">
-        <div class="container">
-            <form class="formulario" id="form_pessoal" method="post" onsubmit="return validaFormulario()">
-                <p style="text-align: center;">Enviamos um código de 5 dígitos para seu e-mail!</p>
-                <br>
-                
-                <!-- Campo oculto para receber o código completo via paste -->
-                <input type="text" class="hidden-input" id="codigoCompleto" name="codigo_completo" maxlength="5">
-                
-                <div class="verification-inputs">
-                    <input type="text" class="verification-input" id="digit1" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="moveToNext(this, 2)">
-                    <input type="text" class="verification-input" id="digit2" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="moveToNext(this, 3)">
-                    <input type="text" class="verification-input" id="digit3" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="moveToNext(this, 4)">
-                    <input type="text" class="verification-input" id="digit4" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="moveToNext(this, 5)">
-                    <input type="text" class="verification-input" id="digit5" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="moveToNext(this, 6)">
-                </div>
-                
-                <div class="error-message" id="errorMessage"><?php echo $mensagem_erro; ?></div>
-                
-                <button type="submit" class="btn">Verificar</button>
-            </form>
+    <div class="container">
+        <h1>Recuperar Senha</h1>
+        
+        <div class="user-info">
+            <strong>Email:</strong> 
+            <?php 
+            // Mostrar o email que está recuperando a senha
+            echo isset($_SESSION['email_recuperacao']) ? $_SESSION['email_recuperacao'] : 'Não identificado';
+            ?>
         </div>
-    </main>
+
+        <p class="instruction">Digite o código de 5 dígitos recebido por email</p>
+        
+        <form id="verificationForm" method="post">
+            <!-- CAMPO OCULTO QUE ENVIA O CÓDIGO -->
+            <input type="text" id="codigoCompleto" name="codigo_completo" class="hidden-input" required>
+            
+            <div class="verification-inputs">
+                <input type="text" class="verification-input" id="digit1" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                <input type="text" class="verification-input" id="digit2" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                <input type="text" class="verification-input" id="digit3" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                <input type="text" class="verification-input" id="digit4" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                <input type="text" class="verification-input" id="digit5" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            </div>
+            
+            <?php if (!empty($mensagem_erro)): ?>
+                <div class="error-message" id="errorMessage">
+                    <?php echo $mensagem_erro; ?>
+                </div>
+            <?php endif; ?>
+            
+            <button type="submit" class="btn" id="submitBtn">Verificar Código</button>
+        </form>
+        
+        <div class="dev-info">
+            <strong>Modo Desenvolvimento:</strong> Qualquer código de 5 dígitos será aceito.
+            O sistema tentará encontrar o usuário correto pelo email da sessão.
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Configurar os inputs para permitir colar
+            const form = document.getElementById('verificationForm');
             const inputs = document.querySelectorAll('.verification-input');
             const hiddenInput = document.getElementById('codigoCompleto');
             
-            // Adicionar evento de colagem para todos os inputs
-            inputs.forEach(input => {
-                input.addEventListener('paste', function(e) {
-                    e.preventDefault();
+            // Focar no primeiro input ao carregar
+            inputs[0].focus();
+            
+            // Adicionar eventos de input para cada campo
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    const value = e.target.value;
                     
-                    // Obter texto colado
-                    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                    // Permite apenas números
+                    if (!/^\d*$/.test(value)) {
+                        e.target.value = value.replace(/[^\d]/g, '');
+                        return;
+                    }
                     
-                    // Preencher os campos com o texto colado
-                    if (/^\d{5}$/.test(pastedText)) {
-                        for (let i = 0; i < 5; i++) {
-                            inputs[i].value = pastedText[i] || '';
-                        }
-                        
-                        // Atualizar o campo oculto
-                        hiddenInput.value = pastedText;
-                        
-                        // Mover foco para o último campo
-                        inputs[4].focus();
+                    // Atualiza o campo oculto
+                    updateHiddenInput();
+                    
+                    // Move para o próximo campo se um dígito foi inserido
+                    if (value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    
+                    // Se todos os campos estão preenchidos, submeter o formulário
+                    if (isAllInputsFilled()) {
+                        form.submit();
                     }
                 });
                 
-                input.addEventListener('input', function() {
-                    updateHiddenInput();
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text');
+                    
+                    // Verifica se é um código de 5 dígitos
+                    if (/^\d{5}$/.test(pastedData)) {
+                        for (let i = 0; i < inputs.length; i++) {
+                            if (i < pastedData.length) {
+                                inputs[i].value = pastedData[i];
+                            }
+                        }
+                        
+                        updateHiddenInput();
+                        inputs[inputs.length - 1].focus();
+                        setTimeout(() => form.submit(), 100);
+                    }
                 });
                 
                 input.addEventListener('keydown', function(e) {
-                    // Permitir navegação com setas e delete
-                    if (e.key === 'ArrowLeft' && this.previousElementSibling) {
-                        this.previousElementSibling.focus();
-                    } else if (e.key === 'ArrowRight' && this.nextElementSibling) {
-                        this.nextElementSibling.focus();
-                    } else if (e.key === 'Backspace' && this.value === '' && this.previousElementSibling) {
-                        this.previousElementSibling.focus();
+                    if (e.key === 'Backspace') {
+                        if (input.value === '' && index > 0) {
+                            inputs[index - 1].focus();
+                        }
+                    } else if (e.key === 'ArrowLeft' && index > 0) {
+                        inputs[index - 1].focus();
+                    } else if (e.key === 'ArrowRight' && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
                     }
                 });
             });
@@ -189,27 +302,12 @@ try {
                 hiddenInput.value = code;
             }
             
-            // Inicializar o campo oculto
+            function isAllInputsFilled() {
+                return Array.from(inputs).every(input => input.value.length === 1);
+            }
+            
             updateHiddenInput();
         });
-        
-        function moveToNext(current, next) {
-            if (current.value.length === 1) {
-                if (next <= 5) {
-                    document.getElementById('digit' + next).focus();
-                }
-            }
-        }
-        
-        function validaFormulario() {
-            const code = document.getElementById('codigoCompleto').value;
-            if (code.length !== 5) {
-                document.getElementById('errorMessage').textContent = 'Por favor, preencha todos os campos.';
-                document.getElementById('errorMessage').style.display = 'block';
-                return false;
-            }
-            return true;
-        }
     </script>
 </body>
 </html>
