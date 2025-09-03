@@ -12,7 +12,7 @@
 
 // LIMITE DO CALENDÁRIO (DATA EFETIVAÇÃO) //
 document.addEventListener('DOMContentLoaded', function () {
-    const inputData = document.getElementById('dataEfetivacao');
+    const inputData = document.getElementById('dataRegistro');
     const hoje = new Date();
     const dia = String(hoje.getDate()).padStart(2, '0');
     const mes = String(hoje.getMonth() + 1).padStart(2, '0');

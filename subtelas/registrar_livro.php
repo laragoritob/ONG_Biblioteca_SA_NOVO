@@ -286,7 +286,7 @@
                                         <line x1="8" y1="2" x2="8" y2="6"/>
                                         <line x1="3" y1="10" x2="21" y2="10"/>
                                     </svg>
-                                    <input type="date" id="data_registro" name="data_registro" required placeholder="Digite a data de registro">
+                                    <input type="date" id="data_registro" id="dataRegistro" name="data_registro" required placeholder="Digite a data de registro">
                                 </div>
                             </div>
                         
