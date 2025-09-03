@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 03/09/2025 às 19:04
+-- Tempo de geração: 03/09/2025 às 22:09
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -200,17 +200,18 @@ CREATE TABLE `emprestimo` (
   `Cod_Cliente` int(11) NOT NULL,
   `Cod_Livro` int(11) NOT NULL,
   `Data_Emprestimo` date NOT NULL,
-  `Data_Devolucao` date NOT NULL
+  `Data_Devolucao` date NOT NULL,
+  `Status_Emprestimo` enum('Pendente','Devolvido') DEFAULT 'Pendente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `emprestimo`
 --
 
-INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`) VALUES
-(1, 2, 1, '2025-08-13', '2025-07-31'),
-(2, 2, 1, '2025-08-12', '2025-12-26'),
-(3, 2, 1, '2025-08-12', '2025-12-26');
+INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`, `Status_Emprestimo`) VALUES
+(1, 2, 1, '2025-08-13', '2025-07-31', 'Devolvido'),
+(2, 2, 1, '2025-08-12', '2025-12-26', 'Pendente'),
+(3, 2, 1, '2025-08-12', '2026-01-16', 'Devolvido');
 
 --
 -- Acionadores `emprestimo`
@@ -279,9 +280,9 @@ INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Emai
 (5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', ''),
 (7, 3, 'Bruno Henrique Ribeiro', '568.328.325-62', 'brunohribeiro@gmail.com', 'Masculino', '(27) 83562-3856', '2007-03-11', '2025-09-03', '82640-490', 'PR', 'Curitiba', 'Santa Cândida', 'Praça Semen Uniga', 1234, 'bruno_ribeiro', '$2y$10$CHOY/49469q7u', 0x6b61747970657272792e6a7067),
 (8, 2, 'Mason Thames', '287.352.976-28', 'masonthames@gmail.com', 'Masculino', '(87) 53386-5862', '2007-09-02', '2025-09-02', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 4, 'mason_thames', '$2y$10$3RL6IWFtjn1kr', 0x6d61736f6e6e2e6a7067),
-(9, 2, 'Mason Thames', '287.352.976-28', 'masonthames@gmail.com', 'Masculino', '(87) 53386-5862', '2025-09-02', '2025-09-02', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 4, 'mason_thames', '$2y$10$nFAc5UC/t6NYg', 0x6d61736f6e6e2e6a7067),
 (10, 5, 'Mariska', '287.352.976-28', 'mariska@gmail.com', 'Feminino', '(99) 99999-9999', '1964-01-23', '2025-09-02', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 5, 'mariska', '$2y$10$o0unCC1gdondp', 0x6d617269736b612e6a7067),
-(11, 3, 'Paula', '287.352.976-28', 'paula@gmail.com', 'Feminino', '(32) 33684-9384', '2025-09-02', '2025-09-02', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 6, 'paula_fernandes', '$2y$10$fe6rytf0jAR7k', 0x7061756c612e6a7067);
+(11, 3, 'Paula', '287.352.976-28', 'paula@gmail.com', 'Feminino', '(32) 33684-9384', '2025-09-02', '2025-09-02', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 6, 'paula_fernandes', '$2y$10$fe6rytf0jAR7k', 0x7061756c612e6a7067),
+(12, 4, 'Dwayne Johnson', '985.735.298-72', 'therock@gmail.com', 'Masculino', '(98) 46794-8766', '1972-04-02', '2025-09-03', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 'the_rock', '12345678', 0x7468655f726f636b2e6a7067);
 
 --
 -- Acionadores `funcionario`
@@ -368,7 +369,7 @@ CREATE TABLE `livro` (
 --
 
 INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`) VALUES
-(1, 1, 2, 1, 9, 'Harry Potter', '2025-08-12', '2025-08-27', 7777, '3', 0x6c6f676f5f7472616e732e706e67);
+(1, 1, 2, 1, 9, 'Harry Potter', '2025-08-12', '2025-08-27', 7778, '3', 0x6c6f676f5f7472616e732e706e67);
 
 --
 -- Acionadores `livro`
@@ -460,7 +461,19 @@ INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_
 (33, 'livro', 'UPDATE', 1, 'Título: Harry Potter', 'Título: Harry Potter', NULL, '2025-09-03 16:58:12', NULL),
 (34, 'funcionario', 'UPDATE', 8, 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'root@localhost', '2025-09-03 16:58:35', NULL),
 (35, 'funcionario', 'UPDATE', 8, 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'root@localhost', '2025-09-03 16:58:35', NULL),
-(36, 'cliente', 'UPDATE', 3, 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'root@localhost', '2025-09-03 16:58:44', NULL);
+(36, 'cliente', 'UPDATE', 3, 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'root@localhost', '2025-09-03 16:58:44', NULL),
+(37, 'funcionario', 'DELETE', 9, 'Nome: Mason Thames, Data Nascimento: 2025-09-02', NULL, 'root@localhost', '2025-09-03 17:14:42', NULL),
+(40, 'emprestimo', 'UPDATE', 1, 'Cliente: 2, Livro: 1, Data: 2025-08-13', 'Cliente: 2, Livro: 1, Data: 2025-08-13', 'root@localhost', '2025-09-03 17:43:28', NULL),
+(41, 'emprestimo', 'UPDATE', 2, 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'root@localhost', '2025-09-03 17:43:28', NULL),
+(42, 'emprestimo', 'UPDATE', 3, 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'root@localhost', '2025-09-03 17:43:28', NULL),
+(43, 'emprestimo', 'UPDATE', 3, 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'root@localhost', '2025-09-03 17:56:22', NULL),
+(44, 'emprestimo', 'UPDATE', 3, 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'root@localhost', '2025-09-03 17:56:24', NULL),
+(45, 'emprestimo', 'UPDATE', 3, 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'root@localhost', '2025-09-03 17:56:26', NULL),
+(46, 'livro', 'UPDATE', 1, 'Título: Harry Potter', 'Título: Harry Potter', NULL, '2025-09-03 17:56:33', NULL),
+(47, 'emprestimo', 'UPDATE', 3, 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'root@localhost', '2025-09-03 17:56:33', NULL),
+(48, 'funcionario', 'INSERT', 12, NULL, 'Nome: Dwayne Johnson, Data Nascimento: 1972-04-02', 'root@localhost', '2025-09-03 18:59:20', NULL),
+(49, 'livro', 'INSERT', 5, NULL, 'Título: Amor & Gelato', NULL, '2025-09-03 19:15:48', NULL),
+(50, 'livro', 'DELETE', 5, 'Título: Amor & Gelato', NULL, NULL, '2025-09-03 19:17:37', NULL);
 
 -- --------------------------------------------------------
 
@@ -656,7 +669,7 @@ ALTER TABLE `emprestimo`
 -- AUTO_INCREMENT de tabela `funcionario`
 --
 ALTER TABLE `funcionario`
-  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de tabela `genero`
@@ -668,19 +681,19 @@ ALTER TABLE `genero`
 -- AUTO_INCREMENT de tabela `livro`
 --
 ALTER TABLE `livro`
-  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de tabela `multa`
 --
 ALTER TABLE `multa`
-  MODIFY `Cod_Multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `Cod_Multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `perfil_cliente`
