@@ -95,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sexo = $_POST['sexo'];
     $telefone = trim($_POST['telefone']);
     $data_nascimento = $_POST['data_nascimento'];
-    $data_efetivacao = $_POST['data_efetivacao'];
     $cep = trim($_POST['cep']);
     $uf = $_POST['uf'];
     $cidade = trim($_POST['cidade']);
@@ -123,7 +122,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                               Sexo = :sexo,
                               Telefone = :telefone,
                               Data_Nascimento = :data_nascimento,
-                              Data_Efetivacao = :data_efetivacao,
                               CEP = :cep,
                               UF = :uf,
                               Cidade = :cidade,
@@ -141,7 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_update->bindParam(':sexo', $sexo);
             $stmt_update->bindParam(':telefone', $telefone);
             $stmt_update->bindParam(':data_nascimento', $data_nascimento);
-            $stmt_update->bindParam(':data_efetivacao', $data_efetivacao);
             $stmt_update->bindParam(':cep', $cep);
             $stmt_update->bindParam(':uf', $uf);
             $stmt_update->bindParam(':cidade', $cidade);
@@ -376,20 +373,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="input-group">
-                                <label for="data_efetivacao">Data de Efetivação</label>
-                                <div class="input-wrapper">
-                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                        <line x1="16" y1="2" x2="16" y2="6"/>
-                                        <line x1="8" y1="2" x2="8" y2="6"/>
-                                        <line x1="3" y1="10" x2="21" y2="10"/>
-                                    </svg>
-                                    <input type="date" id="data_efetivacao" name="data_efetivacao" value="<?= htmlspecialchars($funcionario['Data_Efetivacao']) ?>" required>
-                                </div>
-                            </div>
-                        </div>
                     </section>
 
                     <section class="form-section">
