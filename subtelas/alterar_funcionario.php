@@ -516,7 +516,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <script src="subtelas_javascript/validaCadastro.js"></script>
-    <script src="subtelas_javascript/sidebar.js"></script>
+
     
     <script>
         // Validação do formulário com alert de confirmação

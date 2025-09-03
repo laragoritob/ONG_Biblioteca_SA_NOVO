@@ -196,7 +196,7 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
-    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -450,7 +450,7 @@
     </div>
 </body>
     <script src="subtelas_javascript/validaAlterar.js"></script>
-    <script src="subtelas_javascript/sidebar.js"></script>
+
     <script>
         // Mostrar notificações baseadas no PHP
         <?php if (isset($sucesso)): ?>

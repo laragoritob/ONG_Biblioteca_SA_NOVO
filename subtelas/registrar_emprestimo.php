@@ -69,7 +69,7 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
-    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
+
 
 </head>
 <body>
@@ -225,7 +225,7 @@
 </body>
     <script src="subtelas_javascript/validaCadastro.js"></script>
     <script src="subtelas_javascript/buscarID.js"></script>
-    <script src="subtelas_javascript/sidebar.js"></script>
+
     <script>
         // Função para calcular automaticamente a data de devolução
         function calcularDataDevolucao() {

@@ -259,7 +259,7 @@
     }
   </script>
   
-  <script src="subtelas_javascript/sidebar.js"></script>
+
     </div>
 </body>
 </html>
