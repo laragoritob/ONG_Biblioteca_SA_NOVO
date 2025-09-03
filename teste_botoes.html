@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste dos Botões</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div style="height: 2000px; padding: 20px;">
+        <h1>Teste dos Botões</h1>
+        <p>Este é um teste para verificar se os botões "Voltar ao topo" e "Baixar PDF" estão funcionando corretamente.</p>
+        
+        <div style="margin-top: 1000px;">
+            <h2>Conteúdo para testar o scroll</h2>
+            <p>Role para baixo para testar o botão "Voltar ao topo".</p>
+        </div>
+        
+        <!-- Botões de ação -->
+        <a href="#" class="btn-voltar" onclick="voltarAoTopo()"> Voltar para o topo ↑ </a>
+        <a href="#" class="btn-pdf" onclick="baixarPDF()"> 📄 Baixar PDF </a>
+    </div>
+
+    <script>
+        // Função para voltar ao topo da página
+        function voltarAoTopo() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Função para baixar a página como PDF
+        function baixarPDF() {
+            // Usar html2pdf.js para gerar o PDF
+            const element = document.body;
+            const opt = {
+                margin: 1,
+                filename: 'teste_botoes.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Verificar se html2pdf está disponível
+            if (typeof html2pdf !== 'undefined') {
+                html2pdf().set(opt).from(element).save();
+            } else {
+                // Fallback: abrir em nova janela para impressão
+                window.print();
+            }
+        }
+    </script>
+</body>
+</html>
