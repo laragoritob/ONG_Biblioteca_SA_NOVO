@@ -30,24 +30,76 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2) {
             break;
     }
 
-// Consulta todos os funcionários
-$sql = "SELECT
-          f.Cod_Funcionario  AS id_funcionario,
-          f.Nome             AS nome,
-          f.Data_Nascimento  AS data_nascimento,
-          f.Data_Efetivacao  AS data_efetivacao,
-          p.Nome_Perfil      AS perfil
-        FROM funcionario f
-        JOIN perfil_funcionario p ON f.Cod_Perfil = p.Cod_Perfil
-        ORDER BY f.Nome ASC";
+// INICIALIZA VARIÁVEIS
+  $funcionarios = [];
+  $erro = null;
+  $filtro_perfil = isset($_POST['filtro_perfil']) ? $_POST['filtro_perfil'] : '';
 
-try {
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute();
-  $funcionarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-  die("Erro na consulta: " . $e->getMessage());
-}
+  try {
+      // SE O FORMULÁRIO FOR ENVIADO, BUSCA O CLIENTE PELO ID, NOME OU PERFIL
+      if ($_SERVER["REQUEST_METHOD"] == "POST") {
+          $busca = isset($_POST['busca']) ? trim($_POST['busca']) : '';
+          $filtro_perfil = isset($_POST['filtro_perfil']) ? $_POST['filtro_perfil'] : '';
+          
+          // CONSTRÓI A CONSULTA SQL BASE
+          $sql = "SELECT f.Cod_Funcionario, f.Nome, f.CPF, f.Email, f.Sexo, f.Nome_Responsavel, f.Telefone, f.Data_Nascimento, f.Data_Efetivacao, f.CEP, f.UF, f.Cidade, f.Bairro, f.Rua, f.Num_Residencia, f.Foto, pf.Nome_Perfil 
+                    FROM funcionario f 
+                    LEFT JOIN perfil_funcionario pf ON f.Cod_Perfil = pf.Cod_Perfil 
+                    WHERE 1=1";
+          
+          $params = [];
+          
+          // ADICIONA FILTRO POR PERFIL SE SELECIONADO
+          if (!empty($filtro_perfil)) {
+              $sql .= " AND f.Cod_Perfil = :filtro_perfil";
+              $params[':filtro_perfil'] = $filtro_perfil;
+          }
+          
+          // ADICIONA FILTRO POR BUSCA SE FORNECIDA
+          if (!empty($busca)) {
+              if (is_numeric($busca)) {
+                  $sql .= " AND f.Cod_Funcionario = :busca";
+                  $params[':busca'] = $busca;
+              } else {
+                  $sql .= " AND f.Nome LIKE :busca_nome";
+                  $params[':busca_nome'] = "$busca%";
+              }
+          }
+          
+          $sql .= " ORDER BY f.Cod_Funcionario ASC";
+          
+          $stmt = $pdo->prepare($sql);
+          
+          // BINDA OS PARÂMETROS
+          foreach ($params as $key => $value) {
+              if (is_numeric($value)) {
+                  $stmt->bindValue($key, $value, PDO::PARAM_INT);
+              } else {
+                  $stmt->bindValue($key, $value, PDO::PARAM_STR);
+              }
+          }
+      } else {
+          // BUSCA TODOS OS funcionarios
+          $sql = "SELECT f.Cod_Funcionario, f.Nome, f.CPF, f.Email, f.Sexo, f.Nome_Responsavel, f.Telefone, f.Data_Nascimento, f.Data_Efetivacao, f.CEP, f.UF, f.Cidade, f.Bairro, f.Rua, f.Num_Residencia, f.Foto, pf.Nome_Perfil 
+                    FROM funcionario f 
+                    LEFT JOIN perfil_funcionario pf ON f.Cod_Perfil = pf.Cod_Perfil 
+                    ORDER BY f.Cod_Funcionario ASC";
+          
+          $stmt = $pdo->prepare($sql);
+      }
+
+      $stmt->execute();
+      $funcionarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      
+      // GARANTIR QUE $funcionarios SEJA SEMPRE UM ARRAY
+      if (!is_array($funcionarios)) {
+          $funcionarios = [];
+      }
+      
+  } catch (PDOException $e) {
+      $erro = "Erro na consulta: " . $e->getMessage();
+      $funcionarios = [];
+  }
 ?>
 
 <!DOCTYPE html>
@@ -174,19 +226,30 @@ try {
       <h1>Consultar Funcionários</h1>
   </header>
 
-  <div class="filtro-container">
-      <form action="consultar_autor.php" method="POST" id="search-container">
-        <div class="input-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
-          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
-        </svg>
-          <input type="text" id="search-input" name="busca" placeholder="Buscar por ID ou nome..." value="<?= htmlspecialchars(isset($_POST['busca']) ? $_POST['busca'] : '') ?>" onkeyup="filtrarTabela()">
+  <form method="POST" action="consultar_funcionario.php">
+      <div class="filtro-container">
+        <div id="search-container">
+          <div class="input-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
+            <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+          </svg>
+            <input type="text" id="search-input" name="busca" placeholder="Buscar por ID ou nome..." value="<?= htmlspecialchars(isset($_POST['busca']) ? $_POST['busca'] : '') ?>">
+          </div>
+          
+          <select name="filtro_perfil" class="filtro-select">
+            <option value="">Todos os perfis</option>
+            <option value="1" <?= $filtro_perfil == '1' ? 'selected' : '' ?>>Gerente</option>
+            <option value="2" <?= $filtro_perfil == '2' ? 'selected' : '' ?>>Gestor</option>
+            <option value="3" <?= $filtro_perfil == '3' ? 'selected' : '' ?>>Bibliotecário</option>
+            <option value="4" <?= $filtro_perfil == '4' ? 'selected' : '' ?>>Recreador</option>
+            <option value="5" <?= $filtro_perfil == '5' ? 'selected' : '' ?>>Repositor</option>
+          </select>
+          
+          <button type="submit" class="btn-filtrar">Filtrar</button>
+          <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar Filtros</button>
         </div>
-        
-        <button type="submit" class="btn-filtrar">Buscar</button>
-        <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar</button>
-      </form>
-        </div>
+      </div>
+    </form>
   
   <nav>
     <table id="funcionarios-table">
@@ -202,19 +265,19 @@ try {
         <?php if (count($funcionarios) > 0): ?>
           <?php foreach ($funcionarios as $f): ?>
             <tr>
-              <td><?= htmlspecialchars($f['id_funcionario']) ?></td>
-              <td class="nome-clicavel" data-funcionario-id="<?= $f['id_funcionario'] ?>"><?= htmlspecialchars($f['nome']) ?></td>
-              <td><?= htmlspecialchars($f['perfil']) ?></td>
-              <td><?= date("d/m/Y", strtotime($f['data_nascimento'])) ?></td>
-              <td><?= date("d/m/Y", strtotime($f['data_efetivacao'])) ?></td>
+              <td><?= htmlspecialchars($f['Cod_Funcionario']) ?></td>
+              <td class="nome-clicavel" data-funcionario-id="<?= $f['Cod_Funcionario'] ?>"><?= htmlspecialchars($f['Nome']) ?></td>
+              <td><?= htmlspecialchars($f['Nome_Perfil']) ?></td>
+              <td><?= date("d/m/Y", strtotime($f['Data_Nascimento'])) ?></td>
+              <td><?= date("d/m/Y", strtotime($f['Data_Efetivacao'])) ?></td>
               <td>
-                    <a href="alterar_funcionario.php?id=<?= $f['id_funcionario'] ?>" class="btn-action btn-edit" title="Alterar">
+                    <a href="alterar_funcionario.php?id=<?= $f['Cod_Funcionario'] ?>" class="btn-action btn-edit" title="Alterar">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                         <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                       </svg>
                     </a>
-                    <a href="excluir_funcionario.php?id=<?= $f['id_funcionario'] ?>" class="btn-action btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
+                    <a href="excluir_funcionario.php?id=<?= $f['Cod_Funcionario'] ?>" class="btn-action btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este funcionário?')">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 6h18"/>
                         <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>

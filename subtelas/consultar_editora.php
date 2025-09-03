@@ -51,7 +51,7 @@
                    $params[':busca'] = $busca;
                } else {
                    $sql = "SELECT Cod_Editora, Nome_Editora, Telefone, Email FROM editora WHERE Nome_Editora LIKE :busca_nome ORDER BY Cod_Editora ASC";
-                   $params[':busca_nome'] = "%$busca%";
+                   $params[':busca_nome'] = "$busca%";
                }
            }
            
@@ -73,12 +73,6 @@
 
              $stmt->execute();
        $editoras = $stmt->fetchAll(PDO::FETCH_ASSOC);
-       
-       // DEBUG: Verificar se os dados estão sendo carregados
-       error_log("Editoras encontradas: " . count($editoras));
-       if (!empty($editoras)) {
-           error_log("Primeira editora: " . print_r($editoras[0], true));
-       }
        
        // GARANTIR QUE $editoras SEJA SEMPRE UM ARRAY
        if (!is_array($editoras)) {
