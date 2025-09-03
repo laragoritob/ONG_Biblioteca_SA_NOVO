@@ -76,6 +76,33 @@ body{
   box-shadow: var(--shadow-md);
 }
 
+.btn-pdf {
+  position: absolute;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-secondary);
+  color: #e74c3c;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 500;
+  transition: var(--transition);
+  text-decoration: none;
+  margin-left: 650px;
+}
+
+.btn-pdf:hover {
+  background: var(--bg-tertiary);
+  color: #c0392b;
+  border-color: var(--border-focus);
+  transform: translateY(-50%) translateX(-2px);
+  box-shadow: var(--shadow-md);
+}
+
 /*cabeçalho*/
 header{  
   position: absolute;

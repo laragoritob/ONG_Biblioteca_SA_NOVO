@@ -269,6 +269,7 @@
     <script src="javascript/JS_Logout.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body> 
     <header> 
@@ -391,7 +392,8 @@
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
-        <a href="#" class="btn-voltar"> Voltar para o topo ↑ </a>
+        <a href="#" class="btn-voltar" onclick="voltarAoTopo()"> Voltar para o topo ↑ </a>
+        <a href="#" class="btn-pdf" onclick="baixarPDF()"> 📄 Baixar PDF </a>
     </div>
 
     <ul class="nav-bar">
@@ -523,6 +525,35 @@
     window.onload = () => {
         atualizarGrafico();
     };
+
+    // Função para voltar ao topo da página
+    function voltarAoTopo() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    // Função para baixar a página como PDF
+    function baixarPDF() {
+        // Usar html2pdf.js para gerar o PDF
+        const element = document.body;
+        const opt = {
+            margin: 1,
+            filename: 'relatorio_gerente.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Verificar se html2pdf está disponível
+        if (typeof html2pdf !== 'undefined') {
+            html2pdf().set(opt).from(element).save();
+        } else {
+            // Fallback: abrir em nova janela para impressão
+            window.print();
+        }
+    }
 </script>
 
 
