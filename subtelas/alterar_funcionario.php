@@ -344,6 +344,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <input type="text" id="telefone" name="telefone" value="<?= htmlspecialchars($funcionario['Telefone']) ?>" required placeholder="(00) 00000-0000">
                                 </div>
                             </div>
+
+                            <div class="input-group">
+                                <label for="foto">Foto do Funcionário</label>
+                                <div class="file-upload-wrapper">
+                                    <input type="text" name="seletor_arquivo" id="seletor_arquivo" readonly placeholder="Nenhum arquivo selecionado" class="file-display" value="<?= htmlspecialchars($funcionario['Foto']) ?>">
+                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" multiple onchange="atualizarNomeArquivo()">
+                                    <button type="button" class="file-select-btn" onclick="document.getElementById('foto').click()">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="7,10 12,15 17,10"/>
+                                            <line x1="12" y1="15" x2="12" y2="3"/>
+                                        </svg>
+                                        Selecionar Foto
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
