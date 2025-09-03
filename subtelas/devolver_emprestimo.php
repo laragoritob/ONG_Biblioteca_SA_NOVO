@@ -91,11 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
         $stmt_livro->bindParam(':cod_livro', $emprestimo['Cod_Livro']);
         $stmt_livro->execute();
         
-        // Excluir o empréstimo
-        $sql_delete = "DELETE FROM emprestimo WHERE Cod_Emprestimo = :id";
-        $stmt_delete = $pdo->prepare($sql_delete);
-        $stmt_delete->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt_delete->execute();
+        // Marcar o empréstimo como devolvido (não deletar)
+        $sql_update = "UPDATE emprestimo SET Status_Emprestimo = 'Devolvido' WHERE Cod_Emprestimo = :id";
+        $stmt_update = $pdo->prepare($sql_update);
+        $stmt_update->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt_update->execute();
         
         $pdo->commit();
         

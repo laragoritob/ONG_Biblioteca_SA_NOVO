@@ -262,8 +262,12 @@
         <div class="ficha-content">
           <!-- Foto do Funcionário -->
           <div class="foto-container">
-            <?php if (!empty($funcionario['Foto'])): ?>
-              <img src="subtelas_img/<?= htmlspecialchars($funcionario['Foto']) ?>" alt="Foto do Funcionário" class="foto-funcionario">
+            <?php if (!empty($funcionario['Foto']) && $funcionario['Foto']): ?>
+              <!-- Debug: Nome da foto: <?= htmlspecialchars($funcionario['Foto']) ?> -->
+              <img src="subtelas_img/<?= htmlspecialchars($funcionario['Foto']) ?>" alt="Foto do Funcionário" class="foto-funcionario" onerror="console.log('Erro ao carregar imagem:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="foto-placeholder" style="display: none;">
+                👤
+              </div>
             <?php else: ?>
               <div class="foto-placeholder">
                 👤

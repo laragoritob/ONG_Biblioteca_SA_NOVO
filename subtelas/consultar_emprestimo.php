@@ -33,6 +33,7 @@ require_once '../conexao.php';
 
   // INICIALIZA VARIÁVEIS
   $emprestimos = [];
+  $emprestimos_todos = []; // Para histórico completo
   $erro = null;
 
   try {
@@ -43,45 +44,63 @@ require_once '../conexao.php';
           // VERIFICA SE A BUSCA É UM NÚMERO (ID) OU UM NOME
           if (is_numeric($busca)) {
               $sql = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                             e.Data_Emprestimo, e.Data_Devolucao
+                             e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
                         FROM emprestimo e 
                         INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
                         INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
-                        WHERE e.Cod_Emprestimo = :busca 
+                        WHERE e.Cod_Emprestimo = :busca AND e.Status_Emprestimo = 'Pendente'
                         ORDER BY e.Data_Emprestimo DESC";
               
               $stmt = $pdo->prepare($sql);
               $stmt->bindParam(":busca", $busca, PDO::PARAM_INT);
           } else {
               $sql = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                             e.Data_Emprestimo, e.Data_Devolucao
+                             e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
                         FROM emprestimo e 
                         INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
                         INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
-                        WHERE c.Nome LIKE :busca_nome 
+                        WHERE c.Nome LIKE :busca_nome AND e.Status_Emprestimo = 'Pendente'
                         ORDER BY e.Data_Emprestimo DESC";
               
               $stmt = $pdo->prepare($sql);
               $stmt->bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
           }
       } else {
-          // BUSCA TODOS OS EMPRÉSTIMOS
+          // BUSCA APENAS EMPRÉSTIMOS PENDENTES
           $sql = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                         e.Data_Emprestimo, e.Data_Devolucao
+                         e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
                     FROM emprestimo e 
                     INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
                     INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
+                    WHERE e.Status_Emprestimo = 'Pendente'
                     ORDER BY e.Data_Emprestimo DESC";
           
           $stmt = $pdo->prepare($sql);
       }
 
-      $stmt->execute();
+            $stmt->execute();
       $emprestimos = $stmt->fetchAll(PDO::FETCH_ASSOC);
       
       // GARANTIR QUE $emprestimos SEJA SEMPRE UM ARRAY
       if (!is_array($emprestimos)) {
           $emprestimos = [];
+      }
+      
+      // BUSCAR APENAS EMPRÉSTIMOS DEVOLVIDOS PARA O HISTÓRICO
+      $sql_todos = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
+                           e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
+                      FROM emprestimo e 
+                      INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
+                      INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
+                      WHERE e.Status_Emprestimo = 'Devolvido'
+                      ORDER BY e.Data_Emprestimo DESC";
+      
+      $stmt_todos = $pdo->prepare($sql_todos);
+      $stmt_todos->execute();
+      $emprestimos_todos = $stmt_todos->fetchAll(PDO::FETCH_ASSOC);
+      
+      if (!is_array($emprestimos_todos)) {
+          $emprestimos_todos = [];
       }
       
   } catch (PDOException $e) {
@@ -108,7 +127,7 @@ if(is_numeric($busca)){
     $stmt= $pdo-> prepare($sql);
     $stmt-> bindParam(':busca', $busca, PDO::PARAM_INT);
 }else {
-    $sql= "SELECT * FROM emprestimo WHERE Cod_Emprestimo LIKE :busca_nome ORDER BY nome ASC";
+    $sql= "SELECT * FROM emprestimo WHERE Cod_Emprestimo LIKE :busca_nome ORDER BY Cod_Emprestimo ASC";
     $stmt= $pdo-> prepare($sql);
     $stmt-> bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
 }
@@ -130,6 +149,95 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .filtro-container {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    #search-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+      min-width: 1205px;
+      margin-left: 75px;
+    }
+    
+    .input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    
+    .btn-filtrar {
+      padding: 10px 20px;
+      background:rgb(83, 86, 238);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-weight: 500;
+    }
+    
+    .btn-filtrar:hover {
+      background:rgb(53, 69, 211);
+    }
+    
+    .btn-limpar {
+      padding: 10px 20px;
+      background: #e53e3e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-weight: 500;
+    }
+    
+    .btn-limpar:hover {
+      background: #c53030;
+    }
+    
+         /* Responsividade */
+     @media (max-width: 768px) {
+       .filtro-container {
+         flex-direction: column;
+         align-items: stretch;
+       }
+       
+       #search-container {
+         flex-direction: column;
+         min-width: auto;
+       }
+       
+       .input-wrapper {
+         width: 100%;
+       }
+     }
+     
+     /* Estilos para status dos empréstimos */
+     .status-pendente {
+       background-color: #fef3c7;
+       color: #92400e;
+       padding: 4px 8px;
+       border-radius: 4px;
+       font-size: 12px;
+       font-weight: bold;
+     }
+     
+     .status-devolvido {
+       background-color: #d1fae5;
+       color: #065f46;
+       padding: 4px 8px;
+       border-radius: 4px;
+       font-size: 12px;
+       font-weight: bold;
+     }
+  </style>
 </head>
 
 <body>
@@ -205,15 +313,28 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
         </div>
     <?php } ?>
     <form action="consultar_emprestimo.php" method="POST">
-    <div id="search-container">
-      <div class="input-wrapper">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
-        <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
-      </svg>
-          <input type="text" id="search-input" name="nome_funcionario" placeholder="Buscar empréstimo..." required style="padding-left:40px;">
+      <div id="search-container">
+          <div class="input-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
+            <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+          </svg>
+                         <input type="text" id="search-input" name="busca" placeholder="Buscar por ID ou nome do cliente..." value="<?= htmlspecialchars(isset($_POST['busca']) ? $_POST['busca'] : '') ?>">
+          </div>
+        
+          <button type="submit" class="btn-filtrar">Buscar</button>
+
+                     <div>
+             <button type="button" id="btn-historico" class="btn-filtrar" onclick="alternarVisualizacao()">
+               Ver Histórico de Devolvidos
+             </button>
+           </div>
         </div>
-    </div>
     </form>
+
+    <!-- Campo hidden para armazenar dados de empréstimos devolvidos -->
+    <div id="dados-completos" style="display: none;">
+      <?php echo json_encode($emprestimos_todos); ?>
+    </div>
 
     <nav>
       <table id="funcionarios-table">
@@ -224,6 +345,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
             <th>NOME DO LIVRO</th>
             <th>DATA DO EMPRÉSTIMO</th>
             <th>DATA DE DEVOLUÇÃO</th>
+            <th>STATUS</th>
             <th>AÇÕES</th>
           </tr>
         </thead>
@@ -236,6 +358,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
                 <td><?= htmlspecialchars($e['Nome_Livro']) ?></td>
                 <td><?= date("d/m/Y", strtotime($e['Data_Emprestimo'])) ?></td>
                 <td><?= $e['Data_Devolucao'] ? date("d/m/Y", strtotime($e['Data_Devolucao'])) : 'Não devolvido' ?></td>
+                <td><?= htmlspecialchars($e['Status_Emprestimo']) ?></td>
                 <td>
                   <a href="renovar_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="renovar">Renovar</a>
                   <a href="devolver_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="devolver">Devolver</a>
@@ -243,7 +366,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
               </tr>
             <?php endforeach; ?>
           <?php else: ?>
-              <tr><td colspan="7">Nenhum empréstimo encontrado</td></tr>
+              <tr><td colspan="7">Nenhum empréstimo pendente encontrado</td></tr>
           <?php endif; ?>
         </tbody>
       </table>
@@ -252,10 +375,121 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
     <script src="subtelas_javascript/consultas.js"></script>
     <script src="subtelas_javascript/sidebar.js"></script>
     <script>
+      let visualizacaoAtual = 'pendentes'; // 'pendentes' ou 'devolvidos'
+      let dadosPendentes = [];
+      let dadosDevolvidos = [];
+      
+      // Carregar dados quando a página carregar
+      document.addEventListener('DOMContentLoaded', function() {
+        // Obter dados da tabela atual (pendentes)
+        const tabela = document.getElementById('funcionarios-table');
+        const linhas = tabela.querySelectorAll('tbody tr');
+        
+        dadosPendentes = Array.from(linhas).map(linha => ({
+          id: linha.cells[0].textContent,
+          cliente: linha.cells[1].textContent,
+          livro: linha.cells[2].textContent,
+          dataEmprestimo: linha.cells[3].textContent,
+          dataDevolucao: linha.cells[4].textContent,
+          status: linha.cells[5].textContent
+        }));
+        
+        // Obter dados de empréstimos devolvidos do campo hidden
+        const dadosCompletosElement = document.getElementById('dados-completos');
+        if (dadosCompletosElement.textContent.trim()) {
+          dadosDevolvidos = JSON.parse(dadosCompletosElement.textContent);
+        }
+      });
+      
+      // Função para alternar entre visualizações
+      function alternarVisualizacao() {
+        const btnHistorico = document.getElementById('btn-historico');
+        const tabela = document.getElementById('funcionarios-table');
+        const tbody = tabela.querySelector('tbody');
+        
+        if (visualizacaoAtual === 'pendentes') {
+          // Mostrar histórico de empréstimos devolvidos
+          visualizacaoAtual = 'devolvidos';
+          btnHistorico.textContent = 'Ver Apenas Pendentes';
+          btnHistorico.style.backgroundColor = '#e53e3e';
+           
+           // Limpar tabela e preencher com dados de empréstimos devolvidos
+           tbody.innerHTML = '';
+           
+           if (dadosDevolvidos.length > 0) {
+             dadosDevolvidos.forEach(emprestimo => {
+               const linha = document.createElement('tr');
+               linha.innerHTML = `
+                 <td>${emprestimo.Cod_Emprestimo}</td>
+                 <td>${emprestimo.Nome_Cliente}</td>
+                 <td>${emprestimo.Nome_Livro}</td>
+                 <td>${formatarData(emprestimo.Data_Emprestimo)}</td>
+                 <td>${emprestimo.Data_Devolucao ? formatarData(emprestimo.Data_Devolucao) : 'Não devolvido'}</td>
+                 <td>
+                   <span class="status-${emprestimo.Status_Emprestimo.toLowerCase()}">
+                     ${emprestimo.Status_Emprestimo}
+                   </span>
+                 </td>
+                 <td>
+                   <span style="color: #666; font-style: italic;">Empréstimo finalizado</span>
+                 </td>
+               `;
+               tbody.appendChild(linha);
+             });
+           } else {
+             tbody.innerHTML = '<tr><td colspan="7">Nenhum empréstimo devolvido encontrado</td></tr>';
+           }
+           
+           // Atualizar colspan da mensagem de "nenhum encontrado"
+           const mensagemVazia = tbody.querySelector('tr td[colspan]');
+           if (mensagemVazia) {
+             mensagemVazia.setAttribute('colspan', '7');
+           }
+           
+         } else {
+           // Voltar para visualização de pendentes
+           visualizacaoAtual = 'pendentes';
+           btnHistorico.textContent = 'Ver Histórico de Devolvidos';
+           btnHistorico.style.backgroundColor = 'rgb(83, 86, 238)';
+          
+          // Limpar tabela e preencher com dados pendentes
+          tbody.innerHTML = '';
+          
+          if (dadosPendentes.length > 0) {
+            dadosPendentes.forEach(emprestimo => {
+              const linha = document.createElement('tr');
+              linha.innerHTML = `
+                <td>${emprestimo.id}</td>
+                <td>${emprestimo.cliente}</td>
+                <td>${emprestimo.livro}</td>
+                <td>${emprestimo.dataEmprestimo}</td>
+                <td>${emprestimo.dataDevolucao}</td>
+                <td>${emprestimo.status}</td>
+                <td>
+                  <a href="renovar_emprestimo.php?id=${emprestimo.id}" class="renovar">Renovar</a>
+                  <a href="devolver_emprestimo.php?id=${emprestimo.id}" class="devolver">Devolver</a>
+                </td>
+              `;
+              tbody.appendChild(linha);
+            });
+          } else {
+            tbody.innerHTML = '<tr><td colspan="7">Nenhum empréstimo pendente encontrado</td></tr>';
+          }
+        }
+      }
+      
+      // Função para formatar data
+      function formatarData(dataString) {
+        if (!dataString) return 'Não informado';
+        const data = new Date(dataString);
+        if (isNaN(data.getTime())) return dataString;
+        return data.toLocaleDateString('pt-BR');
+      }
+      
       // Função para filtrar tabela pelo input de busca
       function filtrarTabela() {
         const input = document.getElementById("search-input").value.toLowerCase();
-        const rows = document.querySelectorAll("#emprestimos-table tbody tr");
+        const rows = document.querySelectorAll("#funcionarios-table tbody tr");
         
         rows.forEach(row => {
           const nome = row.cells[1].textContent.toLowerCase();
@@ -269,6 +503,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
       </table>
     </nav>
   </div>
+
 
   <script src="subtelas_javascript/telconsultar_funcionarios.js"></script>
   <script src="subtelas_javascript/sidebar.js"></script>

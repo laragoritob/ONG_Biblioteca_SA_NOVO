@@ -358,7 +358,6 @@
             <div class="no-logs">
                 <h3>📊 Nenhuma operação registrada na última semana</h3>
                 <p>O sistema de auditoria está funcionando perfeitamente!</p>
-                <p><strong>Triggers criados:</strong> ✅ autor, cliente, funcionario, livro, emprestimo</p>
                 <p><strong>Próximos passos:</strong> Realize algumas operações (cadastros, alterações, exclusões) e elas aparecerão aqui automaticamente.</p>
             </div>
         <?php else: ?>
@@ -392,6 +391,7 @@
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
+        <a href="#" class="btn-voltar"> Voltar para o topo ↑ </a>
     </div>
 
     <ul class="nav-bar">

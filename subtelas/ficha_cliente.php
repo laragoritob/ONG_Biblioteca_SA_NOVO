@@ -262,7 +262,7 @@
         <div class="ficha-content">
           <!-- Foto do Cliente -->
           <div class="foto-container">
-            <?php if (!empty($cliente['Foto']) && $cliente['Foto'] !== 'Perna de Grilo.png'): ?>
+            <?php if (!empty($cliente['Foto']) && $cliente['Foto']): ?>
               <!-- Debug: Nome da foto: <?= htmlspecialchars($cliente['Foto']) ?> -->
               <img src="subtelas_img/<?= htmlspecialchars($cliente['Foto']) ?>" alt="Foto do Cliente" class="foto-cliente" onerror="console.log('Erro ao carregar imagem:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="foto-placeholder" style="display: none;">

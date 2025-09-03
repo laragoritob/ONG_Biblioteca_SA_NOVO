@@ -264,13 +264,17 @@
         </div>
         
         <div class="ficha-content">
-          <!-- Foto do Livro -->
+          <!-- Foto do Funcionário -->
           <div class="foto-container">
-            <?php if (!empty($livro['Foto'])): ?>
-              <img src="subtelas_img/<?= htmlspecialchars($livro['Foto']) ?>" alt="Foto do Livro" class="foto-livro">
+            <?php if (!empty($livro['Foto']) && $livro['Foto']): ?>
+              <!-- Debug: Nome da foto: <?= htmlspecialchars($livro['Foto']) ?> -->
+              <img src="subtelas_img/<?= htmlspecialchars($livro['Foto']) ?>" alt="Foto do Livro" class="foto-livro" onerror="console.log('Erro ao carregar imagem:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="foto-placeholder" style="display: none;">
+                👤
+              </div>
             <?php else: ?>
               <div class="foto-placeholder">
-                📚
+                👤
               </div>
             <?php endif; ?>
           </div>
