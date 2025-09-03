@@ -23,14 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif ($nova_senha === "temp123") {
         $mensagem = "<script>alert('Escolha uma senha diferente da temporária!');</script>";
     } else {
-        $senha_hash = password_hash($nova_senha, PASSWORD_DEFAULT);
-
-        // ATUALIZA A SENHA E REMOVE O STATUS DE TEMPORÁRIA
+        // ATUALIZA A SENHA SEM CRIPTOGRAFIA E REMOVE O STATUS DE TEMPORÁRIA
         $sql = "UPDATE funcionario 
                 SET Senha = :senha, Senha_Temporaria = NULL 
                 WHERE Cod_Funcionario = :id";
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':senha', $senha_hash);
+        $stmt->bindParam(':senha', $nova_senha);
         $stmt->bindParam(':id', $cod_funcionario);
 
         if ($stmt->execute()) {
@@ -56,12 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <h2>Alterar Senha</h2>
-
-    <p>Olá, <strong><?php echo $_SESSION['Usuario'] ?? ''; ?></strong>. Digite sua nova senha abaixo:</p>
+    <div class="header-container">
+        <h2>Alterar Senha</h2>
+        <p>Olá, <strong><?php echo $_SESSION['Usuario'] ?? ''; ?></strong>. Digite sua nova senha abaixo:</p>
+    </div>
 
     <div id="password-reset-container" class="password-reset-container">
-        <h2 class="password-reset-title">Redefinir Senha</h2>
         <?php echo $mensagem; ?>
         <form id="password-reset-form" action="alterar_senha.php" method="POST">
             <div class="password-input-group">
