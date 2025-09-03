@@ -78,7 +78,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     a {
-        text-decoration: none;
+      text-decoration: none;
+    }
+    
+    .nome-clicavel {
+      cursor: pointer;
+      color: #667eea;
+      text-decoration: none;
     }
 
     .filtro-container {
@@ -200,44 +206,44 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
         </div>
 
 <nav>
-  <?php if(!empty($autor)):?>
-        <table id="funcionarios-table">
-            <tr>
-                <th> ID </th>
-                <th> NOME DO AUTOR </th>
-                <th> TELEFONE </th>
-                <th> EMAIL </th>
-                <th> AÇÕES </th>
-            </tr>
-            <?php foreach($autor as $autor_item):?>
-            <tr>
-                <td> <?=htmlspecialchars($autor_item['Cod_Autor'])?></td>
-                <td> <?=htmlspecialchars($autor_item['Nome_Autor'])?></td>
-                <td> <?=htmlspecialchars($autor_item['Telefone'])?></td>
-                <td> <?=htmlspecialchars($autor_item['Email'])?></td>
-                <td>
-                    <a href="alterar_autor.php?id=<?= $autor_item['Cod_Autor'] ?>" class="btn-action btn-edit" title="Alterar">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                      </svg>
-                    </a>
-                    <a href="excluir_autor.php?id=<?= $autor_item['Cod_Autor'] ?>" class="btn-action btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 6h18"/>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                      </svg>
-                    </a>
-                  </td>
-             </tr>
-            <?php endforeach;?>
-        </table>
-        <?php else:?>
-            <p> Nenhum autor encontrado.</p>
-        <?php endif;?>
-              <br>
-         </nav>
+  <table id="funcionarios-table">
+      <tr>
+          <th>ID</th>
+          <th>NOME DO AUTOR</th>
+          <th>TELEFONE</th>
+          <th>EMAIL</th>
+          <th>AÇÕES</th>
+      </tr>
+
+      <?php if(!empty($autor)):?>
+          <?php foreach($autor as $autor_item):?>
+          <tr>
+              <td><?= htmlspecialchars($autor_item['Cod_Autor']) ?></td>
+              <td class="nome-clicavel" data-autor-id="<?= $autor_item['Cod_Autor'] ?>"><?= htmlspecialchars($autor_item['Nome_Autor']) ?></td>
+              <td><?= htmlspecialchars($autor_item['Telefone']) ?></td>
+              <td><?= htmlspecialchars($autor_item['Email']) ?></td>
+              <td>
+                  <a href="alterar_autor.php?id=<?= $autor_item['Cod_Autor'] ?>" class="btn-action btn-edit" title="Alterar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </a>
+                  <a href="excluir_autor.php?id=<?= $autor_item['Cod_Autor'] ?>" class="btn-action btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este autor?')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 6h18"/>
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    </svg>
+                  </a>
+                </td>
+           </tr>
+          <?php endforeach;?>
+      <?php else:?>
+          <tr><td colspan="5">Nenhum autor encontrado</td></tr>
+      <?php endif;?>
+  </table>
+</nav>
     </div>
   <script src="subtelas_javascript/sidebar.js"></script>
 </body>

@@ -120,6 +120,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .swal2-title-arial {
+            font-family: Arial, sans-serif !important;
+            font-weight: bold !important;
+        }
+        
+        .swal2-html-arial {
+            font-family: Arial, sans-serif !important;
+            font-size: 16px !important;
+        }
+        
+        /* Estilo dos botões igual ao cadastro_funcionario */
+        .swal2-confirm {
+            background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 0.5rem !important;
+            padding: 0.75rem 1.5rem !important;
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+        }
+        
+        .swal2-confirm:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+        }
+        
+        .swal2-confirm:focus {
+            outline: 2px solid #6366f1 !important;
+            outline-offset: 2px !important;
+        }
+        
+        .swal2-cancel {
+            background: #dc2626 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 0.5rem !important;
+            padding: 0.75rem 1.5rem !important;
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+        }
+        
+        .swal2-cancel:hover {
+            background: #b91c1c !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -214,7 +268,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     icon: 'error',
                     title: 'Erro de Validação',
                     text: 'O nome do autor é obrigatório!',
-                    confirmButtonColor: '#ffbcfc'
+                    customClass: {
+                        title: 'swal2-title-arial',
+                        confirmButton: 'swal2-confirm'
+                    }
                 });
                 return false;
             }
@@ -225,7 +282,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     icon: 'error',
                     title: 'Erro de Validação',
                     text: 'O email do autor é obrigatório!',
-                    confirmButtonColor: '#ffbcfc'
+                    customClass: {
+                        title: 'swal2-title-arial',
+                        confirmButton: 'swal2-confirm'
+                    }
                 });
                 return false;
             }
@@ -239,7 +299,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         icon: 'error',
                         title: 'Telefone Inválido',
                         text: 'O telefone deve ter 10 ou 11 dígitos!',
-                        confirmButtonColor: '#ffbcfc'
+                        customClass: {
+                            title: 'swal2-title-arial',
+                            confirmButton: 'swal2-confirm'
+                        }
                     });
                     return false;
                 }
@@ -253,8 +316,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 showCancelButton: true,
                 confirmButtonText: 'Sim, Salvar',
                 cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#ffbcfc',
-                cancelButtonColor: '#d33'
+                customClass: {
+                    title: 'swal2-title-arial',
+                    confirmButton: 'swal2-confirm',
+                    cancelButton: 'swal2-cancel'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Continua com o envio do formulário

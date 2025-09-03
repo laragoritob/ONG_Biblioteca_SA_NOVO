@@ -42,7 +42,7 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2) {
           $filtro_perfil = isset($_POST['filtro_perfil']) ? $_POST['filtro_perfil'] : '';
           
           // CONSTRÓI A CONSULTA SQL BASE
-          $sql = "SELECT f.Cod_Funcionario, f.Nome, f.CPF, f.Email, f.Sexo, f.Nome_Responsavel, f.Telefone, f.Data_Nascimento, f.Data_Efetivacao, f.CEP, f.UF, f.Cidade, f.Bairro, f.Rua, f.Num_Residencia, f.Foto, pf.Nome_Perfil 
+          $sql = "SELECT f.Cod_Funcionario, f.Nome, f.CPF, f.Email, f.Sexo, f.Telefone, f.Data_Nascimento, f.Data_Efetivacao, f.CEP, f.UF, f.Cidade, f.Bairro, f.Rua, f.Num_Residencia, f.Foto, pf.Nome_Perfil 
                     FROM funcionario f 
                     LEFT JOIN perfil_funcionario pf ON f.Cod_Perfil = pf.Cod_Perfil 
                     WHERE 1=1";
@@ -80,7 +80,7 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2) {
           }
       } else {
           // BUSCA TODOS OS funcionarios
-          $sql = "SELECT f.Cod_Funcionario, f.Nome, f.CPF, f.Email, f.Sexo, f.Nome_Responsavel, f.Telefone, f.Data_Nascimento, f.Data_Efetivacao, f.CEP, f.UF, f.Cidade, f.Bairro, f.Rua, f.Num_Residencia, f.Foto, pf.Nome_Perfil 
+          $sql = "SELECT f.Cod_Funcionario, f.Nome, f.CPF, f.Email, f.Sexo, f.Telefone, f.Data_Nascimento, f.Data_Efetivacao, f.CEP, f.UF, f.Cidade, f.Bairro, f.Rua, f.Num_Residencia, f.Foto, pf.Nome_Perfil 
                     FROM funcionario f 
                     LEFT JOIN perfil_funcionario pf ON f.Cod_Perfil = pf.Cod_Perfil 
                     ORDER BY f.Cod_Funcionario ASC";

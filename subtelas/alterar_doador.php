@@ -105,57 +105,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>ONG Biblioteca - Alterar Doador</title>
-    <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
+    <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
     <div class="page-wrapper">
-        <header>
-            <a href="<?= $linkVoltar ?>" class="btn-voltar">
+        <header class="header">
+            <form action="consultar_doador.php" method="POST">
+                <button class="btn-voltar">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7"/>
                     </svg>
                     Voltar
-                </a>
+                </button>
+            </form>
             <h1>Alterar Doador</h1>
         </header>
 
-        <div class="main-content">
-            <div class="formulario">
-                <?php if (isset($erro)): ?>
-                    <div class="alert alert-error" style="background: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #fecaca;">
-                        <?= htmlspecialchars($erro) ?>
-                    </div>
-                <?php endif; ?>
-
-                <?php if (isset($sucesso)): ?>
-                    <div class="alert alert-success" style="background: #dcfce7; color: #16a34a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #bbf7d0;">
-                        <?= htmlspecialchars($sucesso) ?>
-                    </div>
-                <?php endif; ?>
-
-                <form method="POST" action="">
-                    <div class="form-section">
-                        <div class="section-title">
-                            📋 Informações do Doador
-                        </div>
+        <main class="main-content">
+            <div class="container">
+                <form class="formulario" method="POST" action="">
+                    
+                    <section class="form-section">
+                        <h2 class="section-title">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            Informações do Doador
+                        </h2>
 
                         <div class="form-row">
                             <div class="input-group">
                                 <label for="cod_doador">Código do Doador</label>
                                 <div class="input-wrapper">
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14,2 14,8 20,8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                        <polyline points="10,9 9,9 8,9"/>
+                                    </svg>
                                     <input type="text" id="cod_doador" value="<?= htmlspecialchars($doador['Cod_Doador']) ?>" readonly>
-                                    <span class="input-icon">🆔</span>
                                 </div>
                             </div>
 
                             <div class="input-group">
-                                <label for="nome">Nome Completo *</label>
+                                <label for="nome">Nome Completo</label>
                                 <div class="input-wrapper">
-                                    <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($doador['Nome_Doador']) ?>" required>
-                                    <span class="input-icon">👤</span>
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                    <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($doador['Nome_Doador']) ?>" required placeholder="Digite o nome completo">
                                 </div>
                             </div>
                         </div>
@@ -164,35 +170,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="input-group">
                                 <label for="telefone">Telefone</label>
                                 <div class="input-wrapper">
-                                    <input type="text" id="telefone" name="telefone" value="<?= htmlspecialchars($doador['Telefone']) ?>">
-                                    <span class="input-icon">📞</span>
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                    </svg>
+                                    <input type="text" id="telefone" name="telefone" value="<?= htmlspecialchars($doador['Telefone']) ?>" placeholder="(00) 00000-0000">
                                 </div>
                             </div>
 
                             <div class="input-group">
-                                <label for="email">Email *</label>
+                                <label for="email">E-mail</label>
                                 <div class="input-wrapper">
-                                    <input type="email" id="email" name="email" value="<?= htmlspecialchars($doador['Email']) ?>" required>
-                                    <span class="input-icon">✉️</span>
+                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                        <polyline points="22,6 12,13 2,6"/>
+                                    </svg>
+                                    <input type="email" id="email" name="email" value="<?= htmlspecialchars($doador['Email']) ?>" required placeholder="exemplo@email.com">
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="botao">
-                        <button type="submit" id="btn-salvar" class="btn">
-                            💾 Salvar Alterações
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                <polyline points="17,21 17,13 7,13 7,21"/>
+                                <polyline points="7,3 7,8 15,8"/>
+                            </svg>
+                            Salvar Alterações
                         </button>
-                        <a href="consultar_doador.php" id="cancelar-edicao" class="btn">
-                            ❌ Cancelar
+                        
+                        <a href="consultar_doador.php" class="btn btn-secondary">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                <line x1="10" y1="11" x2="10" y2="17"/>
+                                <line x1="14" y1="11" x2="14" y2="17"/>
+                            </svg>
+                            Cancelar
                         </a>
                     </div>
                 </form>
             </div>
-        </div>
+        </main>
     </div>
 
+    <script src="subtelas_javascript/sidebar.js"></script>
+    <script src="subtelas_javascript/notification-modal.js"></script>
+    
     <script>
+        // Mostrar notificações baseadas no PHP
+        <?php if (isset($sucesso)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('success', 'Sucesso!', '<?= addslashes($sucesso) ?>');
+            });
+        <?php endif; ?>
+        
+        <?php if (isset($erro)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showNotification('error', 'Erro!', '<?= addslashes($erro) ?>');
+            });
+        <?php endif; ?>
+
         // Validação do formulário
         document.querySelector('form').addEventListener('submit', function(e) {
             const nome = document.getElementById('nome').value.trim();
@@ -203,7 +241,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Swal.fire({
                     icon: 'error',
                     title: 'Erro de Validação',
-                    text: 'O nome do doador é obrigatório!'
+                    text: 'O nome do doador é obrigatório!',
+                    confirmButtonColor: '#ffbcfc'
                 });
                 return false;
             }
@@ -213,16 +252,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Swal.fire({
                     icon: 'error',
                     title: 'Erro de Validação',
-                    text: 'O email do doador é obrigatório!'
+                    text: 'O email do doador é obrigatório!',
+                    confirmButtonColor: '#ffbcfc'
                 });
                 return false;
             }
             
             // Confirmação antes de salvar
-            if (!confirm('Tem certeza que deseja salvar as alterações?')) {
-                e.preventDefault();
-                return false;
-            }
+            Swal.fire({
+                title: 'Confirmar Alteração',
+                text: 'Tem certeza que deseja salvar as alterações?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ffbcfc',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, salvar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
         });
 
         // Formatação automática de telefone
@@ -246,7 +297,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Formato de Email Inválido',
-                    text: 'Por favor, insira um email válido!'
+                    text: 'Por favor, insira um email válido!',
+                    confirmButtonColor: '#ffbcfc'
                 });
                 this.focus();
             }

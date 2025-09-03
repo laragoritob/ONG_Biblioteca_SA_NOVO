@@ -92,6 +92,7 @@
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="page-wrapper">
@@ -139,7 +140,7 @@
                                         <line x1="8" y1="2" x2="8" y2="6"/>
                                         <line x1="3" y1="10" x2="21" y2="10"/>
                                     </svg>
-                                    <input type="date" id="data_nascimento" name="data_nascimento" required min="1925-01-01" max="" id="dataNascimento">
+                                    <input type="date" id="data_nascimento" name="data_nascimento" required>
                                 </div>
                             </div>
                         </div>

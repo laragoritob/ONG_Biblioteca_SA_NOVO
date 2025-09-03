@@ -92,8 +92,10 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] 
   <title>ONG Biblioteca - Consultar Doadores</title>
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css" />
+  <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
+
     .filtro-container {
       display: flex;
       gap: 15px;
@@ -107,14 +109,31 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] 
       align-items: center;
       gap: 15px;
       flex: 1;
-      min-width: 1205px;
-      margin-left: 75px;
+      min-width: 300px;
     }
     
     .input-wrapper {
       flex: 1;
       position: relative;
     }
+    
+        .filtro-select {
+       padding: 10px !important;
+       border: 1px solid #ddd !important;
+       border-radius: 5px !important;
+       background: white !important;
+       min-width: 150px !important;
+       font-size: 14px !important;
+       color: #333 !important;
+       cursor: pointer !important;
+       transition: border-color 0.3s !important;
+     }
+     
+     .filtro-select:focus {
+       outline: none !important;
+       border-color: #667eea !important;
+       box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1) !important;
+     }
     
     .btn-filtrar {
       padding: 10px 20px;
@@ -161,6 +180,11 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] 
       .input-wrapper {
         width: 100%;
       }
+      
+             .filtro-select {
+         min-width: auto !important;
+         width: 100% !important;
+       }
     }
   </style>
 </head>
@@ -177,19 +201,19 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] 
       <h1>Consultar Doadores</h1>
   </header>
 
-  <form method="POST" action="consultar_doador.php">
-        <div id="search-container">
-          <div class="input-wrapper">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
-            <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
-          </svg>
-            <input type="text" id="search-input" name="busca" placeholder="Buscar por ID ou nome da editora..." value="<?= htmlspecialchars(isset($_POST['busca']) ? $_POST['busca'] : '') ?>">
-          </div>
-          
-          <button type="submit" class="btn-filtrar">Buscar</button>
-          <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar</button>
-        </div>
-      </form>
+  <div class="filtro-container">
+    <form method="POST" action="consultar_doador.php" id="search-container">
+      <div class="input-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
+          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+        </svg>
+        <input type="text" id="search-input" name="busca" placeholder="Buscar por ID ou nome do doador..." value="<?= htmlspecialchars(isset($_POST['busca']) ? $_POST['busca'] : '') ?>">
+      </div>
+      
+      <button type="submit" class="btn-filtrar">Buscar</button>
+      <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar</button>
+    </form>
+  </div>
   
   <nav>
     <table id="funcionarios-table">
@@ -205,17 +229,17 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] 
           <?php foreach ($doadores as $d): ?>
             <tr>
               <td><?= htmlspecialchars($d['Cod_Doador']) ?></td>
-              <td><?= htmlspecialchars($d['Nome_Doador']) ?></td>
+              <td><span class="nome-clicavel"><?= htmlspecialchars($d['Nome_Doador']) ?></span></td>
               <td><?= htmlspecialchars($d['Telefone']) ?></td>
               <td><?= htmlspecialchars($d['Email']) ?></td>
               <td>
-                    <a href="alterar_cliente.php?id=<?= $d['Cod_Doador'] ?>" class="btn-action btn-edit" title="Alterar">
+                    <a href="alterar_doador.php?id=<?= $d['Cod_Doador'] ?>" class="btn-action btn-edit" title="Alterar">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                         <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                       </svg>
                     </a>
-                    <a href="excluir_cliente.php?id=<?= $d['Cod_Doador'] ?>" class="btn-action btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
+                    <a href="excluir_doador.php?id=<?= $d['Cod_Doador'] ?>" class="btn-action btn-delete" title="Excluir" onclick="confirmarExclusao(event, '<?= htmlspecialchars($d['Nome_Doador']) ?>')">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 6h18"/>
                         <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
@@ -233,6 +257,44 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] 
 
   <script src="subtelas_javascript/telconsultar_doadores.js"></script>
   <script src="subtelas_javascript/sidebar.js"></script>
+  <script src="subtelas_javascript/notification-modal.js"></script>
+  
+  <script>
+    // Mostrar notificações baseadas no PHP
+    <?php if (isset($sucesso)): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification('success', 'Sucesso!', '<?= addslashes($sucesso) ?>');
+        });
+    <?php endif; ?>
+    
+    <?php if (isset($erro)): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification('error', 'Erro!', '<?= addslashes($erro) ?>');
+        });
+    <?php endif; ?>
+
+    // Função para confirmar exclusão com SweetAlert2
+    function confirmarExclusao(event, nomeDoador) {
+        event.preventDefault();
+        const url = event.target.closest('a').href;
+        
+        Swal.fire({
+            title: 'Confirmar Exclusão',
+            html: `Tem certeza que deseja excluir o doador <strong>"${nomeDoador}"</strong>?<br><br><small>Esta ação não pode ser desfeita.</small>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, excluir!',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+  </script>
     </div>
 </body>
 </html>
