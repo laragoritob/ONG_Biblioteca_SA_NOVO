@@ -111,7 +111,7 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
-    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -381,7 +381,7 @@
         </main>
     </div>
 
-    <script src="subtelas_javascript/sidebar.js"></script>
+
     <script>
         // Funções específicas para cadastro de clientes (sem restrições de data)
         

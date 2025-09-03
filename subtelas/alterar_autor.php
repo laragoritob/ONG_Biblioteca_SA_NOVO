@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>ONG Biblioteca - Alterar Autor</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
-    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .swal2-title-arial {

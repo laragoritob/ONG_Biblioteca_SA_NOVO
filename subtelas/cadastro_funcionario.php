@@ -90,7 +90,7 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
-    <link rel="stylesheet" type="text/css" href="subtelas_css/notification-modal.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -417,37 +417,39 @@
     </div>
 
     <script src="subtelas_javascript/validaCadastro.js"></script>
-    <script src="subtelas_javascript/sidebar.js"></script>
+
     <script>
-        // Mostrar notificações baseadas no PHP
-        <?php if (isset($sucesso)): ?>
-            document.addEventListener('DOMContentLoaded', function() {
+        // Aguardar o SweetAlert2 carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar notificações baseadas no PHP
+            <?php if (isset($sucesso)): ?>
                 Swal.fire({
-                    title: 'Sucesso!',
-                    text: '<?= addslashes($sucesso) ?>',
                     icon: 'success',
+                    title: 'Sucesso!',
+                    html: '<?= addslashes($sucesso) ?>',
                     confirmButtonText: 'OK',
                     customClass: {
                         title: 'swal2-title-arial',
+                        htmlContainer: 'swal2-html-arial',
                         confirmButton: 'swal2-confirm'
                     }
                 });
-            });
-        <?php endif; ?>
-        
-        <?php if (isset($erro)): ?>
-            document.addEventListener('DOMContentLoaded', function() {
+            <?php endif; ?>
+            
+            <?php if (isset($erro)): ?>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erro!',
-                    text: '<?= addslashes($erro) ?>',
+                    html: '<?= addslashes($erro) ?>',
+                    confirmButtonText: 'OK',
                     customClass: {
                         title: 'swal2-title-arial',
+                        htmlContainer: 'swal2-html-arial',
                         confirmButton: 'swal2-confirm'
                     }
                 });
-            });
-        <?php endif; ?>
+            <?php endif; ?>
+        });
     </script>
 </body>
 </html>

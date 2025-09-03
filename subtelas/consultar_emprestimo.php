@@ -373,7 +373,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
     </nav>
 
     <script src="subtelas_javascript/consultas.js"></script>
-    <script src="subtelas_javascript/sidebar.js"></script>
+
     <script>
       let visualizacaoAtual = 'pendentes'; // 'pendentes' ou 'devolvidos'
       let dadosPendentes = [];
@@ -506,7 +506,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
 
 
   <script src="subtelas_javascript/telconsultar_funcionarios.js"></script>
-  <script src="subtelas_javascript/sidebar.js"></script>
+
   
   <script>
     // Exibir SweetAlert2 para mensagens de sucesso ou erro

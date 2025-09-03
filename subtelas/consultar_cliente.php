@@ -297,7 +297,7 @@
   </nav>
 
   <script src="subtelas_javascript/consultas.js"></script>
-  <script src="subtelas_javascript/sidebar.js"></script>
+
   <script src="subtelas_javascript/telconsultar_clientes.js"></script>
   <script>
     // Função para limpar filtros
