@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 02/09/2025 às 21:24
+-- Tempo de geração: 03/09/2025 às 19:04
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -40,7 +40,12 @@ CREATE TABLE `autor` (
 
 INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`) VALUES
 (1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com'),
-(2, 'Collen Hoover', '(28) 47286-2786', 'collenhoover@gmail.com');
+(2, 'Mason Thames', '(99) 99999-9999', 'masonthames@gmail.com'),
+(14, 'Gerard', '(87) 53386-5862', 'gerard@gmail.com'),
+(16, 'ana', '(44) 44444-4444', 'ana@gmail.com'),
+(17, 'anaaa', '(32) 33684-9384', 'ana@gmail.com'),
+(18, 'anaaa', '(32) 33684-9384', 'ana@gmail.com'),
+(19, 'Gerard', '(28) 47286-2786', 'aaaaaaa@gmail.om');
 
 --
 -- Acionadores `autor`
@@ -49,8 +54,8 @@ DELIMITER $$
 CREATE TRIGGER `tr_autor_delete_audit` BEFORE DELETE ON `autor` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('autor', 'DELETE', OLD.Cod_Autor,
-                     CONCAT('Nome: ', OLD.Nome_Autor),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome_Autor, ', Telefone: ', OLD.Telefone, ', Email: ', OLD.Email),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -58,8 +63,8 @@ DELIMITER $$
 CREATE TRIGGER `tr_autor_insert_audit` AFTER INSERT ON `autor` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('autor', 'INSERT', NEW.Cod_Autor, 
-                     CONCAT('Nome: ', NEW.Nome_Autor),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Nome: ', NEW.Nome_Autor, ', Telefone: ', NEW.Telefone, ', Email: ', NEW.Email),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -67,9 +72,9 @@ DELIMITER $$
 CREATE TRIGGER `tr_autor_update_audit` AFTER UPDATE ON `autor` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('autor', 'UPDATE', NEW.Cod_Autor,
-                     CONCAT('Nome: ', OLD.Nome_Autor),
-                     CONCAT('Nome: ', NEW.Nome_Autor),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome_Autor, ', Telefone: ', OLD.Telefone, ', Email: ', OLD.Email),
+                     CONCAT('Nome: ', NEW.Nome_Autor, ', Telefone: ', NEW.Telefone, ', Email: ', NEW.Email),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -104,9 +109,12 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`Cod_Cliente`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Nome_Responsavel`, `Telefone`, `Data_Nascimento`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Foto`) VALUES
-(2, 1, 'Guilherme Vinicius Schwarz', '928.759.274-87', 'guilhermevinicius@gmail.com', 'Ma', 'Johnny Schwarz', '(87) 53386-5862', '2007-08-17', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 0x6c6f676f5f7472616e732e706e67),
+(2, 1, 'Guilherme Vinicius Schwarz', '928.759.274-87', 'guilhermevinicius@gmail.com', 'Ma', 'Johnny Schwarz', '(87) 53386-5862', '2007-08-17', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 0x363862373262306336303733642e706e67),
 (3, 1, 'Ian Lucas Borba', '985.672.685-78', 'ianlucas@gmail.com', 'Masculino', 'Joice Cristina dos Santos Borba', '(47) 99685-5520', '2009-03-10', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 342, 0x6c6f676f5f7472616e732e706e67),
-(4, 2, 'TESTE', '287.352.976-28', 'teste@gmail.com', 'Feminino', 'UAEHFAHFKAFAFAFAFAFAFAFAF', '(32) 33684-9384', '2025-08-27', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 1234, 0x6c6f676f75742e6a7067);
+(4, 2, 'TESTE 3', '287.352.976-28', 'teste@gmail.com', 'Feminino', 'Raquel', '(32) 33684-9384', '2025-08-27', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 1234, 0x363862373262316531346532622e6a7067),
+(5, 1, 'Gerard Way', '104.163.459-56', 'gerard@gmail.com', 'Masculino', 'Lara Gorito', '(28) 47286-2786', '2025-09-02', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 8, 0x363862373437666163336439352e6a7067),
+(6, 2, 'Drake', '104.163.459-56', 'drake@gmail.com', 'Masculino', 'Joice Cristina dos Santos Borba', '(99) 99999-9999', '2025-09-02', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 9, 0x363862373438356439326164322e6a706567),
+(7, 2, 'rihanna', '985.672.685-78', 'rihanna@gmail.com', 'Feminino', '?', '(66) 66666-6666', '2025-09-02', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 3, 0x363862373439623036663464622e6a7067);
 
 --
 -- Acionadores `cliente`
@@ -115,8 +123,8 @@ DELIMITER $$
 CREATE TRIGGER `tr_cliente_delete_audit` BEFORE DELETE ON `cliente` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('cliente', 'DELETE', OLD.Cod_Cliente,
-                     CONCAT('Nome: ', OLD.Nome),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome, ', CPF: ', OLD.CPF, ', Email: ', OLD.Email),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -124,8 +132,8 @@ DELIMITER $$
 CREATE TRIGGER `tr_cliente_insert_audit` AFTER INSERT ON `cliente` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('cliente', 'INSERT', NEW.Cod_Cliente, 
-                     CONCAT('Nome: ', NEW.Nome),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Nome: ', NEW.Nome, ', CPF: ', NEW.CPF, ', Email: ', NEW.Email),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -133,9 +141,9 @@ DELIMITER $$
 CREATE TRIGGER `tr_cliente_update_audit` AFTER UPDATE ON `cliente` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('cliente', 'UPDATE', NEW.Cod_Cliente,
-                     CONCAT('Nome: ', OLD.Nome),
-                     CONCAT('Nome: ', NEW.Nome),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome, ', CPF: ', OLD.CPF, ', Email: ', OLD.Email),
+                     CONCAT('Nome: ', NEW.Nome, ', CPF: ', NEW.CPF, ', Email: ', NEW.Email),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -200,7 +208,9 @@ CREATE TABLE `emprestimo` (
 --
 
 INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`) VALUES
-(1, 2, 1, '2025-08-13', '2025-07-31');
+(1, 2, 1, '2025-08-13', '2025-07-31'),
+(2, 2, 1, '2025-08-12', '2025-12-26'),
+(3, 2, 1, '2025-08-12', '2025-12-26');
 
 --
 -- Acionadores `emprestimo`
@@ -209,8 +219,8 @@ DELIMITER $$
 CREATE TRIGGER `tr_emprestimo_delete_audit` BEFORE DELETE ON `emprestimo` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('emprestimo', 'DELETE', OLD.Cod_Emprestimo,
-                     CONCAT('Cliente: ', OLD.Cod_Cliente),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Cliente: ', OLD.Cod_Cliente, ', Livro: ', OLD.Cod_Livro, ', Data: ', OLD.Data_Emprestimo),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -218,8 +228,8 @@ DELIMITER $$
 CREATE TRIGGER `tr_emprestimo_insert_audit` AFTER INSERT ON `emprestimo` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('emprestimo', 'INSERT', NEW.Cod_Emprestimo, 
-                     CONCAT('Cliente: ', NEW.Cod_Cliente),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Cliente: ', NEW.Cod_Cliente, ', Livro: ', NEW.Cod_Livro, ', Data: ', NEW.Data_Emprestimo),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -227,9 +237,9 @@ DELIMITER $$
 CREATE TRIGGER `tr_emprestimo_update_audit` AFTER UPDATE ON `emprestimo` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('emprestimo', 'UPDATE', NEW.Cod_Emprestimo,
-                     CONCAT('Cliente: ', OLD.Cod_Cliente),
-                     CONCAT('Cliente: ', NEW.Cod_Cliente),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Cliente: ', OLD.Cod_Cliente, ', Livro: ', OLD.Cod_Livro, ', Data: ', OLD.Data_Emprestimo),
+                     CONCAT('Cliente: ', NEW.Cod_Cliente, ', Livro: ', NEW.Cod_Livro, ', Data: ', NEW.Data_Emprestimo),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -258,7 +268,6 @@ CREATE TABLE `funcionario` (
   `Num_Residencia` int(11) NOT NULL,
   `Usuario` varchar(20) NOT NULL,
   `Senha` varchar(20) NOT NULL,
-  `senha_temporaria` varchar(255) NOT NULL,
   `Foto` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -266,9 +275,13 @@ CREATE TABLE `funcionario` (
 -- Despejando dados para a tabela `funcionario`
 --
 
-INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `senha_temporaria`, `Foto`) VALUES
-(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', '', ''),
-(7, 3, 'Bruno Henrique Ribeiro', '568.328.325-62', 'brunohribeiro@gmail.com', 'Masculino', '(27) 83562-3856', '2009-03-11', '2025-08-27', '82640-490', 'PR', 'Curitiba', 'Santa Cândida', 'Praça Semen Uniga', 1234, 'bruno_ribeiro', '$2y$10$CSp11vLw5wapF', '1', 0x6b61747970657272792e6a7067);
+INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Foto`) VALUES
+(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', ''),
+(7, 3, 'Bruno Henrique Ribeiro', '568.328.325-62', 'brunohribeiro@gmail.com', 'Masculino', '(27) 83562-3856', '2007-03-11', '2025-09-03', '82640-490', 'PR', 'Curitiba', 'Santa Cândida', 'Praça Semen Uniga', 1234, 'bruno_ribeiro', '$2y$10$CHOY/49469q7u', 0x6b61747970657272792e6a7067),
+(8, 2, 'Mason Thames', '287.352.976-28', 'masonthames@gmail.com', 'Masculino', '(87) 53386-5862', '2007-09-02', '2025-09-02', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 4, 'mason_thames', '$2y$10$3RL6IWFtjn1kr', 0x6d61736f6e6e2e6a7067),
+(9, 2, 'Mason Thames', '287.352.976-28', 'masonthames@gmail.com', 'Masculino', '(87) 53386-5862', '2025-09-02', '2025-09-02', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 4, 'mason_thames', '$2y$10$nFAc5UC/t6NYg', 0x6d61736f6e6e2e6a7067),
+(10, 5, 'Mariska', '287.352.976-28', 'mariska@gmail.com', 'Feminino', '(99) 99999-9999', '1964-01-23', '2025-09-02', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 5, 'mariska', '$2y$10$o0unCC1gdondp', 0x6d617269736b612e6a7067),
+(11, 3, 'Paula', '287.352.976-28', 'paula@gmail.com', 'Feminino', '(32) 33684-9384', '2025-09-02', '2025-09-02', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 6, 'paula_fernandes', '$2y$10$fe6rytf0jAR7k', 0x7061756c612e6a7067);
 
 --
 -- Acionadores `funcionario`
@@ -277,8 +290,8 @@ DELIMITER $$
 CREATE TRIGGER `tr_funcionario_delete_audit` BEFORE DELETE ON `funcionario` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, usuario, ip_usuario)
              VALUES ('funcionario', 'DELETE', OLD.Cod_Funcionario,
-                     CONCAT('Nome: ', OLD.Nome),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome, ', Data Nascimento: ', OLD.Data_Nascimento),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -286,8 +299,8 @@ DELIMITER $$
 CREATE TRIGGER `tr_funcionario_insert_audit` AFTER INSERT ON `funcionario` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_novos, usuario, ip_usuario)
              VALUES ('funcionario', 'INSERT', NEW.Cod_Funcionario, 
-                     CONCAT('Nome: ', NEW.Nome),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Nome: ', NEW.Nome, ', Data Nascimento: ', NEW.Data_Nascimento),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -295,9 +308,9 @@ DELIMITER $$
 CREATE TRIGGER `tr_funcionario_update_audit` AFTER UPDATE ON `funcionario` FOR EACH ROW BEGIN
              INSERT INTO logs_auditoria (tabela, operacao, id_registro, dados_anteriores, dados_novos, usuario, ip_usuario)
              VALUES ('funcionario', 'UPDATE', NEW.Cod_Funcionario,
-                     CONCAT('Nome: ', OLD.Nome),
-                     CONCAT('Nome: ', NEW.Nome),
-                     @usuario_sistema, @ip_usuario);
+                     CONCAT('Nome: ', OLD.Nome, ', Data Nascimento: ', OLD.Data_Nascimento),
+                     CONCAT('Nome: ', NEW.Nome, ', Data Nascimento: ', NEW.Data_Nascimento),
+                     USER(), @ip_usuario);
          END
 $$
 DELIMITER ;
@@ -355,7 +368,7 @@ CREATE TABLE `livro` (
 --
 
 INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`) VALUES
-(1, 1, 1, 1, 5, 'Harry Potter', '2025-08-12', '2025-08-27', 10, '3', 0x6c6f676f5f7472616e732e706e67);
+(1, 1, 2, 1, 9, 'Harry Potter', '2025-08-12', '2025-08-27', 7777, '3', 0x6c6f676f5f7472616e732e706e67);
 
 --
 -- Acionadores `livro`
@@ -412,17 +425,42 @@ CREATE TABLE `logs_auditoria` (
 --
 
 INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_anteriores`, `dados_novos`, `usuario`, `data_operacao`, `ip_usuario`) VALUES
-(1, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 16:55:19', NULL),
-(2, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 16:58:51', NULL),
-(3, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 16:59:03', NULL),
-(4, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:06:09', NULL),
-(5, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:08:32', NULL),
-(6, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:09:10', NULL),
-(7, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:10:08', NULL),
-(8, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:13:20', NULL),
-(9, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:15:27', NULL),
-(10, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 17:16:36', NULL),
-(11, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro', 'Nome: Bruno Henrique Ribeiro', NULL, '2025-09-02 18:08:47', NULL);
+(1, 'cliente', 'UPDATE', 4, 'Nome: TESTE, CPF: 287.352.976-28, Email: teste@gmail.com', 'Nome: TESTE, CPF: 287.352.976-28, Email: teste@gmail.com', 'root@localhost', '2025-09-02 17:26:24', NULL),
+(2, 'cliente', 'UPDATE', 4, 'Nome: TESTE, CPF: 287.352.976-28, Email: teste@gmail.com', 'Nome: TESTE 3, CPF: 287.352.976-28, Email: teste@gmail.com', 'root@localhost', '2025-09-02 17:28:54', NULL),
+(3, 'cliente', 'UPDATE', 4, 'Nome: TESTE 3, CPF: 287.352.976-28, Email: teste@gmail.com', 'Nome: TESTE 3, CPF: 287.352.976-28, Email: teste@gmail.com', 'root@localhost', '2025-09-02 17:29:45', NULL),
+(4, 'cliente', 'UPDATE', 4, 'Nome: TESTE 3, CPF: 287.352.976-28, Email: teste@gmail.com', 'Nome: TESTE 3, CPF: 287.352.976-28, Email: teste@gmail.com', 'root@localhost', '2025-09-02 17:32:11', NULL),
+(5, 'cliente', 'UPDATE', 2, 'Nome: Guilherme Vinicius Schwarz, CPF: 928.759.274-87, Email: guilhermevinicius@gmail.com', 'Nome: Guilherme Vinicius Schwarz, CPF: 928.759.274-87, Email: guilhermevinicius@gmail.com', 'root@localhost', '2025-09-02 17:32:50', NULL),
+(6, 'cliente', 'UPDATE', 3, 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'root@localhost', '2025-09-02 17:33:06', NULL),
+(7, 'cliente', 'UPDATE', 2, 'Nome: Guilherme Vinicius Schwarz, CPF: 928.759.274-87, Email: guilhermevinicius@gmail.com', 'Nome: Guilherme Vinicius Schwarz, CPF: 928.759.274-87, Email: guilhermevinicius@gmail.com', 'root@localhost', '2025-09-02 17:36:12', NULL),
+(8, 'cliente', 'UPDATE', 4, 'Nome: TESTE 3, CPF: 287.352.976-28, Email: teste@gmail.com', 'Nome: TESTE 3, CPF: 287.352.976-28, Email: teste@gmail.com', 'root@localhost', '2025-09-02 17:36:30', NULL),
+(9, 'funcionario', 'INSERT', 8, NULL, 'Nome: Mason Thames, Data Nascimento: 2025-09-02', 'root@localhost', '2025-09-02 19:14:56', NULL),
+(10, 'funcionario', 'INSERT', 9, NULL, 'Nome: Mason Thames, Data Nascimento: 2025-09-02', 'root@localhost', '2025-09-02 19:21:12', NULL),
+(11, 'funcionario', 'INSERT', 10, NULL, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-02 19:22:47', NULL),
+(12, 'funcionario', 'INSERT', 11, NULL, 'Nome: Paula, Data Nascimento: 2025-09-02', 'root@localhost', '2025-09-02 19:31:45', NULL),
+(13, 'cliente', 'INSERT', 5, NULL, 'Nome: Gerard Way, CPF: 104.163.459-56, Email: gerard@gmail.com', 'root@localhost', '2025-09-02 19:33:40', NULL),
+(14, 'cliente', 'UPDATE', 5, 'Nome: Gerard Way, CPF: 104.163.459-56, Email: gerard@gmail.com', 'Nome: Gerard Way, CPF: 104.163.459-56, Email: gerard@gmail.com', 'root@localhost', '2025-09-02 19:39:38', NULL),
+(15, 'cliente', 'INSERT', 6, NULL, 'Nome: Drake, CPF: 104.163.459-56, Email: drake@gmail.com', 'root@localhost', '2025-09-02 19:41:17', NULL),
+(16, 'cliente', 'INSERT', 7, NULL, 'Nome: rihanna, CPF: 985.672.685-78, Email: rihanna@gmail.com', 'root@localhost', '2025-09-02 19:46:56', NULL),
+(17, 'livro', 'INSERT', 4, NULL, 'Título: Five Nights', NULL, '2025-09-02 19:48:35', NULL),
+(18, 'autor', 'INSERT', 14, NULL, 'Nome: Gerard, Telefone: (87) 53386-5862, Email: gerard@gmail.com', 'root@localhost', '2025-09-02 19:49:49', NULL),
+(19, 'autor', 'INSERT', 15, NULL, 'Nome: ana, Telefone: (44) 44444-4444, Email: ana@gmail.com', 'root@localhost', '2025-09-02 19:51:32', NULL),
+(20, 'autor', 'INSERT', 16, NULL, 'Nome: ana, Telefone: (44) 44444-4444, Email: ana@gmail.com', 'root@localhost', '2025-09-02 19:51:37', NULL),
+(21, 'autor', 'INSERT', 17, NULL, 'Nome: anaaa, Telefone: (32) 33684-9384, Email: ana@gmail.com', 'root@localhost', '2025-09-02 19:51:48', NULL),
+(22, 'autor', 'INSERT', 18, NULL, 'Nome: anaaa, Telefone: (32) 33684-9384, Email: ana@gmail.com', 'root@localhost', '2025-09-02 19:52:55', NULL),
+(23, 'autor', 'INSERT', 19, NULL, 'Nome: Gerard, Telefone: (28) 47286-2786, Email: aaaaaaa@gmail.om', 'root@localhost', '2025-09-02 19:53:07', NULL),
+(24, 'autor', 'DELETE', 15, 'Nome: ana, Telefone: (44) 44444-4444, Email: ana@gmail.com', NULL, 'root@localhost', '2025-09-02 20:03:54', NULL),
+(25, 'livro', 'DELETE', 4, 'Título: Five Nights', NULL, NULL, '2025-09-02 20:04:14', NULL),
+(26, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro, Data Nascimento: 2009-03-11', 'Nome: Bruno Henrique Ribeiro, Data Nascimento: 2009-03-11', 'root@localhost', '2025-09-03 16:41:02', NULL),
+(27, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro, Data Nascimento: 2009-03-11', 'Nome: Bruno Henrique Ribeiro, Data Nascimento: 2007-03-11', 'root@localhost', '2025-09-03 16:41:02', NULL),
+(28, 'livro', 'UPDATE', 1, 'Título: Harry Potter', 'Título: Harry Potter', NULL, '2025-09-03 16:57:19', NULL),
+(29, 'cliente', 'UPDATE', 3, 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'root@localhost', '2025-09-03 16:57:29', NULL),
+(30, 'cliente', 'UPDATE', 5, 'Nome: Gerard Way, CPF: 104.163.459-56, Email: gerard@gmail.com', 'Nome: Gerard Way, CPF: 104.163.459-56, Email: gerard@gmail.com', 'root@localhost', '2025-09-03 16:57:49', NULL),
+(31, 'funcionario', 'UPDATE', 8, 'Nome: Mason Thames, Data Nascimento: 2025-09-02', 'Nome: Mason Thames, Data Nascimento: 2025-09-02', 'root@localhost', '2025-09-03 16:58:06', NULL),
+(32, 'funcionario', 'UPDATE', 8, 'Nome: Mason Thames, Data Nascimento: 2025-09-02', 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'root@localhost', '2025-09-03 16:58:06', NULL),
+(33, 'livro', 'UPDATE', 1, 'Título: Harry Potter', 'Título: Harry Potter', NULL, '2025-09-03 16:58:12', NULL),
+(34, 'funcionario', 'UPDATE', 8, 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'root@localhost', '2025-09-03 16:58:35', NULL),
+(35, 'funcionario', 'UPDATE', 8, 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'root@localhost', '2025-09-03 16:58:35', NULL),
+(36, 'cliente', 'UPDATE', 3, 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'root@localhost', '2025-09-03 16:58:44', NULL);
 
 -- --------------------------------------------------------
 
@@ -434,8 +472,22 @@ CREATE TABLE `multa` (
   `Cod_Multa` int(11) NOT NULL,
   `Cod_Emprestimo` int(11) NOT NULL,
   `Data_Multa` date NOT NULL,
-  `Valor_Multa` decimal(10,2) NOT NULL
+  `Valor_Multa` decimal(10,2) NOT NULL,
+  `Status_Multa` enum('Pendente','Paga') DEFAULT 'Pendente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `multa`
+--
+
+INSERT INTO `multa` (`Cod_Multa`, `Cod_Emprestimo`, `Data_Multa`, `Valor_Multa`, `Status_Multa`) VALUES
+(1, 1, '2025-08-31', 0.00, 'Paga'),
+(2, 2, '2025-08-12', 0.35, 'Paga'),
+(3, 2, '2025-08-12', 0.35, 'Paga'),
+(4, 1, '2025-08-12', 0.40, 'Paga'),
+(5, 1, '2025-08-12', 0.40, 'Paga'),
+(6, 1, '2025-08-12', 0.40, 'Paga'),
+(7, 1, '2025-08-12', 0.40, 'Paga');
 
 -- --------------------------------------------------------
 
@@ -574,13 +626,13 @@ ALTER TABLE `perfil_funcionario`
 -- AUTO_INCREMENT de tabela `autor`
 --
 ALTER TABLE `autor`
-  MODIFY `Cod_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Cod_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de tabela `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `doador`
@@ -598,13 +650,13 @@ ALTER TABLE `editora`
 -- AUTO_INCREMENT de tabela `emprestimo`
 --
 ALTER TABLE `emprestimo`
-  MODIFY `Cod_Emprestimo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Cod_Emprestimo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `funcionario`
 --
 ALTER TABLE `funcionario`
-  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de tabela `genero`
@@ -616,19 +668,19 @@ ALTER TABLE `genero`
 -- AUTO_INCREMENT de tabela `livro`
 --
 ALTER TABLE `livro`
-  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de tabela `multa`
 --
 ALTER TABLE `multa`
-  MODIFY `Cod_Multa` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Cod_Multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `perfil_cliente`
@@ -680,7 +732,6 @@ ALTER TABLE `livro`
 ALTER TABLE `multa`
   ADD CONSTRAINT `FK_Multa_Emprestimo` FOREIGN KEY (`Cod_Emprestimo`) REFERENCES `emprestimo` (`Cod_Emprestimo`);
 COMMIT;
-ALTER TABLE multa ADD COLUMN IF NOT EXISTS Status_Multa ENUM('Pendente', 'Paga') DEFAULT 'Pendente';
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
