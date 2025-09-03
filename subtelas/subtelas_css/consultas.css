@@ -330,12 +330,7 @@ nav {
   vertical-align: middle;
 }
 
-#funcionarios-table tbody tr {
-  transition: var(--transition);
-  cursor: pointer;
-}
-
-#funcionarios-table tbody tr:hover {
+#funcionarios-table tr:hover {
   background: rgb(239, 241, 252);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
