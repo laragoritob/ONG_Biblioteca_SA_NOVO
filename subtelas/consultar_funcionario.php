@@ -294,7 +294,7 @@
   </nav>
 
   <script src="subtelas_javascript/telconsultar_funcionarios.js"></script>
-  <script src="subtelas_javascript/sidebar.js"></script>
+
   
   <script>
   document.addEventListener('DOMContentLoaded', function() {

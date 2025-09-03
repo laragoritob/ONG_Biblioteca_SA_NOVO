@@ -362,7 +362,7 @@
 
     <script src="subtelas_javascript/validaLivro.js"></script>
     <script src="subtelas_javascript/buscarID.js"></script>
-    <script src="subtelas_javascript/sidebar.js"></script>
+
     
     <script>
         // Mostrar notificações baseadas no PHP

@@ -243,7 +243,7 @@ try {
         <?php endif; ?>
     </table>
   </nav>
-  <script src="subtelas_javascript/sidebar.js"></script>
+
     </div>
     
     <script>

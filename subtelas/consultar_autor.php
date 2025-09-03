@@ -245,7 +245,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
   </table>
 </nav>
     </div>
-  <script src="subtelas_javascript/sidebar.js"></script>
+
 </body>
     <script>
     function editarAutor(id) {
