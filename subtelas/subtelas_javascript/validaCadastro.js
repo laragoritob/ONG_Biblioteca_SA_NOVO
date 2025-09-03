@@ -1,5 +1,6 @@
 // ANIMAÇÃO DO BOTÃO DE CADASTRAR //
-document.getElementById('btnCadastrar').addEventListener('click', function (e) {
+document.getElementById('form_pessoal').addEventListener('submit', function (e) {
+    e.preventDefault(); // Previne o envio padrão do formulário
 
     const form = document.querySelector('#form_pessoal');
     const inputs = form.querySelectorAll('input');
@@ -14,14 +15,48 @@ document.getElementById('btnCadastrar').addEventListener('click', function (e) {
 
     if (todosPreenchidos) {
         const usuarioInput = form.querySelector('input[name="usuario"]');
+        const senhaInput = document.getElementById('senhaInput');
         const usuario = usuarioInput.value.trim().toLowerCase();
+        const senha = senhaInput.value.trim();
         const nomesProibidos = ["gerente", "repositor", "bibliotecario", "recreador", "gestor"];
 
+        // Validação do nome de usuário
         if (nomesProibidos.includes(usuario)) {
             Swal.fire({
                 icon: 'error',
                 title: 'Nome de usuário inválido',
                 text: `O nome "${usuario}" não é permitido. Escolha outro.`,
+                confirmButtonColor: '#ffbcfc'
+            });
+            return; // Interrompe o envio
+        }
+
+        // Validação da senha - deve ter 8 ou mais dígitos
+        console.log('Senha digitada:', senha, 'Tamanho:', senha.length);
+        if (senha.length < 8) {
+            console.log('Senha muito curta, bloqueando envio');
+            Swal.fire({
+                icon: 'error',
+                title: 'Senha inválida',
+                text: 'A senha deve ter pelo menos 8 caracteres.',
+                confirmButtonColor: '#ffbcfc'
+            });
+            return; // Interrompe o envio
+        }
+
+        // Validação da data de nascimento - deve ter pelo menos 18 anos
+        const dataNascimentoInput = form.querySelector('input[name="data_nascimento"]');
+        const dataNascimento = new Date(dataNascimentoInput.value);
+        const hoje = new Date();
+        const anoNascimento = dataNascimento.getFullYear();
+        const anoAtual = hoje.getFullYear();
+        
+        // Verificar se nasceu há pelo menos 18 anos (considerando apenas o ano)
+        if (anoAtual - anoNascimento < 18) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Data de nascimento inválida',
+                text: 'O valor deve ser até 31/12/2007 ou anterior.',
                 confirmButtonColor: '#ffbcfc'
             });
             return; // Interrompe o envio
@@ -55,11 +90,16 @@ document.getElementById('btnCadastrar').addEventListener('click', function (e) {
     document.addEventListener('DOMContentLoaded', function () {
         const inputData = document.getElementById('data_nascimento');
         const hoje = new Date();
-        const dia = String(hoje.getDate()).padStart(2, '0');
-        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-        const ano = hoje.getFullYear();
+        
+        // Calcular data máxima (18 anos atrás - até 31/12/2007 ou anterior)
+        const anoMax = hoje.getFullYear() - 18;
+        
+        // Calcular data mínima (120 anos atrás - permitir qualquer dia do ano)
+        const anoMin = hoje.getFullYear() - 120;
 
-        inputData.max = `${ano}-${mes}-${dia}`;
+        // Permitir qualquer data do ano, apenas limitando pelos anos
+        inputData.max = `${anoMax}-12-31`;
+        inputData.min = `${anoMin}-01-01`;
     });
 
 
@@ -195,12 +235,81 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
-    
-    
 
 // BOTÃO PARA MOSTRAR SENHA //
     document.getElementById('mostrarSenha').addEventListener('change', function () {
         const senhaInput = document.getElementById('senhaInput');
         senhaInput.type = this.checked ? 'text' : 'password';
+    });
+
+
+// VALIDAÇÃO EM TEMPO REAL DO CAMPO SENHA //
+    document.addEventListener('DOMContentLoaded', function () {
+        const senhaInput = document.getElementById('senhaInput');
+        
+        if (senhaInput) {
+            // Criar elemento de feedback se não existir
+            let feedbackElement = document.getElementById('senha-feedback');
+            if (!feedbackElement) {
+                feedbackElement = document.createElement('div');
+                feedbackElement.id = 'senha-feedback';
+                feedbackElement.style.fontSize = '12px';
+                feedbackElement.style.marginTop = '5px';
+                feedbackElement.style.fontWeight = 'bold';
+                senhaInput.parentNode.insertBefore(feedbackElement, senhaInput.nextSibling);
+            }
+            
+            senhaInput.addEventListener('input', function () {
+                const senha = this.value.trim();
+                
+                if (senha.length === 0) {
+                    feedbackElement.textContent = '';
+                    feedbackElement.className = '';
+                } else if (senha.length < 8) {
+                    feedbackElement.textContent = `Senha muito curta (${senha.length}/8 caracteres)`;
+                    feedbackElement.className = 'senha-invalida';
+                } else {
+                    feedbackElement.textContent = 'Senha válida ✓';
+                    feedbackElement.className = 'senha-valida';
+                }
+            });
+        }
+    });
+
+
+// VALIDAÇÃO EM TEMPO REAL DA DATA DE NASCIMENTO //
+    document.addEventListener('DOMContentLoaded', function () {
+        const dataNascimentoInput = document.getElementById('data_nascimento');
+        
+        if (dataNascimentoInput) {
+            // Criar elemento de feedback se não existir
+            let feedbackElement = document.getElementById('data-nascimento-feedback');
+            if (!feedbackElement) {
+                feedbackElement = document.createElement('div');
+                feedbackElement.id = 'data-nascimento-feedback';
+                feedbackElement.style.fontSize = '12px';
+                feedbackElement.style.marginTop = '5px';
+                feedbackElement.style.fontWeight = 'bold';
+                dataNascimentoInput.parentNode.insertBefore(feedbackElement, dataNascimentoInput.nextSibling);
+            }
+            
+            dataNascimentoInput.addEventListener('change', function () {
+                const dataNascimento = new Date(this.value);
+                const hoje = new Date();
+                
+                if (this.value === '') {
+                    feedbackElement.textContent = '';
+                    feedbackElement.className = '';
+                    return;
+                }
+                
+                // Verificar se a data é válida
+                if (isNaN(dataNascimento.getTime())) {
+                    feedbackElement.textContent = 'Data inválida';
+                    feedbackElement.className = 'senha-invalida';
+                    return;
+                }
+            });
+        }
     });
   
