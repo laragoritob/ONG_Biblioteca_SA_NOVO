@@ -265,63 +265,6 @@ switch ($_SESSION['perfil']) {
 
   <script src="subtelas_javascript/telconsultar_doadores.js"></script>
 
-  
-  <script>
-    // Mostrar notificações baseadas no PHP
-    <?php if (isset($sucesso)): ?>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Sucesso!',
-                html: '<?= addslashes($sucesso) ?>',
-                confirmButtonText: 'OK',
-                customClass: {
-                    title: 'swal2-title-arial',
-                    htmlContainer: 'swal2-html-arial',
-                    confirmButton: 'swal2-confirm'
-                }
-            });
-        });
-    <?php endif; ?>
-    
-    <?php if (isset($erro)): ?>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Erro!',
-                html: '<?= addslashes($erro) ?>',
-                confirmButtonText: 'OK',
-                customClass: {
-                    title: 'swal2-title-arial',
-                    htmlContainer: 'swal2-html-arial',
-                    confirmButton: 'swal2-confirm'
-                }
-            });
-        });
-    <?php endif; ?>
-
-    // Função para confirmar exclusão com SweetAlert2
-    function confirmarExclusao(event, nomeDoador) {
-        event.preventDefault();
-        const url = event.target.closest('a').href;
-        
-        Swal.fire({
-            title: 'Confirmar Exclusão',
-            html: `Tem certeza que deseja excluir o doador <strong>"${nomeDoador}"</strong>?<br><br><small>Esta ação não pode ser desfeita.</small>`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sim, excluir!',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
-        });
-    }
-  </script>
     <script src="subtelas_javascript/sidebar-dropdown.js"></script>
     </div>
 </body>
