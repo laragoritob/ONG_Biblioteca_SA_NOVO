@@ -1,63 +1,74 @@
 <?php
-    session_start();
-    require_once '../conexao.php';
+// Inicia a sessão para verificar autenticação e perfil do usuário
+session_start();
 
-    // VERIFICA SE O USUÁRIO TEM PERMISSÃO
-    // SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR
-    if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
+// Inclui o arquivo de conexão com o banco de dados
+require_once '../conexao.php';
+
+// Verifica se o usuário tem permissão para acessar esta página
+// Gerente (perfil 1), Bibliotecário (perfil 3) e Recreador (perfil 4) podem registrar empréstimos
+if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
+
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - não tem acesso a esta página
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - pode registrar empréstimos
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - pode registrar empréstimos
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
+
+// Executado apenas quando o formulário é enviado via POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Obtém os dados do formulário
+    $cod_livro = $_POST['cod_livro'];
+    $cod_cliente = $_POST['cod_cliente'];
+    $data_emprestimo = $_POST['data_emprestimo'];
+    $data_devolucao = $_POST['data_devolucao'];
+
+    // Query SQL para inserir o novo empréstimo no banco de dados
+    $sql = "INSERT INTO emprestimo (cod_livro,cod_cliente,data_emprestimo,data_devolucao) 
+                VALUES (:cod_livro,:cod_cliente,:data_emprestimo,:data_devolucao)";
+
+    // Prepara a query usando prepared statement para segurança
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':cod_livro', $cod_livro);
+    $stmt->bindParam(':cod_cliente', $cod_cliente);
+    $stmt->bindParam(':data_emprestimo', $data_emprestimo);
+    $stmt->bindParam(':data_devolucao', $data_devolucao);
+
+    // Executa a inserção e verifica o resultado
+    if ($stmt->execute()) {
+        // Se sucesso, define mensagem de sucesso
+        $sucesso = "Empréstimo cadastrado com sucesso!";
+    } else {
+        // Se falhou, define mensagem de erro
+        $erro = "Erro ao cadastrar empréstimo!";
     }
+}
 
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $cod_livro = $_POST['cod_livro'];
-        $cod_cliente = $_POST['cod_cliente'];
-        $data_emprestimo = $_POST['data_emprestimo'];
-        $data_devolucao = $_POST['data_devolucao'];
-
-        $sql = "INSERT INTO emprestimo (cod_livro,cod_cliente,data_emprestimo,data_devolucao) 
-                    VALUES (:cod_livro,:cod_cliente,:data_emprestimo,:data_devolucao)";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':cod_livro', $cod_livro);
-        $stmt->bindParam(':cod_cliente', $cod_cliente);
-        $stmt->bindParam(':data_emprestimo', $data_emprestimo);
-        $stmt->bindParam(':data_devolucao', $data_devolucao);
-
-        if ($stmt->execute()) {
-            $sucesso = "Empréstimo cadastrado com sucesso!";
-        } else {
-            $erro = "Erro ao cadastrar empréstimo!";
-        }
-    }
-
-    // Definir data atual como padrão para data de empréstimo
-    $data_atual = date('Y-m-d');
-    // Definir data de devolução como uma semana após a data atual
-    $data_devolucao_padrao = date('Y-m-d', strtotime('+1 week'));
+// Define data atual como padrão para data de empréstimo
+$data_atual = date('Y-m-d');
+// Define data de devolução como uma semana após a data atual
+$data_devolucao_padrao = date('Y-m-d', strtotime('+1 week'));
 ?>
 
 

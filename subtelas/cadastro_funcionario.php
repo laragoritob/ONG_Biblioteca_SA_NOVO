@@ -1,84 +1,95 @@
 <?php
-    session_start();
-    require_once '../conexao.php';
+// Inicia a sessão para verificar autenticação e perfil do usuário
+session_start();
 
-    // VERIFICA SE O USUÁRIO TEM PERMISSÃO
-    // SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR
-    if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
+// Inclui o arquivo de conexão com o banco de dados
+require_once '../conexao.php';
+
+// Verifica se o usuário tem permissão para acessar esta página
+// Apenas Gerente (perfil 1) e Gestor (perfil 2) podem cadastrar funcionários
+if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2) {
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
+
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - pode cadastrar funcionários
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - não tem acesso a esta página
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - não tem acesso a esta página
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
+
+// Executado apenas quando o formulário é enviado via POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Obtém os dados do formulário
+    $nome = $_POST['nome'];
+    $cpf = $_POST['cpf'];
+    $sexo = $_POST['sexo'];
+    $email = $_POST['email'];
+    $telefone = $_POST['telefone'];
+    $data_nascimento = $_POST['data_nascimento'];
+    $cep = $_POST['cep'];
+    $uf = $_POST['uf'];
+    $cidade = $_POST['cidade'];
+    $bairro = $_POST['bairro'];
+    $rua = $_POST['rua'];
+    $num_residencia = $_POST['num_residencia'];
+    $perfil = $_POST['perfil'];
+    $data_efetivacao = $_POST['data_efetivacao'];
+    $usuario = $_POST['usuario'];
+    $senha = $_POST['senha'];
+    $foto = $_POST['foto'];
+
+    // Query SQL para inserir o novo funcionário no banco de dados
+    $sql = "INSERT INTO funcionario (cod_perfil, nome, cpf, sexo, email, telefone, data_nascimento, data_efetivacao, cep, uf, cidade, bairro, rua, num_residencia, usuario, senha, foto) 
+                VALUES (:cod_perfil, :nome, :cpf, :sexo, :email, :telefone, :data_nascimento, :data_efetivacao, :cep, :uf, :cidade, :bairro, :rua, :num_residencia, :usuario, :senha, :foto)";
+
+    // Prepara a query usando prepared statement para segurança
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':cod_perfil', $perfil);
+    $stmt->bindParam(':nome', $nome);
+    $stmt->bindParam(':cpf', $cpf);
+    $stmt->bindParam(':sexo', $sexo);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':telefone', $telefone);
+    $stmt->bindParam(':data_nascimento', $data_nascimento);
+    $stmt->bindParam(':data_efetivacao', $data_efetivacao);
+    $stmt->bindParam(':cep', $cep);
+    $stmt->bindParam(':uf', $uf);
+    $stmt->bindParam(':cidade', $cidade);
+    $stmt->bindParam(':bairro', $bairro);
+    $stmt->bindParam(':rua', $rua);
+    $stmt->bindParam(':num_residencia', $num_residencia);
+    $stmt->bindParam(':usuario', $usuario);
+    $stmt->bindParam(':senha', $senha);
+    $stmt->bindParam(':foto', $foto);
+
+    // Executa a inserção e verifica o resultado
+    if ($stmt->execute()) {
+        // Se sucesso, define mensagem de sucesso
+        $sucesso = "Funcionário cadastrado com sucesso!";
+    } else {
+        // Se falhou, define mensagem de erro
+        $erro = "Erro ao cadastrar funcionário!";
     }
-
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $nome = $_POST['nome'];
-        $cpf = $_POST['cpf'];
-        $sexo = $_POST['sexo'];
-        $email = $_POST['email'];
-        $telefone = $_POST['telefone'];
-        $data_nascimento = $_POST['data_nascimento'];
-        $cep = $_POST['cep'];
-        $uf = $_POST['uf'];
-        $cidade = $_POST['cidade'];
-        $bairro = $_POST['bairro'];
-        $rua = $_POST['rua'];
-        $num_residencia = $_POST['num_residencia'];
-        $perfil = $_POST['perfil'];
-        $data_efetivacao = $_POST['data_efetivacao'];
-        $usuario = $_POST['usuario'];
-        $senha = $_POST['senha'];
-        $foto = $_POST['foto'];
-
-        $sql = "INSERT INTO funcionario (cod_perfil, nome, cpf, sexo, email, telefone, data_nascimento, data_efetivacao, cep, uf, cidade, bairro, rua, num_residencia, usuario, senha, foto) 
-                    VALUES (:cod_perfil, :nome, :cpf, :sexo, :email, :telefone, :data_nascimento, :data_efetivacao, :cep, :uf, :cidade, :bairro, :rua, :num_residencia, :usuario, :senha, :foto)";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':cod_perfil', $perfil);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':cpf', $cpf);
-        $stmt->bindParam(':sexo', $sexo);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':telefone', $telefone);
-        $stmt->bindParam(':data_nascimento', $data_nascimento);
-        $stmt->bindParam(':data_efetivacao', $data_efetivacao);
-        $stmt->bindParam(':cep', $cep);
-        $stmt->bindParam(':uf', $uf);
-        $stmt->bindParam(':cidade', $cidade);
-        $stmt->bindParam(':bairro', $bairro);
-        $stmt->bindParam(':rua', $rua);
-        $stmt->bindParam(':num_residencia', $num_residencia);
-        $stmt->bindParam(':usuario', $usuario);
-        $stmt->bindParam(':senha', $senha);
-        $stmt->bindParam(':foto', $foto);
-
-        if ($stmt->execute()) {
-            $sucesso = "Funcionário cadastrado com sucesso!";
-        } else {
-            $erro = "Erro ao cadastrar funcionário!";
-        }
-    }
+}
 ?>
 
 
