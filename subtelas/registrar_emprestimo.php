@@ -70,7 +70,7 @@
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 <body>
