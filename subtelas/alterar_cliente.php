@@ -1,191 +1,213 @@
 <?php
-    session_start();
-    require_once '../conexao.php';
+// Inicia a sessão para verificar autenticação e perfil do usuário
+session_start();
 
-    // VERIFICA SE O USUÁRIO TEM PERMISSÃO
-    if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
-    }
+// Inclui o arquivo de conexão com o banco de dados
+require_once '../conexao.php';
 
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
+// Apenas Gerente (perfil 1), Bibliotecário (perfil 3) e Recreador (perfil 4) podem alterar clientes
+if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
 
-    // Verificar se foi passado um ID
-    if (!isset($_GET['id'])) {
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - não tem acesso a esta página, mas mantido para consistência
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - pode gerenciar clientes
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - pode gerenciar clientes
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
+
+// Verifica se foi passado um ID válido via GET
+// Se não houver ID, redireciona para a página de consulta
+if (!isset($_GET['id'])) {
+    header('Location: consultar_cliente.php');
+    exit();
+}
+
+// Converte o ID para inteiro para segurança (previne SQL injection)
+$id = intval($_GET['id']);
+
+// Consulta o banco de dados para obter os dados atuais do cliente que será editado
+// Inclui JOIN com a tabela perfil_cliente para obter o nome do perfil
+$sql = "SELECT 
+        c.Cod_cliente,
+        c.Cod_Perfil,
+        c.Nome,
+        c.CPF,
+        c.Email,
+        c.Sexo,
+        c.Telefone,
+        c.Data_Nascimento,
+        c.CEP,
+        c.UF,
+        c.Cidade,
+        c.Bairro,
+        c.Rua,
+        c.Num_Residencia,
+        c.Foto,
+        c.Nome_Responsavel,
+        p.Nome_Perfil
+        FROM cliente c
+        JOIN perfil_cliente p ON c.Cod_Perfil = p.Cod_Perfil
+        WHERE c.Cod_cliente = :id";
+
+try {
+    // Prepara a consulta SQL usando prepared statement (segurança)
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Se não encontrou o cliente, redireciona para consulta
+    if (!$cliente) {
         header('Location: consultar_cliente.php');
-        exit();
+        exit;
     }
+} catch (PDOException $e) {
+    // Em caso de erro na consulta, exibe mensagem e para execução
+    die("Erro na consulta: " . $e->getMessage());
+}
 
-    $id = intval($_GET['id']);
+// Busca todos os perfis de cliente disponíveis para o select
+// Esta consulta é usada para popular o dropdown de tipos de cliente
+$sql_perfis = "SELECT Cod_Perfil, Nome_Perfil FROM perfil_cliente ORDER BY Nome_Perfil";
+try {
+    $stmt_perfis = $pdo->prepare($sql_perfis);
+    $stmt_perfis->execute();
+    $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Em caso de erro ao buscar perfis, exibe mensagem e para execução
+    die("Erro ao buscar perfis: " . $e->getMessage());
+}
 
-    // Buscar dados do Cliente com todos os campos
-    $sql = "SELECT 
-            c.Cod_cliente,
-            c.Cod_Perfil,
-            c.Nome,
-            c.CPF,
-            c.Email,
-            c.Sexo,
-            c.Telefone,
-            c.Data_Nascimento,
-            c.CEP,
-            c.UF,
-            c.Cidade,
-            c.Bairro,
-            c.Rua,
-            c.Num_Residencia,
-            c.Foto,
-            c.Nome_Responsavel,
-            p.Nome_Perfil
-            FROM cliente c
-            JOIN perfil_cliente p ON c.Cod_Perfil = p.Cod_Perfil
-            WHERE c.Cod_cliente = :id";
-
-    try {
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+// Executado apenas quando o formulário é enviado via POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Remove espaços em branco do início e fim dos campos
+    $nome = trim($_POST['nome']);
+    $cpf = trim($_POST['cpf']);
+    $email = trim($_POST['email']);
+    $sexo = $cliente['Sexo']; // Usar valor atual do banco (campo readonly)
+    $telefone = trim($_POST['telefone']);
+    $data_nascimento = $_POST['data_nascimento'];
+    $cep = trim($_POST['cep']);
+    $uf = $_POST['uf'];
+    $cidade = trim($_POST['cidade']);
+    $bairro = trim($_POST['bairro']);
+    $rua = trim($_POST['rua']);
+    $num_residencia = trim($_POST['num_residencia']);
+    $nome_responsavel = trim($_POST['nome_responsavel']);
+    $cod_perfil = $cliente['Cod_Perfil']; // Usar valor atual do banco (campo readonly)
+    
+    // Processar upload da foto - mantém a foto atual por padrão
+    $foto = $cliente['Foto'];
+    
+    // Verifica se foi enviada uma nova foto
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $arquivo_tmp = $_FILES['foto']['tmp_name'];
+        $nome_arquivo = $_FILES['foto']['name'];
+        $extensao = strtolower(pathinfo($nome_arquivo, PATHINFO_EXTENSION));
         
-        if (!$cliente) {
-            header('Location: consultar_cliente.php');
-            exit;
-        }
-    } catch (PDOException $e) {
-        die("Erro na consulta: " . $e->getMessage());
-    }
-
-    // Buscar todos os perfis para o select
-    $sql_perfis = "SELECT Cod_Perfil, Nome_Perfil FROM perfil_cliente ORDER BY Nome_Perfil";
-    try {
-        $stmt_perfis = $pdo->prepare($sql_perfis);
-        $stmt_perfis->execute();
-        $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        die("Erro ao buscar perfis: " . $e->getMessage());
-    }
-
-    // Processar formulário de alteração
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $nome = trim($_POST['nome']);
-        $cpf = trim($_POST['cpf']);
-        $email = trim($_POST['email']);
-        $sexo = $cliente['Sexo']; // Usar valor atual do banco
-        $telefone = trim($_POST['telefone']);
-        $data_nascimento = $_POST['data_nascimento'];
-        $cep = trim($_POST['cep']);
-        $uf = $_POST['uf'];
-        $cidade = trim($_POST['cidade']);
-        $bairro = trim($_POST['bairro']);
-        $rua = trim($_POST['rua']);
-        $num_residencia = trim($_POST['num_residencia']);
-        $nome_responsavel = trim($_POST['nome_responsavel']);
-        $cod_perfil = $cliente['Cod_Perfil']; // Usar valor atual do banco
-        
-        // Processar upload da foto
-        $foto = $cliente['Foto']; // Manter foto atual por padrão
-        
-        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-            $arquivo_tmp = $_FILES['foto']['tmp_name'];
-            $nome_arquivo = $_FILES['foto']['name'];
-            $extensao = strtolower(pathinfo($nome_arquivo, PATHINFO_EXTENSION));
+        // Verifica se a extensão do arquivo é válida
+        $extensoes_validas = ['jpg', 'jpeg', 'png'];
+        if (in_array($extensao, $extensoes_validas)) {
+            // Gera um nome único para o arquivo para evitar conflitos
+            $novo_nome = uniqid() . '.' . $extensao;
+            $destino = 'subtelas_img/' . $novo_nome;
             
-            // Verificar se é uma extensão válida
-            $extensoes_validas = ['jpg', 'jpeg', 'png'];
-            if (in_array($extensao, $extensoes_validas)) {
-                // Gerar nome único para o arquivo
-                $novo_nome = uniqid() . '.' . $extensao;
-                $destino = 'subtelas_img/' . $novo_nome;
-                
-                // Mover arquivo para a pasta de imagens
-                if (move_uploaded_file($arquivo_tmp, $destino)) {
-                    // Se havia uma foto anterior, deletar
-                    if (!empty($cliente['Foto']) && file_exists('subtelas_img/' . $cliente['Foto'])) {
-                        unlink('subtelas_img/' . $cliente['Foto']);
-                    }
-                    $foto = $novo_nome;
+            // Move o arquivo para a pasta de imagens
+            if (move_uploaded_file($arquivo_tmp, $destino)) {
+                // Se havia uma foto anterior, deleta para liberar espaço
+                if (!empty($cliente['Foto']) && file_exists('subtelas_img/' . $cliente['Foto'])) {
+                    unlink('subtelas_img/' . $cliente['Foto']);
                 }
-            }
-        }
-        
-        if (empty($nome)) {
-            $erro = "Nome é obrigatório";
-        } elseif (empty($cpf)) {
-            $erro = "CPF é obrigatório";
-        } elseif (empty($email)) {
-            $erro = "Email é obrigatório";
-        } else {
-            try {
-                $sql_update = "UPDATE cliente 
-                            SET Nome = :nome,
-                                Nome_Responsavel = :nome_responsavel,
-                                CPF = :cpf,
-                                Email = :email,
-                                Sexo = :sexo,
-                                Telefone = :telefone,
-                                Data_Nascimento = :data_nascimento,
-                                CEP = :cep,
-                                UF = :uf,
-                                Cidade = :cidade,
-                                Bairro = :bairro,
-                                Rua = :rua,
-                                Num_Residencia = :num_residencia,
-                                Cod_Perfil = :cod_perfil,
-                                Foto = :foto
-                            WHERE Cod_cliente = :id";
-                
-                $stmt_update = $pdo->prepare($sql_update);
-                $stmt_update->bindParam(':nome', $nome);
-                $stmt_update->bindParam(':nome_responsavel', $nome_responsavel);
-                $stmt_update->bindParam(':cpf', $cpf);
-                $stmt_update->bindParam(':email', $email);
-                $stmt_update->bindParam(':sexo', $sexo);
-                $stmt_update->bindParam(':telefone', $telefone);
-                $stmt_update->bindParam(':data_nascimento', $data_nascimento);
-                $stmt_update->bindParam(':cep', $cep);
-                $stmt_update->bindParam(':uf', $uf);
-                $stmt_update->bindParam(':cidade', $cidade);
-                $stmt_update->bindParam(':bairro', $bairro);
-                $stmt_update->bindParam(':rua', $rua);
-                $stmt_update->bindParam(':num_residencia', $num_residencia);
-                $stmt_update->bindParam(':cod_perfil', $cod_perfil);
-                $stmt_update->bindParam(':foto', $foto);
-                $stmt_update->bindParam(':id', $id);
-                
-                if ($stmt_update->execute()) {
-                    $sucesso = "Cliente alterado com sucesso!";
-                    // Recarregar dados do Cliente
-                    $stmt->execute();
-                    $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
-                } else {
-                    $erro = "Erro ao alterar cliente";
-                }
-            } catch (PDOException $e) {
-                $erro = "Erro ao alterar cliente: " . $e->getMessage();
+                $foto = $novo_nome;
             }
         }
     }
+    
+    // Verifica se os campos obrigatórios foram preenchidos
+    if (empty($nome)) {
+        $erro = "Nome é obrigatório";
+    } elseif (empty($cpf)) {
+        $erro = "CPF é obrigatório";
+    } elseif (empty($email)) {
+        $erro = "Email é obrigatório";
+    } else {
+        // Se não há erros de validação, procede com a atualização
+        try {
+            // Query SQL para atualizar todos os dados do cliente
+            $sql_update = "UPDATE cliente 
+                        SET Nome = :nome,
+                            Nome_Responsavel = :nome_responsavel,
+                            CPF = :cpf,
+                            Email = :email,
+                            Sexo = :sexo,
+                            Telefone = :telefone,
+                            Data_Nascimento = :data_nascimento,
+                            CEP = :cep,
+                            UF = :uf,
+                            Cidade = :cidade,
+                            Bairro = :bairro,
+                            Rua = :rua,
+                            Num_Residencia = :num_residencia,
+                            Cod_Perfil = :cod_perfil,
+                            Foto = :foto
+                        WHERE Cod_cliente = :id";
+            
+            // Prepara a query usando prepared statement
+            $stmt_update = $pdo->prepare($sql_update);
+            $stmt_update->bindParam(':nome', $nome);
+            $stmt_update->bindParam(':nome_responsavel', $nome_responsavel);
+            $stmt_update->bindParam(':cpf', $cpf);
+            $stmt_update->bindParam(':email', $email);
+            $stmt_update->bindParam(':sexo', $sexo);
+            $stmt_update->bindParam(':telefone', $telefone);
+            $stmt_update->bindParam(':data_nascimento', $data_nascimento);
+            $stmt_update->bindParam(':cep', $cep);
+            $stmt_update->bindParam(':uf', $uf);
+            $stmt_update->bindParam(':cidade', $cidade);
+            $stmt_update->bindParam(':bairro', $bairro);
+            $stmt_update->bindParam(':rua', $rua);
+            $stmt_update->bindParam(':num_residencia', $num_residencia);
+            $stmt_update->bindParam(':cod_perfil', $cod_perfil);
+            $stmt_update->bindParam(':foto', $foto);
+            $stmt_update->bindParam(':id', $id);
+            
+            // Executa a atualização
+            if ($stmt_update->execute()) {
+                // Se sucesso, define mensagem de sucesso
+                $sucesso = "Cliente alterado com sucesso!";
+                // Recarrega os dados do cliente para exibir na tela
+                $stmt->execute();
+                $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                // Se falhou, define mensagem de erro
+                $erro = "Erro ao alterar cliente";
+            }
+        } catch (PDOException $e) {
+            // Em caso de erro na execução, captura e exibe a mensagem
+            $erro = "Erro ao alterar cliente: " . $e->getMessage();
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
