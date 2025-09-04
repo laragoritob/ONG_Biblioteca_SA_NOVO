@@ -244,6 +244,59 @@ switch ($_SESSION['perfil']) {
         width: 100%;
       }
     }
+
+        .swal2-title-arial {
+            font-family: Arial, sans-serif !important;
+            font-weight: bold !important;
+        }
+        
+        .swal2-html-arial {
+            font-family: Arial, sans-serif !important;
+            font-size: 16px !important;
+        }
+        
+        /* Estilo dos botões igual ao cadastro_funcionario */
+        .swal2-confirm {
+            background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 0.5rem !important;
+            padding: 0.75rem 1.5rem !important;
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+        }
+        
+        .swal2-confirm:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+        }
+        
+        .swal2-confirm:focus {
+            outline: 2px solid #6366f1 !important;
+            outline-offset: 2px !important;
+        }
+        
+        .swal2-cancel {
+            background: #dc2626 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 0.5rem !important;
+            padding: 0.75rem 1.5rem !important;
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+        }
+        
+        .swal2-cancel:hover {
+            background: #b91c1c !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+        }
   
   </style>
 </head>
@@ -307,7 +360,7 @@ switch ($_SESSION['perfil']) {
                     <span class="status-pendente">PENDENTE</span>
                   </td>
                   <td>
-                    <a href="pagar_multa.php?id=<?= htmlspecialchars($m['Cod_Multa']) ?>" class="btn-pagar" onclick="return confirm('Tem certeza que deseja marcar esta multa como paga?')">Pagar</a>
+                    <button class="btn-pagar" onclick="confirmarPagamento(<?= htmlspecialchars($m['Cod_Multa']) ?>, '<?= htmlspecialchars($m['Nome_Cliente']) ?>', '<?= htmlspecialchars($m['Nome_Livro']) ?>', <?= htmlspecialchars($m['Valor_Multa']) ?>)">Pagar</button>
                   </td>
                 </tr>
               <?php endforeach; ?>
@@ -331,6 +384,37 @@ switch ($_SESSION['perfil']) {
             const id = row.cells[0].textContent.toLowerCase();
             row.style.display = (nome.includes(input) || id.includes(input)) ? "" : "none";
           });
+        }
+        
+        // Função para confirmar pagamento da multa
+        function confirmarPagamento(codMulta, nomeCliente, nomeLivro, valorMulta) {
+          Swal.fire({
+            title: 'Confirmar Pagamento',
+            html: `Tem certeza que deseja marcar como paga a multa do cliente <strong>${nomeCliente}</strong> pelo livro <strong>"${nomeLivro}"</strong> no valor de <strong>R$ ${valorMulta.toFixed(2).replace('.', ',')}</strong>?`,
+            icon: 'warning',
+                confirmButtonText: 'Sim, Excluir',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                showCancelButton: true,
+                customClass: {
+                    title: 'swal2-title-arial',
+                    htmlContainer: 'swal2-html-arial',
+                    cancelButton: 'swal2-cancel',
+                    confirmButton: 'swal2-confirm',
+                }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Redireciona para pagar a multa
+              window.location.href = `pagar_multa.php?id=${codMulta}`;
+            }
+          });
+        }
+        
+        // Função para limpar filtros
+        function limparFiltros() {
+          document.getElementById("search-input").value = "";
+          filtrarTabela();
         }
         
         // Adicionar evento de busca em tempo real

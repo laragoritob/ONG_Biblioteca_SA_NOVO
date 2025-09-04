@@ -62,6 +62,17 @@ if (isset($_GET['id'])) {
     <title>ONG Biblioteca - Excluir Cliente</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .swal2-title-arial {
             font-family: Arial, sans-serif !important;
             font-weight: bold !important;

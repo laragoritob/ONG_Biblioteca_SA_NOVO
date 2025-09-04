@@ -63,6 +63,18 @@ if (isset($_GET['id'])) {
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .swal2-title-arial {
             font-family: Arial, sans-serif !important;
             font-weight: bold !important;
@@ -118,7 +130,6 @@ if (isset($_GET['id'])) {
     </style>
 </head>
 <body>
-    <?php include 'includes/sidebar-dropdown.php'; ?>
     <script>
         // Aguardar o SweetAlert2 carregar
         document.addEventListener('DOMContentLoaded', function() {
