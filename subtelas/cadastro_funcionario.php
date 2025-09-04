@@ -89,7 +89,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
-    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
