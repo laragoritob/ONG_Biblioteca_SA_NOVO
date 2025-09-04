@@ -8,7 +8,7 @@ if (isset($_GET['id_cliente'])) {
     $id_cliente = $_GET['id_cliente'];
     try {
         // Consulta SQL para buscar o nome do cliente pelo ID
-        $sql = "SELECT nome FROM cliente WHERE cod_cliente = :id_cliente";
+        $sql = "SELECT nome FROM cliente WHERE cod_cliente = :id_cliente AND status = 'ativo'";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id_cliente', $id_cliente);
         $stmt->execute();

@@ -9,7 +9,7 @@ if (isset($_GET['id_autor'])) {
     
     try {
         // Consulta SQL para buscar o nome do autor pelo ID
-        $sql = "SELECT Nome_Autor FROM autor WHERE Cod_Autor = :id_autor";
+        $sql = "SELECT Nome_Autor FROM autor WHERE Cod_Autor = :id_autor AND status = 'ativo'";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id_autor', $id_autor);
         $stmt->execute();

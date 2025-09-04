@@ -17,7 +17,7 @@ if (isset($_GET['id'])) {
     if ($confirmado) {
         try {
             // Primeiro verifica se o funcionário existe antes de excluir
-            $sql_check = "SELECT Nome FROM funcionario WHERE Cod_Funcionario = :id";
+            $sql_check = "SELECT Nome FROM funcionario WHERE Cod_Funcionario = :id AND status = 'ativo'";
             $stmt_check = $pdo->prepare($sql_check);
             $stmt_check->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt_check->execute();
@@ -28,23 +28,23 @@ if (isset($_GET['id'])) {
             if (!$funcionario) {
                 $erro = "Funcionário não encontrado!";
             } else {
-                // Se encontrou, procede com a exclusão
-                $sql = "DELETE FROM funcionario WHERE Cod_Funcionario = :id";
+                // Se encontrou, procede com a inativação (soft delete)
+                $sql = "UPDATE funcionario SET status = 'inativo' WHERE Cod_Funcionario = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-                // Executa a exclusão e verifica o resultado
+                // Executa a inativação e verifica o resultado
                 if ($stmt->execute()) {
                     // Se sucesso, define mensagem de sucesso com o nome do funcionário
-                    $sucesso = "Funcionário " . htmlspecialchars($funcionario['Nome']) . " excluído com sucesso!";
+                    $sucesso = "Funcionário " . htmlspecialchars($funcionario['Nome']) . " inativado com sucesso!";
                 } else {
                     // Se falhou, define mensagem de erro
-                    $erro = "Erro ao excluir funcionário.";
+                    $erro = "Erro ao inativar funcionário.";
                 }
             }
         } catch (PDOException $e) {
             // Em caso de erro na execução, captura e exibe a mensagem
-            $erro = "Erro ao excluir funcionário: " . $e->getMessage();
+            $erro = "Erro ao inativar funcionário: " . $e->getMessage();
         }
     }
     // Se não for confirmado, apenas mostra a tela de confirmação
@@ -166,12 +166,12 @@ if (isset($_GET['id'])) {
         
         // Se não houver sucesso nem erro, mostrar confirmação
         <?php if (!isset($sucesso) && !isset($erro)): ?>
-            Swal.fire({
-                title: 'Confirmar Exclusão',
-                html: 'Tem certeza que deseja excluir este funcionário?<br><br><strong>Esta ação não pode ser desfeita!</strong>',
+                            Swal.fire({
+                    title: 'Confirmar Inativação',
+                    html: 'Tem certeza que deseja inativar este funcionário?<br><br><strong>O funcionário será marcado como inativo e não aparecerá mais nas consultas!</strong>',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sim, Excluir',
+                confirmButtonText: 'Sim, Inativar',
                 cancelButtonText: 'Cancelar',
                 confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#6b7280',

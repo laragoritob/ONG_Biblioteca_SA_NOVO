@@ -17,7 +17,7 @@ if (isset($_GET['id'])) {
     if ($confirmado) {
         try {
             // Primeiro verifica se o livro existe antes de excluir
-            $sql_check = "SELECT Cod_Livro, Titulo FROM livro WHERE Cod_Livro = :id";
+            $sql_check = "SELECT Cod_Livro, Titulo FROM livro WHERE Cod_Livro = :id AND status = 'ativo'";
             $stmt_check = $pdo->prepare($sql_check);
             $stmt_check->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt_check->execute();
@@ -37,26 +37,26 @@ if (isset($_GET['id'])) {
 
                 // Se o livro está emprestado, impede a exclusão
                 if ($emprestimo['total'] > 0) {
-                    $erro = "Não é possível excluir este livro pois ele está emprestado!";
+                    $erro = "Não é possível inativar este livro pois ele está emprestado!";
                 } else {
-                    // Se não está emprestado, procede com a exclusão
-                    $sql = "DELETE FROM livro WHERE Cod_Livro = :id";
+                    // Se não está emprestado, procede com a inativação (soft delete)
+                    $sql = "UPDATE livro SET status = 'inativo' WHERE Cod_Livro = :id";
                     $stmt = $pdo->prepare($sql);
                     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-                    // Executa a exclusão e verifica o resultado
+                    // Executa a inativação e verifica o resultado
                     if ($stmt->execute()) {
                         // Se sucesso, define mensagem de sucesso com o título do livro
-                        $sucesso = "Livro " . htmlspecialchars($livro['Titulo']) . " excluído com sucesso!";
+                        $sucesso = "Livro " . htmlspecialchars($livro['Titulo']) . " inativado com sucesso!";
                     } else {
                         // Se falhou, define mensagem de erro
-                        $erro = "Erro ao excluir livro.";
+                        $erro = "Erro ao inativar livro.";
                     }
                 }
             }
         } catch (PDOException $e) {
             // Em caso de erro na execução, captura e exibe a mensagem
-            $erro = "Erro ao excluir livro: " . $e->getMessage();
+            $erro = "Erro ao inativar livro: " . $e->getMessage();
         }
     }
     // Se não for confirmado, apenas mostrar a confirmação
@@ -177,12 +177,12 @@ if (isset($_GET['id'])) {
         
         // Se não houver sucesso nem erro, mostrar confirmação
         <?php if (!isset($sucesso) && !isset($erro)): ?>
-            Swal.fire({
-                title: 'Confirmar Exclusão',
-                html: 'Tem certeza que deseja excluir este livro?<br><br><strong>Esta ação não pode ser desfeita!</strong>',
+                            Swal.fire({
+                    title: 'Confirmar Inativação',
+                    html: 'Tem certeza que deseja inativar este livro?<br><br><strong>O livro será marcado como inativo e não aparecerá mais nas consultas!</strong>',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sim, Excluir',
+                confirmButtonText: 'Sim, Inativar',
                 cancelButtonText: 'Cancelar',
                 confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#6b7280',

@@ -9,7 +9,7 @@ if (isset($_GET['id_editora'])) {
     
     try {
         // Consulta SQL para buscar o nome da editora pelo ID
-        $sql = "SELECT Nome_Editora FROM editora WHERE Cod_Editora = :id_editora";
+        $sql = "SELECT Nome_Editora FROM editora WHERE Cod_Editora = :id_editora AND status = 'ativo'";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id_editora', $id_editora);
         $stmt->execute();

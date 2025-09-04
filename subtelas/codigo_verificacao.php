@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo_completo'])) {
             // Se encontrou o email correspondente ao código
             if ($email_do_codigo) {
                 // Busca o usuário pelo email que solicitou o código
-                $stmt = $pdo->prepare("SELECT * FROM funcionario WHERE Email = :email");
+                $stmt = $pdo->prepare("SELECT * FROM funcionario WHERE Email = :email AND status = 'ativo'");
                 $stmt->bindParam(':email', $email_do_codigo);
                 $stmt->execute();
                 

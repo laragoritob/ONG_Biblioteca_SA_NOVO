@@ -8,7 +8,7 @@ if (isset($_GET['id_livro'])) {
     $id_livro = $_GET['id_livro'];
     try {
         // Consulta SQL para buscar o título do livro pelo ID
-        $sql = "SELECT titulo FROM livro WHERE cod_livro = :id_livro";
+        $sql = "SELECT titulo FROM livro WHERE cod_livro = :id_livro AND status = 'ativo'";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id_livro', $id_livro);
         $stmt->execute();

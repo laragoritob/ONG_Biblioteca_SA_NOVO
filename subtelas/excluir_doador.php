@@ -17,7 +17,7 @@ if (isset($_GET['id'])) {
     if ($confirmado) {
         try {
             // Primeiro verifica se o doador existe antes de excluir
-            $sql_check = "SELECT Nome_Doador FROM doador WHERE Cod_Doador = :id";
+            $sql_check = "SELECT Nome_Doador FROM doador WHERE Cod_Doador = :id AND status = 'ativo'";
             $stmt_check = $pdo->prepare($sql_check);
             $stmt_check->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt_check->execute();
@@ -28,23 +28,23 @@ if (isset($_GET['id'])) {
             if (!$doador) {
                 $erro = "Doador não encontrado!";
             } else {
-                // Se encontrou, procede com a exclusão
-                $sql = "DELETE FROM doador WHERE Cod_Doador = :id";
+                // Se encontrou, procede com a inativação (soft delete)
+                $sql = "UPDATE doador SET status = 'inativo' WHERE Cod_Doador = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-                // Executa a exclusão e verifica o resultado
+                // Executa a inativação e verifica o resultado
                 if ($stmt->execute()) {
                     // Se sucesso, define mensagem de sucesso com o nome do doador
-                    $sucesso = "Doador " . htmlspecialchars($doador['Nome_Doador']) . " excluído com sucesso!";
+                    $sucesso = "Doador " . htmlspecialchars($doador['Nome_Doador']) . " inativado com sucesso!";
                 } else {
                     // Se falhou, define mensagem de erro
-                    $erro = "Erro ao excluir doador.";
+                    $erro = "Erro ao inativar doador.";
                 }
             }
         } catch (PDOException $e) {
             // Em caso de erro na execução, captura e exibe a mensagem
-            $erro = "Erro ao excluir doador: " . $e->getMessage();
+            $erro = "Erro ao inativar doador: " . $e->getMessage();
         }
     }
     // Se não for confirmado, apenas mostra a tela de confirmação
@@ -167,12 +167,12 @@ if (isset($_GET['id'])) {
         
         // Se não houver sucesso nem erro, mostrar confirmação
         <?php if (!isset($sucesso) && !isset($erro)): ?>
-            Swal.fire({
-                title: 'Confirmar Exclusão',
-                html: 'Tem certeza que deseja excluir este doador?<br><br><strong>Esta ação não pode ser desfeita!</strong>',
+                            Swal.fire({
+                    title: 'Confirmar Inativação',
+                    html: 'Tem certeza que deseja inativar este doador?<br><br><strong>O doador será marcado como inativo e não aparecerá mais nas consultas!</strong>',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sim, Excluir',
+                confirmButtonText: 'Sim, Inativar',
                 cancelButtonText: 'Cancelar',
                 confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#6b7280',

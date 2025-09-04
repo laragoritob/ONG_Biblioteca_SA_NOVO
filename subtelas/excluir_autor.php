@@ -17,7 +17,7 @@ if (isset($_GET['id'])) {
     if ($confirmado) {
         try {
             // Primeiro verifica se o autor existe antes de excluir
-            $sql_check = "SELECT Nome_Autor FROM autor WHERE Cod_Autor = :id";
+            $sql_check = "SELECT Nome_Autor FROM autor WHERE Cod_Autor = :id AND status = 'ativo'";
             $stmt_check = $pdo->prepare($sql_check);
             $stmt_check->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt_check->execute();
@@ -28,23 +28,23 @@ if (isset($_GET['id'])) {
             if (!$autor) {
                 $erro = "Autor não encontrado!";
             } else {
-                // Se encontrou, procede com a exclusão
-                $sql = "DELETE FROM autor WHERE Cod_Autor = :id";
+                // Se encontrou, procede com a inativação (soft delete)
+                $sql = "UPDATE autor SET status = 'inativo' WHERE Cod_Autor = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-                // Executa a exclusão e verifica o resultado
+                // Executa a inativação e verifica o resultado
                 if ($stmt->execute()) {
                     // Se sucesso, define mensagem de sucesso com o nome do autor
-                    $sucesso = "Autor " . htmlspecialchars($autor['Nome_Autor']) . " excluído com sucesso!";
+                    $sucesso = "Autor " . htmlspecialchars($autor['Nome_Autor']) . " inativado com sucesso!";
                 } else {
                     // Se falhou, define mensagem de erro
-                    $erro = "Erro ao excluir autor.";
+                    $erro = "Erro ao inativar autor.";
                 }
             }
         } catch (PDOException $e) {
             // Em caso de erro na execução, captura e exibe a mensagem
-            $erro = "Erro ao excluir autor: " . $e->getMessage();
+            $erro = "Erro ao inativar autor: " . $e->getMessage();
         }
     }
     // Se não for confirmado, apenas mostra a tela de confirmação
@@ -168,11 +168,11 @@ if (isset($_GET['id'])) {
             // Se não houver sucesso nem erro, mostrar confirmação
             <?php if (!isset($sucesso) && !isset($erro)): ?>
                 Swal.fire({
-                    title: 'Confirmar Exclusão',
-                    html: 'Tem certeza que deseja excluir este autor?<br><br><strong>Esta ação não pode ser desfeita!</strong>',
+                    title: 'Confirmar Inativação',
+                    html: 'Tem certeza que deseja inativar este autor?<br><br><strong>O autor será marcado como inativo e não aparecerá mais nas consultas!</strong>',
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Sim, Excluir',
+                    confirmButtonText: 'Sim, Inativar',
                     cancelButtonText: 'Cancelar',
                     confirmButtonColor: '#dc2626',
                     cancelButtonColor: '#6b7280',

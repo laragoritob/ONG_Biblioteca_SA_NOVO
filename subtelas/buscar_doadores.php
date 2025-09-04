@@ -17,7 +17,7 @@ if (empty($termo)) {
 try {
     // Consulta SQL para buscar doadores que contenham o termo no nome
     // Usa LIKE com wildcards para busca parcial
-    $sql = "SELECT Cod_Doador as cod_doador, Nome_Doador as nome FROM doador WHERE Nome_Doador LIKE :termo ORDER BY Nome_Doador";
+    $sql = "SELECT Cod_Doador as cod_doador, Nome_Doador as nome FROM doador WHERE Nome_Doador LIKE :termo AND status = 'ativo' ORDER BY Nome_Doador";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':termo', '%' . $termo . '%', PDO::PARAM_STR);
     $stmt->execute();
