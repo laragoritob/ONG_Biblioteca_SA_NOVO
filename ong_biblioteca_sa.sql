@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 04/09/2025 às 21:58
+-- Tempo de geração: 05/09/2025 às 01:49
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -39,8 +39,8 @@ CREATE TABLE `autor` (
 -- Despejando dados para a tabela `autor`
 --
 
-INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`) VALUES
-(1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com');
+INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`, `status`) VALUES
+(1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com', 'ativo');
 
 --
 -- Acionadores `autor`
@@ -104,14 +104,14 @@ CREATE TABLE `cliente` (
 -- Despejando dados para a tabela `cliente`
 --
 
-INSERT INTO `cliente` (`Cod_Cliente`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Nome_Responsavel`, `Telefone`, `Data_Nascimento`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Foto`) VALUES
-(2, 1, 'Guilherme Vinicius Schwarz', '928.759.274-87', 'guilhermevinicius@gmail.com', 'Ma', 'Johnny Schwarz', '(87) 53386-5862', '2007-08-17', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 0x363862396465393732363862372e6a7067),
-(3, 1, 'Ian Lucas Borba', '985.672.685-78', 'ianlucas@gmail.com', 'Masculino', 'Joice Cristina dos Santos Borba', '(47) 99685-5520', '2009-03-10', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 342, 0x363862396465363964303461362e6a7067),
-(8, 1, 'João Vitor Atanazio', '182.648.267-47', 'joaovitor@gmail.com', 'Masculino', 'Claudia Regina de Souza', '(47) 98361-8391', '2007-07-21', '89203-275', 'SC', 'Joinville', 'Atiradores', 'Rodovia BR-101', 1642, 0x363862396531366563373363622e6a7067),
-(9, 1, 'Gustavo Tobler', '832.675.782-67', 'gustavotobler@gmail.com', 'Masculino', 'Maria Clara Toble da Silva', '(47) 98253-6247', '2017-09-11', '89201-000', 'SC', 'Joinville', 'Centro', 'Rua do Príncipe', 1233, 0x363862396534383933363530642e6a7067),
-(10, 1, 'Matheus Henrique Dela', '873.258.275-28', 'matheushenrique@gmail.com', 'Masculino', 'Samanta Ribeiro Dela', '(47) 98264-8274', '2018-06-20', '89216-560', 'SC', 'Joinville', 'Glória', 'Rua Nestor Hintz', 9122, 0x363862396535393663346530302e6a706567),
-(11, 1, 'Tatiane Vieira', '283.728.628-65', 'tatianevieira@gmail.com', 'Feminino', 'Isabella Vieira ', '(47) 98118-3746', '2010-10-14', '88807-278', 'SC', 'Criciúma', 'Santa Luzia', 'Rua 3 de Maio', 3785, 0x363862396537333232643665382e6a7067),
-(12, 2, 'Drake', '832.782.576-29', 'drake@gmail.com', 'Masculino', NULL, '(47) 98284-9273', '2000-01-09', '14024-230', 'SP', 'Ribeirão Preto', 'Jardim Canadá', 'Rua Toronto', 1212, 0x363862396539616632613265372e6a706567);
+INSERT INTO `cliente` (`Cod_Cliente`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Nome_Responsavel`, `Telefone`, `Data_Nascimento`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Foto`, `status`) VALUES
+(3, 1, 'Ian Lucas Borba', '985.672.685-78', 'ianlucas@gmail.com', 'Masculino', 'Joice Cristina dos Santos Borba', '(47) 99685-5520', '2009-03-10', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 342, 0x363862396465363964303461362e6a7067, 'ativo'),
+(8, 1, 'João Vitor Atanazio', '182.648.267-47', 'joaovitor@gmail.com', 'Masculino', 'Claudia Regina de Souza', '(47) 98361-8391', '2007-07-21', '89203-275', 'SC', 'Joinville', 'Atiradores', 'Rodovia BR-101', 1642, 0x363862396531366563373363622e6a7067, 'ativo'),
+(9, 1, 'Gustavo Tobler', '832.675.782-67', 'gustavotobler@gmail.com', 'Masculino', 'Maria Clara Toble da Silva', '(47) 98253-6247', '2017-09-11', '89201-000', 'SC', 'Joinville', 'Centro', 'Rua do Príncipe', 1233, 0x363862396534383933363530642e6a7067, 'ativo'),
+(10, 1, 'Matheus Henrique Dela', '873.258.275-28', 'matheushenrique@gmail.com', 'Masculino', 'Samanta Ribeiro Dela', '(47) 98264-8274', '2018-06-20', '89216-560', 'SC', 'Joinville', 'Glória', 'Rua Nestor Hintz', 9122, 0x363862396535393663346530302e6a706567, 'ativo'),
+(11, 1, 'Tatiane Vieira', '283.728.628-65', 'tatianevieira@gmail.com', 'Feminino', 'Isabella Vieira ', '(47) 98118-3746', '2010-10-14', '88807-278', 'SC', 'Criciúma', 'Santa Luzia', 'Rua 3 de Maio', 3785, 0x363862396537333232643665382e6a7067, 'ativo'),
+(12, 2, 'Drake', '832.782.576-24', 'drake@gmail.com', 'Masculino', '', '(47) 98284-9273', '2000-01-09', '14024-230', 'SP', 'Ribeirão Preto', 'Jardim Canadá', 'Rua Toronto', 1212, 0x363862613232396365653964372e6a706567, 'ativo'),
+(13, 1, 'Helena Lopes', '298.237.484-35', 'helenalopes@gmail.com', 'Feminino', 'Vanessa Carvalho Lopes', '(47) 92824-9306', '2018-04-05', '89218-112', 'SC', 'Joinville', 'Santo Antônio', 'Rua Dona Francisca', 4957, 0x363862613230626235346636342e6a7067, 'ativo');
 
 --
 -- Acionadores `cliente`
@@ -163,8 +163,8 @@ CREATE TABLE `doador` (
 -- Despejando dados para a tabela `doador`
 --
 
-INSERT INTO `doador` (`Cod_Doador`, `Nome_Doador`, `Telefone`, `Email`) VALUES
-(1, 'Frank Ocean', '(21) 92636-6969', 'frankocean@gmail.com');
+INSERT INTO `doador` (`Cod_Doador`, `Nome_Doador`, `Telefone`, `Email`, `status`) VALUES
+(1, 'Frank Ocean', '(21) 92636-6969', 'frankocean@gmail.com', 'ativo');
 
 -- --------------------------------------------------------
 
@@ -184,9 +184,9 @@ CREATE TABLE `editora` (
 -- Despejando dados para a tabela `editora`
 --
 
-INSERT INTO `editora` (`Cod_Editora`, `Nome_Editora`, `Telefone`, `Email`) VALUES
-(1, 'Moderna', '(47) 98231-2647', 'moderna_editora@gmail.com'),
-(2, 'Panini', '(78) 35627-8562', 'panini@gmail.com');
+INSERT INTO `editora` (`Cod_Editora`, `Nome_Editora`, `Telefone`, `Email`, `status`) VALUES
+(1, 'Moderna', '(47) 98231-2647', 'moderna_editora@gmail.com', 'ativo'),
+(2, 'Panini', '(78) 35627-8562', 'panini@gmail.com', 'ativo');
 
 -- --------------------------------------------------------
 
@@ -202,15 +202,6 @@ CREATE TABLE `emprestimo` (
   `Data_Devolucao` date NOT NULL,
   `Status_Emprestimo` enum('Pendente','Devolvido') DEFAULT 'Pendente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `emprestimo`
---
-
-INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`, `Status_Emprestimo`) VALUES
-(1, 2, 1, '2025-08-13', '2025-07-31', 'Devolvido'),
-(2, 2, 1, '2025-08-12', '2025-12-26', 'Pendente'),
-(3, 2, 1, '2025-08-12', '2026-01-16', 'Devolvido');
 
 --
 -- Acionadores `emprestimo`
@@ -277,17 +268,17 @@ CREATE TABLE `funcionario` (
 -- Despejando dados para a tabela `funcionario`
 --
 
-INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Senha_Temporaria`, `Foto`) VALUES
-(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', NULL, ''),
-(12, 4, 'Dwayne Johnson', '985.735.298-72', 'therock@gmail.com', 'Masculino', '(98) 46794-8766', '1972-04-02', '2025-09-03', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 'the_rock', '12345678', NULL, 0x7468655f726f636b2e6a7067),
-(18, 1, 'Silvio Luiz de Souza', '783.464.837-68', 'silvioluis@gmail.com', 'Masculino', '(47) 9881-2356', '1990-06-23', '2025-09-04', '89202-300', 'SC', 'Joinville', 'Bucarein', 'Rua Coronel Procópio Gomes', 1234, 'silvio_souza', '12345678', NULL, 0x657465726e6f5f73696c76696f2e6a7067),
-(19, 5, 'Marcos Paulo', '847.987.336-79', 'marcospaulo@gmail.com', 'Masculino', '(47) 98748-6338', '2007-12-25', '2025-09-04', '89215-025', 'SC', 'Joinville', 'Morro do Meio', 'Estrada Rolf Walter Goll', 145, 'marcos_paulo', '12345678', NULL, 0x6d6172636f735f7064696464792e6a7067),
-(20, 5, 'Kim Sunoo', '910.383.000-21', 'kimsunoo@gmail.com', 'Masculino', '(47) 91736-5201', '2001-08-07', '2025-09-04', '01503-010', 'SP', 'São Paulo', 'Liberdade', 'Praça da Liberdade - Japão', 729, 'kim_sunoo', '12345678', NULL, 0x73756e6f6f2e6a7067),
-(21, 5, 'George Joji Miller', '989.820.982-35', 'joji@gmail.com', 'Masculino', '(47) 94718-4722', '1995-02-12', '2025-09-04', '89227-050', 'SC', 'Joinville', 'Iririú', 'Rua dos Estados Unidos', 666, 'george_miller', '12345678', NULL, 0x6a6f6a692e6a7067),
-(22, 4, 'Maria Xuxa Meneghel', '927.293.737-21', 'xuxa@gmail.com', 'Masculino', '(47) 98126-0253', '1965-04-18', '2025-09-04', '02976-250', 'SP', 'São Paulo', 'Vila Zat', 'Rua Serra do Cachimbo', 860, 'xuxa_meneghel', '12345678', NULL, 0x787578615f6e6f76612e6a7067),
-(23, 4, 'Gerard Way', '826.740.027-46', 'gerardway@gmail.com', 'Masculino', '(47) 98124-0567', '1990-10-31', '2025-09-04', '09351-350', 'SP', 'Mauá', 'Parque das Américas', 'Rua Nova Jersey', 6969, 'gerard_way', '123456789', NULL, 0x6765726172645f7761792e6a7067),
-(24, 4, 'Mason Thames', '285.729.572-83', 'masonthames@gmail.com', 'Masculino', '(47) 98292-7465', '2000-03-08', '2025-09-04', '89086-847', 'SC', 'Indaial', 'Estados', 'Rua Texas', 1234, 'mason_thames', '12345678', NULL, 0x6d61736f6e5f7468616d65732e6a7067),
-(25, 3, 'Taylor Lautner', '827.582.752-33', 'taylorlautner@gmail.com', 'Masculino', '(47) 98017-6524', '2002-07-29', '2025-09-04', '04566-000', 'SP', 'São Paulo', 'Cidade Monções', 'Rua Michigan', 7786, 'taylor_lautner', '12345678', NULL, 0x7461796c6f725f6c6175746e65722e6a7067);
+INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Senha_Temporaria`, `Foto`, `status`) VALUES
+(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', 'sergioluiz@gmail.com', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', NULL, '', 'ativo'),
+(12, 4, 'Dwayne Johnson', '985.735.298-72', 'therock@gmail.com', 'Masculino', '(98) 46794-8766', '1972-04-02', '2025-09-03', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 'the_rock', '12345678', NULL, 0x7468655f726f636b2e6a7067, 'ativo'),
+(18, 1, 'Silvio Luiz de Souza', '783.464.837-68', 'silvioluis@gmail.com', 'Masculino', '(47) 9881-2356', '1990-06-23', '2025-09-04', '89202-300', 'SC', 'Joinville', 'Bucarein', 'Rua Coronel Procópio Gomes', 1234, 'silvio_souza', '12345678', NULL, 0x657465726e6f5f73696c76696f2e6a7067, 'ativo'),
+(19, 5, 'Marcos Paulo', '847.987.336-79', 'marcospaulo@gmail.com', 'Masculino', '(47) 98748-6338', '2007-12-25', '2025-09-04', '89215-025', 'SC', 'Joinville', 'Morro do Meio', 'Estrada Rolf Walter Goll', 145, 'marcos_paulo', '12345678', NULL, 0x6d6172636f735f7064696464792e6a7067, 'ativo'),
+(20, 5, 'Kim Sunoo', '910.383.000-21', 'kimsunoo@gmail.com', 'Masculino', '(47) 91736-5201', '2001-08-07', '2025-09-04', '01503-010', 'SP', 'São Paulo', 'Liberdade', 'Praça da Liberdade - Japão', 729, 'kim_sunoo', '12345678', NULL, 0x73756e6f6f2e6a7067, 'ativo'),
+(21, 5, 'George Joji Miller', '989.820.982-35', 'joji@gmail.com', 'Masculino', '(47) 94718-4722', '1995-02-12', '2025-09-04', '89227-050', 'SC', 'Joinville', 'Iririú', 'Rua dos Estados Unidos', 666, 'george_miller', '12345678', NULL, 0x6a6f6a692e6a7067, 'ativo'),
+(22, 4, 'Maria Xuxa Meneghel', '927.293.737-21', 'xuxa@gmail.com', 'Masculino', '(47) 98126-0253', '1965-04-18', '2025-09-04', '02976-250', 'SP', 'São Paulo', 'Vila Zat', 'Rua Serra do Cachimbo', 860, 'xuxa_meneghel', '12345678', NULL, 0x787578615f6e6f76612e6a7067, 'ativo'),
+(23, 4, 'Gerard Way', '826.740.027-46', 'gerardway@gmail.com', 'Masculino', '(47) 98124-0567', '1990-10-31', '2025-09-04', '09351-350', 'SP', 'Mauá', 'Parque das Américas', 'Rua Nova Jersey', 6969, 'gerard_way', '123456789', NULL, 0x6765726172645f7761792e6a7067, 'ativo'),
+(24, 4, 'Mason Thames', '285.729.572-83', 'masonthames@gmail.com', 'Masculino', '(47) 98292-7465', '2000-03-08', '2025-09-04', '89086-847', 'SC', 'Indaial', 'Estados', 'Rua Texas', 1234, 'mason_thames', '12345678', NULL, 0x6d61736f6e5f7468616d65732e6a7067, 'inativo'),
+(25, 3, 'Taylor Lautner', '827.582.752-33', 'taylorlautner@gmail.com', 'Masculino', '(47) 98017-6524', '2002-07-29', '2025-09-04', '04566-000', 'SP', 'São Paulo', 'Cidade Monções', 'Rua Michigan', 7786, 'taylor_lautner', '12345678', NULL, 0x7461796c6f725f6c6175746e65722e6a7067, 'ativo');
 
 --
 -- Acionadores `funcionario`
@@ -374,8 +365,8 @@ CREATE TABLE `livro` (
 -- Despejando dados para a tabela `livro`
 --
 
-INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`) VALUES
-(1, 1, 2, 1, 9, 'Harry Potter', '2025-08-12', '2025-08-27', 7778, '3', 0x6c6f676f5f7472616e732e706e67);
+INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`, `status`) VALUES
+(1, 1, 2, 1, 9, 'Harry Potter', '2025-08-12', '2025-08-27', 7778, '3', 0x6c6f676f5f7472616e732e706e67, 'ativo');
 
 --
 -- Acionadores `livro`
@@ -527,7 +518,31 @@ INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_
 (99, 'cliente', 'INSERT', 9, NULL, 'Nome: Gustavo Tobler, CPF: 832.675.782-67, Email: gustavotobler@gmail.com', 'root@localhost', '2025-09-04 19:12:09', NULL),
 (100, 'cliente', 'INSERT', 10, NULL, 'Nome: Matheus Henrique Dela, CPF: 873.258.275-28, Email: matheushenrique@gmail.com', 'root@localhost', '2025-09-04 19:16:38', NULL),
 (101, 'cliente', 'INSERT', 11, NULL, 'Nome: Tatiane Vieira, CPF: 283.728.628-65, Email: tatianevieira@gmail.com', 'root@localhost', '2025-09-04 19:23:30', NULL),
-(102, 'cliente', 'INSERT', 12, NULL, 'Nome: Drake, CPF: 832.782.576-29, Email: drake@gmail.com', 'root@localhost', '2025-09-04 19:34:07', NULL);
+(102, 'cliente', 'INSERT', 12, NULL, 'Nome: Drake, CPF: 832.782.576-29, Email: drake@gmail.com', 'root@localhost', '2025-09-04 19:34:07', NULL),
+(103, 'funcionario', 'UPDATE', 24, 'Nome: Mason Thames, Data Nascimento: 2000-03-08', 'Nome: Mason Thames, Data Nascimento: 2000-03-08', 'root@localhost', '2025-09-04 22:43:03', NULL),
+(104, 'cliente', 'UPDATE', 12, 'Nome: Drake, CPF: 832.782.576-29, Email: drake@gmail.com', 'Nome: Drake, CPF: 832.782.576-29, Email: drake@gmail.com', 'root@localhost', '2025-09-04 22:50:04', NULL),
+(105, 'cliente', 'UPDATE', 12, 'Nome: Drake, CPF: 832.782.576-29, Email: drake@gmail.com', 'Nome: Drake, CPF: 832.782.576-29, Email: drake@gmail.com', 'root@localhost', '2025-09-04 22:50:13', NULL),
+(106, 'cliente', 'UPDATE', 12, 'Nome: Drake, CPF: 832.782.576-29, Email: drake@gmail.com', 'Nome: Drake, CPF: 832.782.576-20, Email: drake@gmail.com', 'root@localhost', '2025-09-04 23:15:49', NULL),
+(107, 'cliente', 'UPDATE', 12, 'Nome: Drake, CPF: 832.782.576-20, Email: drake@gmail.com', 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'root@localhost', '2025-09-04 23:16:34', NULL),
+(108, 'cliente', 'UPDATE', 12, 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'root@localhost', '2025-09-04 23:17:57', NULL),
+(109, 'cliente', 'UPDATE', 12, 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'root@localhost', '2025-09-04 23:18:18', NULL),
+(112, 'emprestimo', 'DELETE', 1, 'Cliente: 2, Livro: 1, Data: 2025-08-13', NULL, 'root@localhost', '2025-09-04 23:19:49', NULL),
+(113, 'emprestimo', 'DELETE', 2, 'Cliente: 2, Livro: 1, Data: 2025-08-12', NULL, 'root@localhost', '2025-09-04 23:19:49', NULL),
+(114, 'emprestimo', 'DELETE', 3, 'Cliente: 2, Livro: 1, Data: 2025-08-12', NULL, 'root@localhost', '2025-09-04 23:19:49', NULL),
+(115, 'cliente', 'DELETE', 2, 'Nome: Guilherme Vinicius Schwarz, CPF: 928.759.274-87, Email: guilhermevinicius@gmail.com', NULL, 'root@localhost', '2025-09-04 23:19:55', NULL),
+(116, 'cliente', 'INSERT', 13, NULL, 'Nome: Helena Lopes, CPF: 298.237.484-35, Email: helenalopes@gmail.com', 'root@localhost', '2025-09-04 23:28:59', NULL),
+(117, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:31:09', NULL),
+(118, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:31:09', NULL),
+(119, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:31:33', NULL),
+(120, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:31:33', NULL),
+(121, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:34:54', NULL),
+(122, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:34:54', NULL),
+(123, 'funcionario', 'UPDATE', 19, 'Nome: Marcos Paulo, Data Nascimento: 2007-12-25', 'Nome: Marcos Paulo, Data Nascimento: 2007-12-25', 'root@localhost', '2025-09-04 23:35:17', NULL),
+(124, 'funcionario', 'UPDATE', 19, 'Nome: Marcos Paulo, Data Nascimento: 2007-12-25', 'Nome: Marcos Paulo, Data Nascimento: 2007-12-25', 'root@localhost', '2025-09-04 23:35:17', NULL),
+(125, 'cliente', 'UPDATE', 12, 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'root@localhost', '2025-09-04 23:36:43', NULL),
+(126, 'cliente', 'UPDATE', 12, 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'root@localhost', '2025-09-04 23:37:00', NULL),
+(127, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:40:01', NULL),
+(128, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:40:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -542,19 +557,6 @@ CREATE TABLE `multa` (
   `Valor_Multa` decimal(10,2) NOT NULL,
   `Status_Multa` enum('Pendente','Paga') DEFAULT 'Pendente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `multa`
---
-
-INSERT INTO `multa` (`Cod_Multa`, `Cod_Emprestimo`, `Data_Multa`, `Valor_Multa`, `Status_Multa`) VALUES
-(1, 1, '2025-08-31', 0.00, 'Paga'),
-(2, 2, '2025-08-12', 0.35, 'Paga'),
-(3, 2, '2025-08-12', 0.35, 'Paga'),
-(4, 1, '2025-08-12', 0.40, 'Paga'),
-(5, 1, '2025-08-12', 0.40, 'Paga'),
-(6, 1, '2025-08-12', 0.40, 'Paga'),
-(7, 1, '2025-08-12', 0.40, 'Paga');
 
 -- --------------------------------------------------------
 
@@ -699,7 +701,7 @@ ALTER TABLE `autor`
 -- AUTO_INCREMENT de tabela `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `doador`
@@ -741,7 +743,7 @@ ALTER TABLE `livro`
 -- AUTO_INCREMENT de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
 
 --
 -- AUTO_INCREMENT de tabela `multa`

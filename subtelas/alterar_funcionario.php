@@ -110,6 +110,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = trim($_POST['usuario']);
     $senha = trim($_POST['senha']);
     $cod_perfil = intval($_POST['cod_perfil']);
+
+    // Processar upload da foto - mantém a foto atual por padrão
+    $foto = $funcionario['Foto'];
+    
+    // Verifica se foi enviada uma nova foto
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $arquivo_tmp = $_FILES['foto']['tmp_name'];
+        $nome_arquivo = $_FILES['foto']['name'];
+        $extensao = strtolower(pathinfo($nome_arquivo, PATHINFO_EXTENSION));
+        
+        // Verifica se a extensão do arquivo é válida
+        $extensoes_validas = ['jpg', 'jpeg', 'png'];
+        if (in_array($extensao, $extensoes_validas)) {
+            // Gera um nome único para o arquivo para evitar conflitos
+            $novo_nome = uniqid() . '.' . $extensao;
+            $destino = 'subtelas_img/' . $novo_nome;
+            
+            // Move o arquivo para a pasta de imagens
+            if (move_uploaded_file($arquivo_tmp, $destino)) {
+                // Se havia uma foto anterior, deleta para liberar espaço
+                if (!empty($funcionario['Foto']) && file_exists('subtelas_img/' . $funcionario['Foto'])) {
+                    unlink('subtelas_img/' . $funcionario['Foto']);
+                }
+                $foto = $novo_nome;
+            }
+        }
+    }
     
     if (empty($nome)) {
         $erro = "Nome é obrigatório";
