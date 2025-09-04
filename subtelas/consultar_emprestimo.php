@@ -108,37 +108,6 @@ require_once '../conexao.php';
       $emprestimos = [];
   }
 
-
-
-//VERIFCA SE O USARIO TEM PERMISSAO DE adm OU secretaria
-if($_SESSION['perfil'] !=1 && $_SESSION['perfil'] !=2){
-    echo "<script>alert('Acesso negado!');windown.location.href='../gerente.php';</script>";
-    exit();
-}
-$usuario= []; //INICIALIZA A VARIAVEL PARA EVITAR ERROS
-
-//SE FORMULARIO FOR ENVIADO, BUSCA USUARIO PELO O ID OU NOME
-if($_SERVER["REQUEST_METHOD"]== "POST" && !empty($_POST['busca'])){
-    $busca= trim($_POST['busca']);
-
-//VERIFICA SE A BUSCA É UM NUMERO OU UM NOME 
-if(is_numeric($busca)){
-    $sql= "SELECT * FROM emprestimo WHERE Cod_Emprestimo = :busca ORDER BY Cod_Emprestimo ASC";
-    $stmt= $pdo-> prepare($sql);
-    $stmt-> bindParam(':busca', $busca, PDO::PARAM_INT);
-}else {
-    $sql= "SELECT * FROM emprestimo WHERE Cod_Emprestimo LIKE :busca_nome ORDER BY Cod_Emprestimo ASC";
-    $stmt= $pdo-> prepare($sql);
-    $stmt-> bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
-}
-}else {
-    $sql= "SELECT * FROM emprestimo ORDER BY Cod_Emprestimo ASC";
-    $stmt= $pdo-> prepare($sql);
-}
-
-$stmt-> execute();
-$usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -147,8 +116,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
   <meta charset="UTF-8">
   <title>ONG Biblioteca - Sala Arco-íris</title>
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
-  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css" />
-  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
+  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     .filtro-container {
@@ -374,7 +342,6 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
       </table>
     </nav>
 
-    <script src="subtelas_javascript/consultas.js"></script>
 
     <script>
       let visualizacaoAtual = 'pendentes'; // 'pendentes' ou 'devolvidos'
@@ -387,19 +354,26 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
         const tabela = document.getElementById('funcionarios-table');
         const linhas = tabela.querySelectorAll('tbody tr');
         
-        dadosPendentes = Array.from(linhas).map(linha => ({
-          id: linha.cells[0].textContent,
-          cliente: linha.cells[1].textContent,
-          livro: linha.cells[2].textContent,
-          dataEmprestimo: linha.cells[3].textContent,
-          dataDevolucao: linha.cells[4].textContent,
-          status: linha.cells[5].textContent
+        dadosPendentes = Array.from(linhas).filter(linha => linha.cells && linha.cells.length >= 6).map(linha => ({
+          id: linha.cells[0] ? linha.cells[0].textContent : '',
+          cliente: linha.cells[1] ? linha.cells[1].textContent : '',
+          livro: linha.cells[2] ? linha.cells[2].textContent : '',
+          dataEmprestimo: linha.cells[3] ? linha.cells[3].textContent : '',
+          dataDevolucao: linha.cells[4] ? linha.cells[4].textContent : '',
+          status: linha.cells[5] ? linha.cells[5].textContent : ''
         }));
         
         // Obter dados de empréstimos devolvidos do campo hidden
         const dadosCompletosElement = document.getElementById('dados-completos');
-        if (dadosCompletosElement.textContent.trim()) {
-          dadosDevolvidos = JSON.parse(dadosCompletosElement.textContent);
+        if (dadosCompletosElement && dadosCompletosElement.textContent && dadosCompletosElement.textContent.trim()) {
+          try {
+            dadosDevolvidos = JSON.parse(dadosCompletosElement.textContent);
+          } catch (e) {
+            console.error('Erro ao fazer parse dos dados devolvidos:', e);
+            dadosDevolvidos = [];
+          }
+        } else {
+          dadosDevolvidos = [];
         }
       });
       
