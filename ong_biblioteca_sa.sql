@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 04, 2025 at 04:03 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Tempo de geração: 04/09/2025 às 21:58
+-- Versão do servidor: 10.4.32-MariaDB
+-- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `ong_biblioteca_sa`
+-- Banco de dados: `ong_biblioteca_sa`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `autor`
+-- Estrutura para tabela `autor`
 --
 
 CREATE TABLE `autor` (
@@ -35,20 +35,14 @@ CREATE TABLE `autor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `autor`
+-- Despejando dados para a tabela `autor`
 --
 
 INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`) VALUES
-(1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com'),
-(2, 'Mason Thames', '(99) 99999-9999', 'masonthames@gmail.com'),
-(14, 'Gerard', '(87) 53386-5862', 'gerard@gmail.com'),
-(16, 'ana', '(44) 44444-4444', 'ana@gmail.com'),
-(17, 'anaaa', '(32) 33684-9384', 'ana@gmail.com'),
-(18, 'anaaa', '(32) 33684-9384', 'ana@gmail.com'),
-(19, 'Gerard', '(28) 47286-2786', 'aaaaaaa@gmail.om');
+(1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com');
 
 --
--- Triggers `autor`
+-- Acionadores `autor`
 --
 DELIMITER $$
 CREATE TRIGGER `tr_autor_delete_audit` BEFORE DELETE ON `autor` FOR EACH ROW BEGIN
@@ -82,7 +76,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cliente`
+-- Estrutura para tabela `cliente`
 --
 
 CREATE TABLE `cliente` (
@@ -105,19 +99,20 @@ CREATE TABLE `cliente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `cliente`
+-- Despejando dados para a tabela `cliente`
 --
 
 INSERT INTO `cliente` (`Cod_Cliente`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Nome_Responsavel`, `Telefone`, `Data_Nascimento`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Foto`) VALUES
-(2, 1, 'Guilherme Vinicius Schwarz', '928.759.274-87', 'guilhermevinicius@gmail.com', 'Ma', 'Johnny Schwarz', '(87) 53386-5862', '2007-08-17', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 0x363862373262306336303733642e706e67),
-(3, 1, 'Ian Lucas Borba', '985.672.685-78', 'ianlucas@gmail.com', 'Masculino', 'Joice Cristina dos Santos Borba', '(47) 99685-5520', '2009-03-10', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 342, 0x6c6f676f5f7472616e732e706e67),
-(4, 2, 'TESTE 3', '287.352.976-28', 'teste@gmail.com', 'Feminino', 'Raquel', '(32) 33684-9384', '2025-08-27', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 1234, 0x363862373262316531346532622e6a7067),
-(5, 1, 'Gerard Way', '104.163.459-56', 'gerard@gmail.com', 'Masculino', 'Lara Gorito', '(28) 47286-2786', '2025-09-02', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 8, 0x363862373437666163336439352e6a7067),
-(6, 2, 'Drake', '104.163.459-56', 'drake@gmail.com', 'Masculino', 'Joice Cristina dos Santos Borba', '(99) 99999-9999', '2025-09-02', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 9, 0x363862373438356439326164322e6a706567),
-(7, 2, 'rihanna', '985.672.685-78', 'rihanna@gmail.com', 'Feminino', '?', '(66) 66666-6666', '2025-09-02', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 3, 0x363862373439623036663464622e6a7067);
+(2, 1, 'Guilherme Vinicius Schwarz', '928.759.274-87', 'guilhermevinicius@gmail.com', 'Ma', 'Johnny Schwarz', '(87) 53386-5862', '2007-08-17', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 0x363862396465393732363862372e6a7067),
+(3, 1, 'Ian Lucas Borba', '985.672.685-78', 'ianlucas@gmail.com', 'Masculino', 'Joice Cristina dos Santos Borba', '(47) 99685-5520', '2009-03-10', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 342, 0x363862396465363964303461362e6a7067),
+(8, 1, 'João Vitor Atanazio', '182.648.267-47', 'joaovitor@gmail.com', 'Masculino', 'Claudia Regina de Souza', '(47) 98361-8391', '2007-07-21', '89203-275', 'SC', 'Joinville', 'Atiradores', 'Rodovia BR-101', 1642, 0x363862396531366563373363622e6a7067),
+(9, 1, 'Gustavo Tobler', '832.675.782-67', 'gustavotobler@gmail.com', 'Masculino', 'Maria Clara Toble da Silva', '(47) 98253-6247', '2017-09-11', '89201-000', 'SC', 'Joinville', 'Centro', 'Rua do Príncipe', 1233, 0x363862396534383933363530642e6a7067),
+(10, 1, 'Matheus Henrique Dela', '873.258.275-28', 'matheushenrique@gmail.com', 'Masculino', 'Samanta Ribeiro Dela', '(47) 98264-8274', '2018-06-20', '89216-560', 'SC', 'Joinville', 'Glória', 'Rua Nestor Hintz', 9122, 0x363862396535393663346530302e6a706567),
+(11, 1, 'Tatiane Vieira', '283.728.628-65', 'tatianevieira@gmail.com', 'Feminino', 'Isabella Vieira ', '(47) 98118-3746', '2010-10-14', '88807-278', 'SC', 'Criciúma', 'Santa Luzia', 'Rua 3 de Maio', 3785, 0x363862396537333232643665382e6a7067),
+(12, 2, 'Drake', '832.782.576-29', 'drake@gmail.com', 'Masculino', NULL, '(47) 98284-9273', '2000-01-09', '14024-230', 'SP', 'Ribeirão Preto', 'Jardim Canadá', 'Rua Toronto', 1212, 0x363862396539616632613265372e6a706567);
 
 --
--- Triggers `cliente`
+-- Acionadores `cliente`
 --
 DELIMITER $$
 CREATE TRIGGER `tr_cliente_delete_audit` BEFORE DELETE ON `cliente` FOR EACH ROW BEGIN
@@ -151,18 +146,18 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `doador`
+-- Estrutura para tabela `doador`
 --
 
 CREATE TABLE `doador` (
   `Cod_Doador` int(11) NOT NULL,
   `Nome_Doador` varchar(255) DEFAULT NULL,
   `Telefone` varchar(255) DEFAULT NULL,
-  `Email` varchar(255) NOT NULL
+  `Email` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `doador`
+-- Despejando dados para a tabela `doador`
 --
 
 INSERT INTO `doador` (`Cod_Doador`, `Nome_Doador`, `Telefone`, `Email`) VALUES
@@ -171,7 +166,7 @@ INSERT INTO `doador` (`Cod_Doador`, `Nome_Doador`, `Telefone`, `Email`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `editora`
+-- Estrutura para tabela `editora`
 --
 
 CREATE TABLE `editora` (
@@ -182,7 +177,7 @@ CREATE TABLE `editora` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `editora`
+-- Despejando dados para a tabela `editora`
 --
 
 INSERT INTO `editora` (`Cod_Editora`, `Nome_Editora`, `Telefone`, `Email`) VALUES
@@ -192,7 +187,7 @@ INSERT INTO `editora` (`Cod_Editora`, `Nome_Editora`, `Telefone`, `Email`) VALUE
 -- --------------------------------------------------------
 
 --
--- Table structure for table `emprestimo`
+-- Estrutura para tabela `emprestimo`
 --
 
 CREATE TABLE `emprestimo` (
@@ -205,7 +200,7 @@ CREATE TABLE `emprestimo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `emprestimo`
+-- Despejando dados para a tabela `emprestimo`
 --
 
 INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`, `Status_Emprestimo`) VALUES
@@ -214,7 +209,7 @@ INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Em
 (3, 2, 1, '2025-08-12', '2026-01-16', 'Devolvido');
 
 --
--- Triggers `emprestimo`
+-- Acionadores `emprestimo`
 --
 DELIMITER $$
 CREATE TRIGGER `tr_emprestimo_delete_audit` BEFORE DELETE ON `emprestimo` FOR EACH ROW BEGIN
@@ -248,7 +243,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `funcionario`
+-- Estrutura para tabela `funcionario`
 --
 
 CREATE TABLE `funcionario` (
@@ -274,20 +269,23 @@ CREATE TABLE `funcionario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `funcionario`
+-- Despejando dados para a tabela `funcionario`
 --
 
 INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Senha_Temporaria`, `Foto`) VALUES
 (5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', NULL, ''),
-(7, 3, 'Bruno Henrique Ribeiro', '568.328.325-62', 'brunohribeiro@gmail.com', 'Masculino', '(27) 83562-3856', '2007-03-11', '2025-09-03', '82640-490', 'PR', 'Curitiba', 'Santa Cândida', 'Praça Semen Uniga', 1234, 'bruno_ribeiro', '12345678', NULL, 0x6b61747970657272792e6a7067),
-(8, 2, 'Mason Thames', '287.352.976-28', 'masonthames@gmail.com', 'Masculino', '(87) 53386-5862', '2007-09-02', '2025-09-02', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 4, 'mason_thames', '12345678', NULL, 0x6d61736f6e6e2e6a7067),
-(10, 5, 'Mariska', '287.352.976-28', 'mariska@gmail.com', 'Feminino', '(99) 99999-9999', '1964-01-23', '2025-09-02', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 5, 'mariska', '12345678', NULL, 0x6d617269736b612e6a7067),
-(11, 3, 'Paula', '287.352.976-28', 'paula@gmail.com', 'Feminino', '(32) 33684-9384', '2025-09-02', '2025-09-02', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 6, 'paula_fernandes', '12345678', NULL, 0x7061756c612e6a7067),
 (12, 4, 'Dwayne Johnson', '985.735.298-72', 'therock@gmail.com', 'Masculino', '(98) 46794-8766', '1972-04-02', '2025-09-03', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 'the_rock', '12345678', NULL, 0x7468655f726f636b2e6a7067),
-(16, 2, 'TESTE', '222.222.222-22', 'isyhef@gmail.com', 'Feminino', '(22) 22222-2222', '2000-07-06', '2025-09-03', '89281-000', 'SC', 'São Bento do Sul', 'Progresso', 'Rua Augusto Wunderwald', 1234, 'testeteste', '12345678', NULL, 0x666e61662e6a7067);
+(18, 1, 'Silvio Luiz de Souza', '783.464.837-68', 'silvioluis@gmail.com', 'Masculino', '(47) 9881-2356', '1990-06-23', '2025-09-04', '89202-300', 'SC', 'Joinville', 'Bucarein', 'Rua Coronel Procópio Gomes', 1234, 'silvio_souza', '12345678', NULL, 0x657465726e6f5f73696c76696f2e6a7067),
+(19, 5, 'Marcos Paulo', '847.987.336-79', 'marcospaulo@gmail.com', 'Masculino', '(47) 98748-6338', '2007-12-25', '2025-09-04', '89215-025', 'SC', 'Joinville', 'Morro do Meio', 'Estrada Rolf Walter Goll', 145, 'marcos_paulo', '12345678', NULL, 0x6d6172636f735f7064696464792e6a7067),
+(20, 5, 'Kim Sunoo', '910.383.000-21', 'kimsunoo@gmail.com', 'Masculino', '(47) 91736-5201', '2001-08-07', '2025-09-04', '01503-010', 'SP', 'São Paulo', 'Liberdade', 'Praça da Liberdade - Japão', 729, 'kim_sunoo', '12345678', NULL, 0x73756e6f6f2e6a7067),
+(21, 5, 'George Joji Miller', '989.820.982-35', 'joji@gmail.com', 'Masculino', '(47) 94718-4722', '1995-02-12', '2025-09-04', '89227-050', 'SC', 'Joinville', 'Iririú', 'Rua dos Estados Unidos', 666, 'george_miller', '12345678', NULL, 0x6a6f6a692e6a7067),
+(22, 4, 'Maria Xuxa Meneghel', '927.293.737-21', 'xuxa@gmail.com', 'Masculino', '(47) 98126-0253', '1965-04-18', '2025-09-04', '02976-250', 'SP', 'São Paulo', 'Vila Zat', 'Rua Serra do Cachimbo', 860, 'xuxa_meneghel', '12345678', NULL, 0x787578615f6e6f76612e6a7067),
+(23, 4, 'Gerard Way', '826.740.027-46', 'gerardway@gmail.com', 'Masculino', '(47) 98124-0567', '1990-10-31', '2025-09-04', '09351-350', 'SP', 'Mauá', 'Parque das Américas', 'Rua Nova Jersey', 6969, 'gerard_way', '123456789', NULL, 0x6765726172645f7761792e6a7067),
+(24, 4, 'Mason Thames', '285.729.572-83', 'masonthames@gmail.com', 'Masculino', '(47) 98292-7465', '2000-03-08', '2025-09-04', '89086-847', 'SC', 'Indaial', 'Estados', 'Rua Texas', 1234, 'mason_thames', '12345678', NULL, 0x6d61736f6e5f7468616d65732e6a7067),
+(25, 3, 'Taylor Lautner', '827.582.752-33', 'taylorlautner@gmail.com', 'Masculino', '(47) 98017-6524', '2002-07-29', '2025-09-04', '04566-000', 'SP', 'São Paulo', 'Cidade Monções', 'Rua Michigan', 7786, 'taylor_lautner', '12345678', NULL, 0x7461796c6f725f6c6175746e65722e6a7067);
 
 --
--- Triggers `funcionario`
+-- Acionadores `funcionario`
 --
 DELIMITER $$
 CREATE TRIGGER `tr_funcionario_delete_audit` BEFORE DELETE ON `funcionario` FOR EACH ROW BEGIN
@@ -321,7 +319,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `genero`
+-- Estrutura para tabela `genero`
 --
 
 CREATE TABLE `genero` (
@@ -330,7 +328,7 @@ CREATE TABLE `genero` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `genero`
+-- Despejando dados para a tabela `genero`
 --
 
 INSERT INTO `genero` (`Cod_Genero`, `Nome_Genero`) VALUES
@@ -349,7 +347,7 @@ INSERT INTO `genero` (`Cod_Genero`, `Nome_Genero`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `livro`
+-- Estrutura para tabela `livro`
 --
 
 CREATE TABLE `livro` (
@@ -367,14 +365,14 @@ CREATE TABLE `livro` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `livro`
+-- Despejando dados para a tabela `livro`
 --
 
 INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`) VALUES
 (1, 1, 2, 1, 9, 'Harry Potter', '2025-08-12', '2025-08-27', 7778, '3', 0x6c6f676f5f7472616e732e706e67);
 
 --
--- Triggers `livro`
+-- Acionadores `livro`
 --
 DELIMITER $$
 CREATE TRIGGER `tr_livro_delete_audit` BEFORE DELETE ON `livro` FOR EACH ROW BEGIN
@@ -408,7 +406,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `logs_auditoria`
+-- Estrutura para tabela `logs_auditoria`
 --
 
 CREATE TABLE `logs_auditoria` (
@@ -424,7 +422,7 @@ CREATE TABLE `logs_auditoria` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `logs_auditoria`
+-- Despejando dados para a tabela `logs_auditoria`
 --
 
 INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_anteriores`, `dados_novos`, `usuario`, `data_operacao`, `ip_usuario`) VALUES
@@ -493,12 +491,42 @@ INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_
 (65, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-04 01:50:20', NULL),
 (66, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-04 01:51:08', NULL),
 (67, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-04 02:01:59', NULL),
-(68, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-04 02:02:30', NULL);
+(68, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-04 02:02:30', NULL),
+(69, 'funcionario', 'DELETE', 16, 'Nome: TESTE, Data Nascimento: 2000-07-06', NULL, 'root@localhost', '2025-09-04 16:47:22', NULL),
+(70, 'cliente', 'DELETE', 4, 'Nome: TESTE 3, CPF: 287.352.976-28, Email: teste@gmail.com', NULL, 'root@localhost', '2025-09-04 16:47:29', NULL),
+(71, 'cliente', 'DELETE', 7, 'Nome: rihanna, CPF: 985.672.685-78, Email: rihanna@gmail.com', NULL, 'root@localhost', '2025-09-04 16:47:50', NULL),
+(72, 'funcionario', 'INSERT', 18, NULL, 'Nome: Silvio Luiz de Souza, Data Nascimento: 1990-06-23', 'root@localhost', '2025-09-04 17:22:21', NULL),
+(73, 'funcionario', 'DELETE', 8, 'Nome: Mason Thames, Data Nascimento: 2007-09-02', NULL, 'root@localhost', '2025-09-04 17:23:23', NULL),
+(74, 'funcionario', 'INSERT', 19, NULL, 'Nome: Marcos Paulo, Data Nascimento: 2007-12-25', 'root@localhost', '2025-09-04 17:31:15', NULL),
+(75, 'funcionario', 'INSERT', 20, NULL, 'Nome: Kim Sunoo, Data Nascimento: 2001-08-07', 'root@localhost', '2025-09-04 17:44:23', NULL),
+(76, 'funcionario', 'INSERT', 21, NULL, 'Nome: George Joji Miller, Data Nascimento: 1995-02-12', 'root@localhost', '2025-09-04 17:47:20', NULL),
+(77, 'funcionario', 'INSERT', 22, NULL, 'Nome: Maria Xuxa Meneghel, Data Nascimento: 1965-04-18', 'root@localhost', '2025-09-04 17:51:59', NULL),
+(78, 'cliente', 'DELETE', 5, 'Nome: Gerard Way, CPF: 104.163.459-56, Email: gerard@gmail.com', NULL, 'root@localhost', '2025-09-04 17:52:33', NULL),
+(79, 'funcionario', 'INSERT', 23, NULL, 'Nome: Gerard Way, Data Nascimento: 1990-10-31', 'root@localhost', '2025-09-04 17:56:57', NULL),
+(80, 'funcionario', 'INSERT', 24, NULL, 'Nome: Mason Thames, Data Nascimento: 2000-03-08', 'root@localhost', '2025-09-04 17:59:39', NULL),
+(81, 'funcionario', 'INSERT', 25, NULL, 'Nome: Taylor Lautner, Data Nascimento: 2002-07-29', 'root@localhost', '2025-09-04 18:03:48', NULL),
+(82, 'funcionario', 'DELETE', 7, 'Nome: Bruno Henrique Ribeiro, Data Nascimento: 2007-03-11', NULL, 'root@localhost', '2025-09-04 18:39:05', NULL),
+(83, 'funcionario', 'DELETE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', NULL, 'root@localhost', '2025-09-04 18:39:12', NULL),
+(84, 'funcionario', 'DELETE', 11, 'Nome: Paula, Data Nascimento: 2025-09-02', NULL, 'root@localhost', '2025-09-04 18:39:21', NULL),
+(85, 'cliente', 'UPDATE', 3, 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'Nome: Ian Lucas Borba, CPF: 985.672.685-78, Email: ianlucas@gmail.com', 'root@localhost', '2025-09-04 18:46:01', NULL),
+(86, 'cliente', 'DELETE', 6, 'Nome: Drake, CPF: 104.163.459-56, Email: drake@gmail.com', NULL, 'root@localhost', '2025-09-04 18:46:30', NULL),
+(87, 'cliente', 'UPDATE', 2, 'Nome: Guilherme Vinicius Schwarz, CPF: 928.759.274-87, Email: guilhermevinicius@gmail.com', 'Nome: Guilherme Vinicius Schwarz, CPF: 928.759.274-87, Email: guilhermevinicius@gmail.com', 'root@localhost', '2025-09-04 18:46:47', NULL),
+(90, 'autor', 'DELETE', 2, 'Nome: Mason Thames, Telefone: (99) 99999-9999, Email: masonthames@gmail.com', NULL, 'root@localhost', '2025-09-04 18:48:56', NULL),
+(91, 'autor', 'DELETE', 16, 'Nome: ana, Telefone: (44) 44444-4444, Email: ana@gmail.com', NULL, 'root@localhost', '2025-09-04 18:48:58', NULL),
+(92, 'autor', 'DELETE', 17, 'Nome: anaaa, Telefone: (32) 33684-9384, Email: ana@gmail.com', NULL, 'root@localhost', '2025-09-04 18:49:00', NULL),
+(93, 'autor', 'DELETE', 18, 'Nome: anaaa, Telefone: (32) 33684-9384, Email: ana@gmail.com', NULL, 'root@localhost', '2025-09-04 18:49:02', NULL),
+(94, 'autor', 'DELETE', 14, 'Nome: Gerard, Telefone: (87) 53386-5862, Email: gerard@gmail.com', NULL, 'root@localhost', '2025-09-04 18:49:04', NULL),
+(95, 'autor', 'DELETE', 19, 'Nome: Gerard, Telefone: (28) 47286-2786, Email: aaaaaaa@gmail.om', NULL, 'root@localhost', '2025-09-04 18:49:06', NULL),
+(97, 'cliente', 'INSERT', 8, NULL, 'Nome: João Vitor Atanazio, CPF: 182.648.267-47, Email: joaovitor@gmail.com', 'root@localhost', '2025-09-04 18:58:54', NULL),
+(99, 'cliente', 'INSERT', 9, NULL, 'Nome: Gustavo Tobler, CPF: 832.675.782-67, Email: gustavotobler@gmail.com', 'root@localhost', '2025-09-04 19:12:09', NULL),
+(100, 'cliente', 'INSERT', 10, NULL, 'Nome: Matheus Henrique Dela, CPF: 873.258.275-28, Email: matheushenrique@gmail.com', 'root@localhost', '2025-09-04 19:16:38', NULL),
+(101, 'cliente', 'INSERT', 11, NULL, 'Nome: Tatiane Vieira, CPF: 283.728.628-65, Email: tatianevieira@gmail.com', 'root@localhost', '2025-09-04 19:23:30', NULL),
+(102, 'cliente', 'INSERT', 12, NULL, 'Nome: Drake, CPF: 832.782.576-29, Email: drake@gmail.com', 'root@localhost', '2025-09-04 19:34:07', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `multa`
+-- Estrutura para tabela `multa`
 --
 
 CREATE TABLE `multa` (
@@ -510,7 +538,7 @@ CREATE TABLE `multa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `multa`
+-- Despejando dados para a tabela `multa`
 --
 
 INSERT INTO `multa` (`Cod_Multa`, `Cod_Emprestimo`, `Data_Multa`, `Valor_Multa`, `Status_Multa`) VALUES
@@ -525,7 +553,7 @@ INSERT INTO `multa` (`Cod_Multa`, `Cod_Emprestimo`, `Data_Multa`, `Valor_Multa`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `perfil_cliente`
+-- Estrutura para tabela `perfil_cliente`
 --
 
 CREATE TABLE `perfil_cliente` (
@@ -534,7 +562,7 @@ CREATE TABLE `perfil_cliente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `perfil_cliente`
+-- Despejando dados para a tabela `perfil_cliente`
 --
 
 INSERT INTO `perfil_cliente` (`Cod_Perfil`, `Nome_Perfil`) VALUES
@@ -544,7 +572,7 @@ INSERT INTO `perfil_cliente` (`Cod_Perfil`, `Nome_Perfil`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `perfil_funcionario`
+-- Estrutura para tabela `perfil_funcionario`
 --
 
 CREATE TABLE `perfil_funcionario` (
@@ -553,7 +581,7 @@ CREATE TABLE `perfil_funcionario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `perfil_funcionario`
+-- Despejando dados para a tabela `perfil_funcionario`
 --
 
 INSERT INTO `perfil_funcionario` (`Cod_Perfil`, `Nome_Perfil`) VALUES
@@ -564,36 +592,36 @@ INSERT INTO `perfil_funcionario` (`Cod_Perfil`, `Nome_Perfil`) VALUES
 (5, 'Repositor');
 
 --
--- Indexes for dumped tables
+-- Índices para tabelas despejadas
 --
 
 --
--- Indexes for table `autor`
+-- Índices de tabela `autor`
 --
 ALTER TABLE `autor`
   ADD PRIMARY KEY (`Cod_Autor`);
 
 --
--- Indexes for table `cliente`
+-- Índices de tabela `cliente`
 --
 ALTER TABLE `cliente`
   ADD PRIMARY KEY (`Cod_Cliente`),
   ADD KEY `fk_Cod_Perfil` (`Cod_Perfil`);
 
 --
--- Indexes for table `doador`
+-- Índices de tabela `doador`
 --
 ALTER TABLE `doador`
   ADD PRIMARY KEY (`Cod_Doador`);
 
 --
--- Indexes for table `editora`
+-- Índices de tabela `editora`
 --
 ALTER TABLE `editora`
   ADD PRIMARY KEY (`Cod_Editora`);
 
 --
--- Indexes for table `emprestimo`
+-- Índices de tabela `emprestimo`
 --
 ALTER TABLE `emprestimo`
   ADD PRIMARY KEY (`Cod_Emprestimo`),
@@ -601,20 +629,20 @@ ALTER TABLE `emprestimo`
   ADD KEY `FK_Livro_Emprestimo` (`Cod_Livro`);
 
 --
--- Indexes for table `funcionario`
+-- Índices de tabela `funcionario`
 --
 ALTER TABLE `funcionario`
   ADD PRIMARY KEY (`Cod_Funcionario`),
   ADD KEY `fk_Cod_Perfil_Func` (`Cod_Perfil`);
 
 --
--- Indexes for table `genero`
+-- Índices de tabela `genero`
 --
 ALTER TABLE `genero`
   ADD PRIMARY KEY (`Cod_Genero`);
 
 --
--- Indexes for table `livro`
+-- Índices de tabela `livro`
 --
 ALTER TABLE `livro`
   ADD PRIMARY KEY (`Cod_Livro`),
@@ -624,7 +652,7 @@ ALTER TABLE `livro`
   ADD KEY `fk_Cod_Genero` (`Cod_Genero`);
 
 --
--- Indexes for table `logs_auditoria`
+-- Índices de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
   ADD PRIMARY KEY (`id`),
@@ -633,125 +661,125 @@ ALTER TABLE `logs_auditoria`
   ADD KEY `idx_operacao` (`operacao`);
 
 --
--- Indexes for table `multa`
+-- Índices de tabela `multa`
 --
 ALTER TABLE `multa`
   ADD PRIMARY KEY (`Cod_Multa`),
   ADD KEY `FK_Multa_Emprestimo` (`Cod_Emprestimo`);
 
 --
--- Indexes for table `perfil_cliente`
+-- Índices de tabela `perfil_cliente`
 --
 ALTER TABLE `perfil_cliente`
   ADD PRIMARY KEY (`Cod_Perfil`);
 
 --
--- Indexes for table `perfil_funcionario`
+-- Índices de tabela `perfil_funcionario`
 --
 ALTER TABLE `perfil_funcionario`
   ADD PRIMARY KEY (`Cod_Perfil`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT para tabelas despejadas
 --
 
 --
--- AUTO_INCREMENT for table `autor`
+-- AUTO_INCREMENT de tabela `autor`
 --
 ALTER TABLE `autor`
   MODIFY `Cod_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT for table `cliente`
+-- AUTO_INCREMENT de tabela `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT for table `doador`
+-- AUTO_INCREMENT de tabela `doador`
 --
 ALTER TABLE `doador`
   MODIFY `Cod_Doador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `editora`
+-- AUTO_INCREMENT de tabela `editora`
 --
 ALTER TABLE `editora`
   MODIFY `Cod_Editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `emprestimo`
+-- AUTO_INCREMENT de tabela `emprestimo`
 --
 ALTER TABLE `emprestimo`
   MODIFY `Cod_Emprestimo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `funcionario`
+-- AUTO_INCREMENT de tabela `funcionario`
 --
 ALTER TABLE `funcionario`
-  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
--- AUTO_INCREMENT for table `genero`
+-- AUTO_INCREMENT de tabela `genero`
 --
 ALTER TABLE `genero`
   MODIFY `Cod_Genero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT for table `livro`
+-- AUTO_INCREMENT de tabela `livro`
 --
 ALTER TABLE `livro`
   MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `logs_auditoria`
+-- AUTO_INCREMENT de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
--- AUTO_INCREMENT for table `multa`
+-- AUTO_INCREMENT de tabela `multa`
 --
 ALTER TABLE `multa`
   MODIFY `Cod_Multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `perfil_cliente`
+-- AUTO_INCREMENT de tabela `perfil_cliente`
 --
 ALTER TABLE `perfil_cliente`
   MODIFY `Cod_Perfil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `perfil_funcionario`
+-- AUTO_INCREMENT de tabela `perfil_funcionario`
 --
 ALTER TABLE `perfil_funcionario`
   MODIFY `Cod_Perfil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- Constraints for dumped tables
+-- Restrições para tabelas despejadas
 --
 
 --
--- Constraints for table `cliente`
+-- Restrições para tabelas `cliente`
 --
 ALTER TABLE `cliente`
   ADD CONSTRAINT `fk_Cod_Perfil` FOREIGN KEY (`Cod_Perfil`) REFERENCES `perfil_cliente` (`Cod_Perfil`);
 
 --
--- Constraints for table `emprestimo`
+-- Restrições para tabelas `emprestimo`
 --
 ALTER TABLE `emprestimo`
   ADD CONSTRAINT `FK_Cliente_Emprestimo` FOREIGN KEY (`Cod_Cliente`) REFERENCES `cliente` (`Cod_Cliente`),
   ADD CONSTRAINT `FK_Livro_Emprestimo` FOREIGN KEY (`Cod_Livro`) REFERENCES `livro` (`Cod_Livro`);
 
 --
--- Constraints for table `funcionario`
+-- Restrições para tabelas `funcionario`
 --
 ALTER TABLE `funcionario`
   ADD CONSTRAINT `fk_Cod_Perfil_Func` FOREIGN KEY (`Cod_Perfil`) REFERENCES `perfil_funcionario` (`Cod_Perfil`);
 
 --
--- Constraints for table `livro`
+-- Restrições para tabelas `livro`
 --
 ALTER TABLE `livro`
   ADD CONSTRAINT `fk_Cod_Autor` FOREIGN KEY (`Cod_Autor`) REFERENCES `autor` (`Cod_Autor`),
@@ -760,7 +788,7 @@ ALTER TABLE `livro`
   ADD CONSTRAINT `fk_Cod_Genero` FOREIGN KEY (`Cod_Genero`) REFERENCES `genero` (`Cod_Genero`);
 
 --
--- Constraints for table `multa`
+-- Restrições para tabelas `multa`
 --
 ALTER TABLE `multa`
   ADD CONSTRAINT `FK_Multa_Emprestimo` FOREIGN KEY (`Cod_Emprestimo`) REFERENCES `emprestimo` (`Cod_Emprestimo`);

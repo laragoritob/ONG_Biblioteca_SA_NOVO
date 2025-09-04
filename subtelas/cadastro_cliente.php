@@ -524,6 +524,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             const perfilSelect = document.getElementById('perfil');
             const nomeResponsavelInput = document.getElementById('nome_responsavel');
             const nomeResponsavelLabel = document.querySelector('label[for="nome_responsavel"]');
+            const dataNascimentoInput = document.getElementById('data_nascimento');
 
             function atualizarObrigatoriedadeResponsavel() {
                 const tipoCliente = perfilSelect.value;
@@ -539,6 +540,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             }
 
+            // Função para determinar o tipo de cliente baseado na data de nascimento
+            function determinarTipoCliente() {
+                const dataNascimento = dataNascimentoInput.value;
+                if (!dataNascimento) return; // Se não há data, não faz nada
+                
+                const anoNascimento = new Date(dataNascimento).getFullYear();
+                
+                // Lógica: Se nascido em 2007 ou antes (>= 18 anos em 2025), é "Responsável"
+                // Se nascido após 2007 (< 18 anos em 2025), é "Criança"
+                if (anoNascimento <= 2007) {
+                    perfilSelect.value = '2'; // Responsável (maior de idade)
+                } else {
+                    perfilSelect.value = '1'; // Criança (menor de idade)
+                }
+                
+                // Atualiza a obrigatoriedade do campo responsável
+                atualizarObrigatoriedadeResponsavel();
+            }
+
+            // Executar na mudança da data de nascimento
+            dataNascimentoInput.addEventListener('change', determinarTipoCliente);
+            
             // Executar na mudança do select
             perfilSelect.addEventListener('change', atualizarObrigatoriedadeResponsavel);
             
