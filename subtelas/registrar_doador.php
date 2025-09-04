@@ -1,56 +1,67 @@
 <?php
-    session_start();
-    require_once '../conexao.php';
+// Inicia a sessão para verificar autenticação e perfil do usuário
+session_start();
 
-    // VERIFICA SE O USUÁRIO TEM PERMISSÃO
-    // SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR
-    if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 2) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
+// Inclui o arquivo de conexão com o banco de dados
+require_once '../conexao.php';
+
+// Verifica se o usuário tem permissão para acessar esta página
+// Gerente (perfil 1), Gestor (perfil 2) e Bibliotecário (perfil 3) podem registrar doadores
+if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 2) {
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
+
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - pode registrar doadores
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - pode registrar doadores
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - não tem acesso a esta página
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
+
+// Executado apenas quando o formulário é enviado via POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Obtém os dados do formulário
+    $nome_doador = $_POST['nome_doador'];
+    $telefone = $_POST['telefone'];
+    $email = $_POST['email'];
+
+    // Query SQL para inserir o novo doador no banco de dados
+    $sql = "INSERT INTO doador (nome_doador,telefone,email) 
+                VALUES (:nome_doador,:telefone,:email)";
+
+    // Prepara a query usando prepared statement para segurança
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':nome_doador', $nome_doador);
+    $stmt->bindParam(':telefone', $telefone);
+    $stmt->bindParam(':email', $email);
+
+    // Executa a inserção e verifica o resultado
+    if ($stmt->execute()) {
+        // Se sucesso, define mensagem de sucesso
+        $sucesso = "Doador cadastrado com sucesso!";
+    } else {
+        // Se falhou, define mensagem de erro
+        $erro = "Erro ao cadastrar doador!";
     }
-
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $nome_doador = $_POST['nome_doador'];
-        $telefone = $_POST['telefone'];
-        $email = $_POST['email'];
-
-        $sql = "INSERT INTO doador (nome_doador,telefone,email) 
-                    VALUES (:nome_doador,:telefone,:email)";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':nome_doador', $nome_doador);
-        $stmt->bindParam(':telefone', $telefone);
-        $stmt->bindParam(':email', $email);
-
-        if ($stmt->execute()) {
-            $sucesso = "Doador cadastrado com sucesso!";
-        } else {
-            $erro = "Erro ao cadastrar doador!";
-        }
-    }
+}
 ?>
 
 <!DOCTYPE html>

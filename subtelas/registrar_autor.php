@@ -1,62 +1,73 @@
 <?php
-    session_start();
-    require_once '../conexao.php';
+// Inicia a sessão para verificar autenticação e perfil do usuário
+session_start();
 
-    // VERIFICA SE O USUÁRIO TEM PERMISSÃO
-    // SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR
-    if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
-    }
+// Inclui o arquivo de conexão com o banco de dados
+require_once '../conexao.php';
 
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
+// Verifica se o usuário tem permissão para acessar esta página
+// Apenas Gerente (perfil 1) e Bibliotecário (perfil 3) podem registrar autores
+if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3) {
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $nome_autor = trim($_POST['nome_autor']);
-        $telefone = trim($_POST['telefone']);
-        $email = trim($_POST['email']);
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - não tem acesso a esta página, mas mantido para consistência
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - pode registrar autores
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - não tem acesso a esta página
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
 
-        // Validação do telefone
-        $telefone_limpo = preg_replace('/\D/', '', $telefone); // Remove caracteres não numéricos
-        if (strlen($telefone_limpo) < 10 || strlen($telefone_limpo) > 11) {
-            $erro = "O telefone deve ter 10 ou 11 dígitos!";
+// Executado apenas quando o formulário é enviado via POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Remove espaços em branco do início e fim dos campos
+    $nome_autor = trim($_POST['nome_autor']);
+    $telefone = trim($_POST['telefone']);
+    $email = trim($_POST['email']);
+
+    // Validação do telefone: remove caracteres não numéricos e verifica se tem 10 ou 11 dígitos
+    $telefone_limpo = preg_replace('/\D/', '', $telefone); // Remove caracteres não numéricos
+    if (strlen($telefone_limpo) < 10 || strlen($telefone_limpo) > 11) {
+        $erro = "O telefone deve ter 10 ou 11 dígitos!";
+    } else {
+        // Query SQL para inserir o novo autor no banco de dados
+        $sql = "INSERT INTO autor (nome_autor,telefone,email) 
+                    VALUES (:nome_autor,:telefone,:email)";
+
+        // Prepara a query usando prepared statement para segurança
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':nome_autor', $nome_autor);
+        $stmt->bindParam(':telefone', $telefone);
+        $stmt->bindParam(':email', $email);
+
+        // Executa a inserção e verifica o resultado
+        if ($stmt->execute()) {
+            // Se sucesso, define mensagem de sucesso
+            $sucesso = "Autor cadastrado com sucesso!";
         } else {
-            $sql = "INSERT INTO autor (nome_autor,telefone,email) 
-                        VALUES (:nome_autor,:telefone,:email)";
-
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':nome_autor', $nome_autor);
-            $stmt->bindParam(':telefone', $telefone);
-            $stmt->bindParam(':email', $email);
-
-            if ($stmt->execute()) {
-                $sucesso = "Autor cadastrado com sucesso!";
-            } else {
-                $erro = "Erro ao cadastrar autor!";
-            }
+            // Se falhou, define mensagem de erro
+            $erro = "Erro ao cadastrar autor!";
         }
     }
+}
 ?>
 
 <!DOCTYPE html>

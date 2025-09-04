@@ -1,110 +1,123 @@
 <?php
-    session_start();
-    require_once '../conexao.php';
+// Inicia a sessão para verificar autenticação e perfil do usuário
+session_start();
 
-    // VERIFICA SE O USUÁRIO TEM PERMISSÃO
-    // SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR
-    if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
+// Inclui o arquivo de conexão com o banco de dados
+require_once '../conexao.php';
+
+// Verifica se o usuário tem permissão para acessar esta página
+// Apenas Gerente (perfil 1), Bibliotecário (perfil 3) e Recreador (perfil 4) podem cadastrar clientes
+if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
+
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - não tem acesso a esta página, mas mantido para consistência
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - pode cadastrar clientes
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - pode cadastrar clientes
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
+
+// Executado apenas quando o formulário é enviado via POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Obtém os dados do formulário
+    $nome = $_POST['nome'];
+    $perfil = $_POST['perfil'];
+    $nome_responsavel = $_POST['nome_responsavel'];
+    $cpf = $_POST['cpf'];
+    $sexo = $_POST['sexo'];
+    $email = $_POST['email'];
+    $telefone = $_POST['telefone'];
+    $data_nascimento = $_POST['data_nascimento'];
+    $cep = $_POST['cep'];
+    $uf = $_POST['uf'];
+    $cidade = $_POST['cidade'];
+    $bairro = $_POST['bairro'];
+    $rua = $_POST['rua'];
+    $num_residencia = $_POST['num_residencia'];
+    
+    // Lógica especial para clientes do tipo "Responsável"
+    // Se o tipo for "Responsável" (valor 2), o nome_responsavel pode ser vazio
+    if ($perfil == '2' && empty($nome_responsavel)) {
+        $nome_responsavel = null; // Define como NULL no banco
     }
 
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $nome = $_POST['nome'];
-        $perfil = $_POST['perfil'];
-        $nome_responsavel = $_POST['nome_responsavel'];
-        $cpf = $_POST['cpf'];
-        $sexo = $_POST['sexo'];
-        $email = $_POST['email'];
-        $telefone = $_POST['telefone'];
-        $data_nascimento = $_POST['data_nascimento'];
-        $cep = $_POST['cep'];
-        $uf = $_POST['uf'];
-        $cidade = $_POST['cidade'];
-        $bairro = $_POST['bairro'];
-        $rua = $_POST['rua'];
-        $num_residencia = $_POST['num_residencia'];
+    // Processa o upload da foto do cliente
+    $foto = ''; // Valor padrão vazio
+    
+    // Verifica se foi enviada uma foto
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $arquivo_tmp = $_FILES['foto']['tmp_name'];
+        $nome_arquivo = $_FILES['foto']['name'];
+        $extensao = strtolower(pathinfo($nome_arquivo, PATHINFO_EXTENSION));
         
-        // Se o tipo for "Responsável" (valor 2), o nome_responsavel pode ser vazio
-        if ($perfil == '2' && empty($nome_responsavel)) {
-            $nome_responsavel = null; // Define como NULL no banco
-        }
-
-        // Processar upload da foto
-        $foto = ''; // Valor padrão vazio
-        
-        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-            $arquivo_tmp = $_FILES['foto']['tmp_name'];
-            $nome_arquivo = $_FILES['foto']['name'];
-            $extensao = strtolower(pathinfo($nome_arquivo, PATHINFO_EXTENSION));
+        // Verifica se a extensão do arquivo é válida
+        $extensoes_validas = ['jpg', 'jpeg', 'png'];
+        if (in_array($extensao, $extensoes_validas)) {
+            // Gera um nome único para o arquivo para evitar conflitos
+            $novo_nome = uniqid() . '.' . $extensao;
+            $destino = 'subtelas_img/' . $novo_nome;
             
-            // Verificar se é uma extensão válida
-            $extensoes_validas = ['jpg', 'jpeg', 'png'];
-            if (in_array($extensao, $extensoes_validas)) {
-                // Gerar nome único para o arquivo
-                $novo_nome = uniqid() . '.' . $extensao;
-                $destino = 'subtelas_img/' . $novo_nome;
-                
-                // Mover arquivo para a pasta de imagens
-                if (move_uploaded_file($arquivo_tmp, $destino)) {
-                    $foto = $novo_nome;
-                }
+            // Move o arquivo para a pasta de imagens
+            if (move_uploaded_file($arquivo_tmp, $destino)) {
+                $foto = $novo_nome;
             }
         }
-        
-        // Se não há foto, usar um valor padrão
-        if (empty($foto)) {
-            $foto = 'Perna de Grilo.png'; // Valor padrão para evitar NULL
-        }
+    }
+    
+    // Se não há foto, usa um valor padrão para evitar NULL no banco
+    if (empty($foto)) {
+        $foto = 'Perna de Grilo.png'; // Valor padrão para evitar NULL
+    }
 
-        $sql = "INSERT INTO cliente (cod_perfil, nome, nome_responsavel, cpf, sexo, email, telefone, data_nascimento, cep, uf, cidade, bairro, rua, num_residencia, foto) 
-                    VALUES (:cod_perfil, :nome, :nome_responsavel, :cpf, :sexo, :email, :telefone, :data_nascimento, :cep, :uf, :cidade, :bairro, :rua, :num_residencia, :foto)";
+    // Query SQL para inserir o novo cliente no banco de dados
+    $sql = "INSERT INTO cliente (cod_perfil, nome, nome_responsavel, cpf, sexo, email, telefone, data_nascimento, cep, uf, cidade, bairro, rua, num_residencia, foto) 
+                VALUES (:cod_perfil, :nome, :nome_responsavel, :cpf, :sexo, :email, :telefone, :data_nascimento, :cep, :uf, :cidade, :bairro, :rua, :num_residencia, :foto)";
 
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':cod_perfil', $perfil);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':cpf', $cpf);
-        $stmt->bindParam(':sexo', $sexo);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':telefone', $telefone);
-        $stmt->bindParam(':data_nascimento', $data_nascimento);
-        $stmt->bindParam(':nome_responsavel', $nome_responsavel);
-        $stmt->bindParam(':cep', $cep);
-        $stmt->bindParam(':uf', $uf);
-        $stmt->bindParam(':cidade', $cidade);
-        $stmt->bindParam(':bairro', $bairro);
-        $stmt->bindParam(':rua', $rua);
-        $stmt->bindParam(':num_residencia', $num_residencia);
-        $stmt->bindParam(':foto', $foto);
+    // Prepara a query usando prepared statement para segurança
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':cod_perfil', $perfil);
+    $stmt->bindParam(':nome', $nome);
+    $stmt->bindParam(':cpf', $cpf);
+    $stmt->bindParam(':sexo', $sexo);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':telefone', $telefone);
+    $stmt->bindParam(':data_nascimento', $data_nascimento);
+    $stmt->bindParam(':nome_responsavel', $nome_responsavel);
+    $stmt->bindParam(':cep', $cep);
+    $stmt->bindParam(':uf', $uf);
+    $stmt->bindParam(':cidade', $cidade);
+    $stmt->bindParam(':bairro', $bairro);
+    $stmt->bindParam(':rua', $rua);
+    $stmt->bindParam(':num_residencia', $num_residencia);
+    $stmt->bindParam(':foto', $foto);
 
-        if ($stmt->execute()) {
-            $sucesso = "Cliente cadastrado com sucesso!";
-        } else {
-            $erro = "Erro ao cadastrar cliente!";
-        }
+    // Executa a inserção e verifica o resultado
+    if ($stmt->execute()) {
+        // Se sucesso, define mensagem de sucesso
+        $sucesso = "Cliente cadastrado com sucesso!";
+    } else {
+        // Se falhou, define mensagem de erro
+        $erro = "Erro ao cadastrar cliente!";
+    }
     }
 ?>
 
