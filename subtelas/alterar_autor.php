@@ -1,45 +1,53 @@
 <?php
+// Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
+
+// Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
+// Verifica se o usuário tem permissão para acessar esta página
 if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
-    }
 
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
-    
-// Verificar se foi passado um ID
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
+
+
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - não tem acesso a esta página, mas mantido para consistência
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - pode gerenciar autores
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - não tem acesso a esta página
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
+
+// Verifica se foi passado um ID válido via GET
+// Se não houver ID, redireciona para a página de consulta
 if (!isset($_GET['id'])) {
     header('Location: consultar_autor.php');
     exit;
 }
 
-
+// Converte o ID para inteiro para segurança (previne SQL injection)
 $id = intval($_GET['id']);
 
-// Buscar dados do autor
+// Consulta o banco de dados para obter os dados atuais do autor que será editado
 $sql = "SELECT 
           Cod_Autor,
           Nome_Autor,
@@ -49,61 +57,75 @@ $sql = "SELECT
         WHERE Cod_Autor = :id";
 
 try {
+    // Prepara a consulta SQL usando prepared statement (segurança)
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
     $autor = $stmt->fetch(PDO::FETCH_ASSOC);
     
+    // Se não encontrou o autor, redireciona para consulta
     if (!$autor) {
         header('Location: consultar_autor.php');
         exit;
     }
 } catch (PDOException $e) {
+    // Em caso de erro na consulta, exibe mensagem e para execução
     die("Erro na consulta: " . $e->getMessage());
 }
 
-// Processar formulário de alteração
+// Executado apenas quando o formulário é enviado via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Remove espaços em branco do início e fim dos campos
     $nome = trim($_POST['nome']);
     $telefone = trim($_POST['telefone']);
     $email = trim($_POST['email']);
-    
+// Verifica se os campos obrigatórios foram preenchidos
     if (empty($nome)) {
         $erro = "Nome é obrigatório";
     } elseif (empty($email)) {
         $erro = "Email é obrigatório";
     } else {
-        // Validação do telefone
+
+// Se o telefone foi preenchido, valida o formato
         if (!empty($telefone)) {
-            $telefone_limpo = preg_replace('/\D/', '', $telefone); // Remove caracteres não numéricos
+            // Remove todos os caracteres que não são dígitos
+            $telefone_limpo = preg_replace('/\D/', '', $telefone);
+            // Verifica se tem 10 (telefone fixo) ou 11 (celular) dígitos
             if (strlen($telefone_limpo) < 10 || strlen($telefone_limpo) > 11) {
                 $erro = "O telefone deve ter 10 ou 11 dígitos";
             }
         }
         
+// Se não há erros de validação, procede com a atualização
         if (!isset($erro)) {
             try {
+                // Query SQL para atualizar os dados do autor
                 $sql_update = "UPDATE autor 
                               SET Nome_Autor = :nome,
                                   Telefone = :telefone,
                                   Email = :email
                               WHERE Cod_Autor = :id";
                 
+                // Prepara a query usando prepared statement
                 $stmt_update = $pdo->prepare($sql_update);
                 $stmt_update->bindParam(':nome', $nome);
                 $stmt_update->bindParam(':telefone', $telefone);
                 $stmt_update->bindParam(':email', $email);
                 $stmt_update->bindParam(':id', $id);
                 
+                // Executa a atualização
                 if ($stmt_update->execute()) {
+                    // Se sucesso, define mensagem de sucesso
                     $sucesso = "Autor alterado com sucesso!";
-                    // Recarregar dados do autor
+                    // Recarrega os dados do autor para exibir na tela
                     $stmt->execute();
                     $autor = $stmt->fetch(PDO::FETCH_ASSOC);
                 } else {
+                    // Se falhou, define mensagem de erro
                     $erro = "Erro ao alterar autor";
                 }
             } catch (PDOException $e) {
+                // Em caso de erro na execução, captura e exibe a mensagem
                 $erro = "Erro ao alterar autor: " . $e->getMessage();
             }
         }
