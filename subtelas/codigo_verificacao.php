@@ -1,16 +1,22 @@
 <?php
+// Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
+
+// Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
+// Inicializa variável para mensagens de erro
 $mensagem_erro = '';
 
-// Verifica se o formulário foi submetido
+// Verifica se o formulário foi submetido via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo_completo'])) {
+    // Obtém o código do formulário e remove espaços em branco
     $codigo = trim($_POST['codigo_completo']);
     
-    // DEBUG: Log do código recebido
+    // Log do código recebido para debug
     error_log("Código recebido: " . $codigo);
     
+    // Validação do código inserido
     if (empty($codigo)) {
         $mensagem_erro = "Por favor, insira o código de verificação.";
     } elseif (strlen($codigo) !== 5) {
@@ -20,22 +26,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo_completo'])) {
             // Função para verificar se o código foi solicitado e retornar o email correspondente
             function obterEmailDoCodigoSolicitado($codigo) {
                 $arquivo = 'emails_simulados.txt';
+                // Verifica se o arquivo de emails simulados existe
                 if (!file_exists($arquivo)) {
                     return false;
                 }
                 
+                // Lê o conteúdo do arquivo e divide em linhas
                 $conteudo = file_get_contents($arquivo);
                 $linhas = explode("\n", $conteudo);
                 
+                // Percorre as linhas procurando pelo código
                 for ($i = 0; $i < count($linhas); $i++) {
                     $linha = trim($linhas[$i]);
                     
-                    // Procura por linha que contém o código
+                    // Procura por linha que contém o código de recuperação
                     if (strpos($linha, "Olá! Seu código de recuperação é: " . $codigo) !== false) {
                         // Volta uma linha para pegar o email
                         if ($i > 0) {
                             $linha_email = trim($linhas[$i - 1]);
                             if (strpos($linha_email, "Para: ") !== false) {
+                                // Extrai o email da linha
                                 $email = str_replace("Para: ", "", $linha_email);
                                 return $email;
                             }
@@ -48,15 +58,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo_completo'])) {
             // Verifica se o código foi solicitado e obtém o email correspondente
             $email_do_codigo = obterEmailDoCodigoSolicitado($codigo);
             
+            // Se encontrou o email correspondente ao código
             if ($email_do_codigo) {
                 // Busca o usuário pelo email que solicitou o código
                 $stmt = $pdo->prepare("SELECT * FROM funcionario WHERE Email = :email");
                 $stmt->bindParam(':email', $email_do_codigo);
                 $stmt->execute();
                 
+                // Verifica se encontrou o usuário
                 if ($stmt->rowCount() > 0) {
                     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                     
+                    // Armazena o código de verificação na sessão
                     $_SESSION['codigo_verificacao'] = $codigo;
                     $_SESSION['Cod_Funcionario'] = $usuario['Cod_Funcionario'];
                     $_SESSION['Usuario'] = $usuario['Usuario'];

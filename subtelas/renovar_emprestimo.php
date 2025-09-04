@@ -1,16 +1,21 @@
 <?php
+// Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
+
+// Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
-// Verificar se foi passado um ID
+// Verifica se foi passado um ID de empréstimo via GET
 if (!isset($_GET['id'])) {
+    // Se não foi fornecido ID, redireciona para a página de consulta
     header('Location: consultar_emprestimo.php');
     exit;
 }
 
+// Converte o ID para inteiro para segurança (previne SQL injection)
 $id = intval($_GET['id']);
 
-// Buscar dados do emprestimo
+// Consulta SQL para buscar dados do empréstimo com informações relacionadas
 $sql = "SELECT 
           e.Cod_Emprestimo,
           e.Data_Emprestimo,
@@ -23,16 +28,20 @@ $sql = "SELECT
         WHERE e.Cod_Emprestimo = :id";
 
 try {
+    // Prepara e executa a consulta para buscar os dados do empréstimo
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
     $emprestimo = $stmt->fetch(PDO::FETCH_ASSOC);
     
+    // Verifica se encontrou o empréstimo
     if (!$emprestimo) {
+        // Se não encontrou, redireciona para a página de consulta
         header('Location: consultar_emprestimo.php');
         exit;
     }
 } catch (PDOException $e) {
+    // Em caso de erro na consulta, exibe mensagem e para execução
     die("Erro na consulta: " . $e->getMessage());
 }
 
