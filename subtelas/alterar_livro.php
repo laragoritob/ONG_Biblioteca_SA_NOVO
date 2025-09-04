@@ -1,11 +1,17 @@
 <?php
+// Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
+
+// Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
+// Verifica se o usuário tem permissão para acessar esta página
+// Gerente (1), Bibliotecário (3), Recreador (4) e Repositor (5) podem alterar livros
 if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4 && $_SESSION['perfil'] != 5) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
-    }
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
 
     // Determina a página de "voltar" dependendo do perfil do usuário
     switch ($_SESSION['perfil']) {

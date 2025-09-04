@@ -1,105 +1,125 @@
 <?php
-    session_start();
-    require_once '../conexao.php';
+// Inicia a sessão para verificar autenticação e perfil do usuário
+session_start();
 
-    if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
-    }
+// Inclui o arquivo de conexão com o banco de dados
+require_once '../conexao.php';
 
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
+// Verifica se o usuário tem permissão para acessar esta página
+// Apenas Gerente (perfil 1) e Bibliotecário (perfil 3) podem alterar editoras
+if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3) {
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
 
-    // Verificar se foi passado um ID
-    if (!isset($_GET['id'])) {
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - não tem acesso a esta página, mas mantido para consistência
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - pode gerenciar editoras
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - não tem acesso a esta página
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
+
+// Verifica se foi passado um ID válido via GET
+// Se não houver ID, redireciona para a página de consulta
+if (!isset($_GET['id'])) {
+    header('Location: consultar_editora.php');
+    exit();
+}
+
+// Converte o ID para inteiro para segurança (previne SQL injection)
+$id = intval($_GET['id']);
+
+// Consulta o banco de dados para obter os dados atuais da editora que será editada
+$sql = "SELECT 
+            Cod_Editora,
+            Nome_Editora,
+            Telefone,
+            Email
+        FROM editora
+        WHERE Cod_Editora = :id";
+
+try {
+    // Prepara a consulta SQL usando prepared statement (segurança)
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $editora = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Se não encontrou a editora, redireciona para consulta
+    if (!$editora) {
         header('Location: consultar_editora.php');
-        exit();
+        exit;
     }
+} catch (PDOException $e) {
+    // Em caso de erro na consulta, exibe mensagem e para execução
+    die("Erro na consulta: " . $e->getMessage());
+}
 
-    $id = intval($_GET['id']);
-
-    // Buscar dados do editora com todos os campos
-    $sql = "SELECT 
-                Cod_Editora,
-                Nome_Editora,
-                Telefone,
-                Email
-            FROM editora
-            WHERE Cod_Editora = :id";
-
-    try {
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $editora = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$editora) {
-            header('Location: consultar_editora.php');
-            exit;
-        }
-    } catch (PDOException $e) {
-        die("Erro na consulta: " . $e->getMessage());
-    }
-
-    // Processar formulário de alteração
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $nome = trim($_POST['nome_editora']);
-        $email = trim($_POST['email']);
-        $telefone = trim($_POST['telefone']);
-        
-        if (empty($nome)) {
-            $erro = "Nome é obrigatório";
-        } elseif (empty($email)) {
-            $erro = "Email é obrigatório";
-        } elseif (empty($telefone)) {
-            $erro = "Telefone é obrigatório";
-        } else {
-            try {
-                $sql_update = "UPDATE editora 
-                            SET Nome_Editora = :nome,
-                                Email = :email,
-                                Telefone = :telefone
-                            WHERE Cod_Editora = :id";
-                
-                $stmt_update = $pdo->prepare($sql_update);
-                $stmt_update->bindParam(':nome', $nome);
-                $stmt_update->bindParam(':email', $email);
-                $stmt_update->bindParam(':telefone', $telefone);
-                $stmt_update->bindParam(':id', $id);
-                
-                if ($stmt_update->execute()) {
-                    $sucesso = "Editora alterada com sucesso!";
-                    // Recarregar dados do editora
-                    $stmt->execute();
-                    $editora = $stmt->fetch(PDO::FETCH_ASSOC);
-                } else {
-                    $erro = "Erro ao alterar editora";
-                }
-            } catch (PDOException $e) {
-                $erro = "Erro ao alterar editora: " . $e->getMessage();
+// Executado apenas quando o formulário é enviado via POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Remove espaços em branco do início e fim dos campos
+    $nome = trim($_POST['nome_editora']);
+    $email = trim($_POST['email']);
+    $telefone = trim($_POST['telefone']);
+    
+    // Verifica se os campos obrigatórios foram preenchidos
+    if (empty($nome)) {
+        $erro = "Nome é obrigatório";
+    } elseif (empty($email)) {
+        $erro = "Email é obrigatório";
+    } elseif (empty($telefone)) {
+        $erro = "Telefone é obrigatório";
+    } else {
+        // Se não há erros de validação, procede com a atualização
+        try {
+            // Query SQL para atualizar os dados da editora
+            $sql_update = "UPDATE editora 
+                        SET Nome_Editora = :nome,
+                            Email = :email,
+                            Telefone = :telefone
+                        WHERE Cod_Editora = :id";
+            
+            // Prepara a query usando prepared statement
+            $stmt_update = $pdo->prepare($sql_update);
+            $stmt_update->bindParam(':nome', $nome);
+            $stmt_update->bindParam(':email', $email);
+            $stmt_update->bindParam(':telefone', $telefone);
+            $stmt_update->bindParam(':id', $id);
+            
+            // Executa a atualização
+            if ($stmt_update->execute()) {
+                // Se sucesso, define mensagem de sucesso
+                $sucesso = "Editora alterada com sucesso!";
+                // Recarrega os dados da editora para exibir na tela
+                $stmt->execute();
+                $editora = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                // Se falhou, define mensagem de erro
+                $erro = "Erro ao alterar editora";
             }
+        } catch (PDOException $e) {
+            // Em caso de erro na execução, captura e exibe a mensagem
+            $erro = "Erro ao alterar editora: " . $e->getMessage();
         }
     }
+}
 ?>
 
 <!DOCTYPE html>

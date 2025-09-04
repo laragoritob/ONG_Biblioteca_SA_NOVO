@@ -1,29 +1,38 @@
 <?php
+// Inicia a sessão para verificar autenticação
 session_start();
+
+// Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
-// Verificar se o usuário veio da verificação do código
+// Verifica se o usuário veio da verificação do código de recuperação
+// Esta página só pode ser acessada após validação do código enviado por email
 if (!isset($_SESSION['codigo_verificacao']) || !isset($_SESSION['Cod_Funcionario'])) {
     header('Location: recuperar_senha.php');
     exit();
 }
 
+// Variável para armazenar mensagens de erro
 $mensagem = '';
 
+// Executado apenas quando o formulário é enviado via POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Obtém os dados do formulário
     $cod_funcionario = $_SESSION['Cod_Funcionario'];
     $nova_senha = $_POST['nova_senha'];
     $confirmar_senha = $_POST['confirmar_senha'];
 
-    // VERIFICA SE AS SENHAS COINCIDEM
+    // Verifica se as senhas coincidem
     if ($nova_senha !== $confirmar_senha) {
         $mensagem = "<script>alert('As senhas não coincidem!');</script>";
     } elseif (strlen($nova_senha) < 8) {
+        // Valida se a senha tem pelo menos 8 caracteres
         $mensagem = "<script>alert('A senha deve ter pelo menos 8 caracteres!');</script>";
     } elseif ($nova_senha === "temp123") {
+        // Impede o uso da senha temporária padrão
         $mensagem = "<script>alert('Escolha uma senha diferente da temporária!');</script>";
     } else {
-        // ATUALIZA A SENHA SEM CRIPTOGRAFIA E REMOVE O STATUS DE TEMPORÁRIA
+        // Se passou por todas as validações, atualiza a senha no banco
         $sql = "UPDATE funcionario 
                 SET Senha = :senha, Senha_Temporaria = NULL 
                 WHERE Cod_Funcionario = :id";
@@ -32,12 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':id', $cod_funcionario);
 
         if ($stmt->execute()) {
-            // Limpar sessão e redirecionar
+            // Se sucesso, limpa a sessão e redireciona para login
             session_unset();
             session_destroy();
             echo "<script>alert('Senha alterada com sucesso! Faça login novamente.');window.location.href='../index.php';</script>";
             exit();
         } else {
+            // Se falhou, exibe mensagem de erro
             $mensagem = "<script>alert('Erro ao alterar a senha!');</script>";
         }
     }
