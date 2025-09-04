@@ -1,83 +1,93 @@
 <?php
-  session_start();
-  require_once '../conexao.php';
+// Inicia a sessão para verificar autenticação e perfil do usuário
+session_start();
 
-  // VERIFICA SE O USUÁRIO TEM PERMISSÃO
-  if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
-    }
+// Inclui o arquivo de conexão com o banco de dados
+require_once '../conexao.php';
 
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
+// Verifica se o usuário tem permissão para acessar esta página
+// Gerente (perfil 1), Bibliotecário (perfil 3) e Recreador (perfil 4) podem consultar clientes
+if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
 
-  // INICIALIZA VARIÁVEIS
-  $clientes = [];
-  $erro = null;
-  $filtro_perfil = isset($_POST['filtro_perfil']) ? $_POST['filtro_perfil'] : '';
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - não tem acesso a esta página, mas mantido para consistência
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - pode consultar clientes
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - pode consultar clientes
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
 
-  try {
-      // SE O FORMULÁRIO FOR ENVIADO, BUSCA O CLIENTE PELO ID, NOME OU PERFIL
-      if ($_SERVER["REQUEST_METHOD"] == "POST") {
-          $busca = isset($_POST['busca']) ? trim($_POST['busca']) : '';
-          $filtro_perfil = isset($_POST['filtro_perfil']) ? $_POST['filtro_perfil'] : '';
-          
-          // CONSTRÓI A CONSULTA SQL BASE
-          $sql = "SELECT c.Cod_Cliente, c.Nome, c.CPF, c.Email, c.Sexo, c.Nome_Responsavel, c.Telefone, c.Data_Nascimento, c.CEP, c.UF, c.Cidade, c.Bairro, c.Rua, c.Num_Residencia, c.Foto, pc.Nome_Perfil 
-                    FROM cliente c 
-                    LEFT JOIN perfil_cliente pc ON c.Cod_Perfil = pc.Cod_Perfil 
-                    WHERE 1=1";
-          
-          $params = [];
-          
-          // ADICIONA FILTRO POR PERFIL SE SELECIONADO
-          if (!empty($filtro_perfil)) {
-              $sql .= " AND c.Cod_Perfil = :filtro_perfil";
-              $params[':filtro_perfil'] = $filtro_perfil;
-          }
-          
-          // ADICIONA FILTRO POR BUSCA SE FORNECIDA
-          if (!empty($busca)) {
-              if (is_numeric($busca)) {
-                  $sql .= " AND c.Cod_Cliente = :busca";
-                  $params[':busca'] = $busca;
-              } else {
-                  $sql .= " AND c.Nome LIKE :busca_nome";
-                  $params[':busca_nome'] = "$busca%";
-              }
-          }
-          
-          $sql .= " ORDER BY c.Cod_Cliente ASC";
-          
-          $stmt = $pdo->prepare($sql);
-          
-          // BINDA OS PARÂMETROS
-          foreach ($params as $key => $value) {
-              if (is_numeric($value)) {
-                  $stmt->bindValue($key, $value, PDO::PARAM_INT);
-              } else {
-                  $stmt->bindValue($key, $value, PDO::PARAM_STR);
-              }
+// Inicializa variáveis para armazenar os resultados e configurações
+$clientes = [];
+$erro = null;
+$filtro_perfil = isset($_POST['filtro_perfil']) ? $_POST['filtro_perfil'] : '';
+
+try {
+    // Verifica se o formulário foi enviado para realizar busca
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Obtém os parâmetros de busca do formulário
+        $busca = isset($_POST['busca']) ? trim($_POST['busca']) : '';
+        $filtro_perfil = isset($_POST['filtro_perfil']) ? $_POST['filtro_perfil'] : '';
+        
+        // Constrói a consulta SQL base com JOIN para obter o nome do perfil
+        $sql = "SELECT c.Cod_Cliente, c.Nome, c.CPF, c.Email, c.Sexo, c.Nome_Responsavel, c.Telefone, c.Data_Nascimento, c.CEP, c.UF, c.Cidade, c.Bairro, c.Rua, c.Num_Residencia, c.Foto, pc.Nome_Perfil 
+                  FROM cliente c 
+                  LEFT JOIN perfil_cliente pc ON c.Cod_Perfil = pc.Cod_Perfil 
+                  WHERE 1=1";
+        
+        $params = [];
+        
+        // Adiciona filtro por perfil se foi selecionado
+        if (!empty($filtro_perfil)) {
+            $sql .= " AND c.Cod_Perfil = :filtro_perfil";
+            $params[':filtro_perfil'] = $filtro_perfil;
+        }
+        
+        // Adiciona filtro por busca se foi fornecido
+        if (!empty($busca)) {
+            if (is_numeric($busca)) {
+                // Se for numérico, busca por ID do cliente
+                $sql .= " AND c.Cod_Cliente = :busca";
+                $params[':busca'] = $busca;
+            } else {
+                // Se for texto, busca por nome do cliente (busca parcial)
+                $sql .= " AND c.Nome LIKE :busca_nome";
+                $params[':busca_nome'] = "$busca%";
+            }
+        }
+        
+        // Adiciona ordenação por ID do cliente
+        $sql .= " ORDER BY c.Cod_Cliente ASC";
+        
+        // Prepara a consulta SQL
+        $stmt = $pdo->prepare($sql);
+        
+        // Faz o bind dos parâmetros de forma segura
+        foreach ($params as $key => $value) {
+            if (is_numeric($value)) {
+                $stmt->bindValue($key, $value, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue($key, $value, PDO::PARAM_STR);
+            }
           }
       } else {
           // BUSCA TODOS OS CLIENTES

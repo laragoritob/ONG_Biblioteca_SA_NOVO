@@ -1,70 +1,83 @@
 <?php
+// Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
+
+// Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
-//VERIFICA SE O USUARIO TEM PERMISSAO DE GERENTE
+// Verifica se o usuário tem permissão para acessar esta página
+// Apenas Gerente (perfil 1) e Bibliotecário (perfil 3) podem consultar autores
 if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
-    }
+    // Se não tem permissão, exibe alerta e redireciona para login
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
 
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - não tem acesso a esta página, mas mantido para consistência
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - pode consultar autores
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - não tem acesso a esta página
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
 
-$autor = []; //INICIALIZA A VARIAVEL PARA EVITAR ERROS
+// Inicializa a variável para armazenar os resultados da consulta
+$autor = [];
 
-//SE FORMULARIO FOR ENVIADO, BUSCA USUARIO PELO O ID OU NOME
+// Verifica se o formulário foi enviado e há um termo de busca
 if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
-  $busca = trim($_POST['busca']);
+    // Remove espaços em branco do termo de busca
+    $busca = trim($_POST['busca']);
 
-  //VERIFICA SE A BUSCA É UM NUMERO OU UM NOME 
-  if(is_numeric($busca)){
-    $sql = "SELECT * FROM autor WHERE Cod_Autor = :busca ORDER BY Nome_Autor ASC";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':busca', $busca, PDO::PARAM_INT);
-  } else {
-    $sql = "SELECT * FROM autor WHERE Nome_Autor LIKE :busca_nome_autor ORDER BY Nome_Autor ASC";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':busca_nome_autor', "$busca%", PDO::PARAM_STR);
-  }
-  
-  try {
-    $stmt->execute();
-    $autor = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  } catch (PDOException $e) {
-    die("Erro na consulta: " . $e->getMessage());
-  }
+    // Verifica se a busca é um número (ID) ou um nome
+    if(is_numeric($busca)){
+        // Se for numérico, busca por ID do autor
+        $sql = "SELECT * FROM autor WHERE Cod_Autor = :busca ORDER BY Nome_Autor ASC";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':busca', $busca, PDO::PARAM_INT);
+    } else {
+        // Se for texto, busca por nome do autor (busca parcial)
+        $sql = "SELECT * FROM autor WHERE Nome_Autor LIKE :busca_nome_autor ORDER BY Nome_Autor ASC";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':busca_nome_autor', "$busca%", PDO::PARAM_STR);
+    }
+    
+    try {
+        // Executa a consulta e busca todos os resultados
+        $stmt->execute();
+        $autor = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Em caso de erro na consulta, exibe mensagem e para execução
+        die("Erro na consulta: " . $e->getMessage());
+    }
 } else {
-  //BUSCA TODOS OS AUTORES SE NÃO HOUVER BUSCA
-  $sql = "SELECT * FROM autor ORDER BY Nome_Autor ASC";
-  
-  try {
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $autor = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  } catch (PDOException $e) {
-    die("Erro na consulta: " . $e->getMessage());
-  }
+    // Se não há busca, lista todos os autores ordenados por nome
+    $sql = "SELECT * FROM autor ORDER BY Nome_Autor ASC";
+    
+    try {
+        // Prepara e executa a consulta para buscar todos os autores
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $autor = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Em caso de erro na consulta, exibe mensagem e para execução
+        die("Erro na consulta: " . $e->getMessage());
+    }
 }
 ?>
 

@@ -1,17 +1,22 @@
 <?php
+// Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
+
+// Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
-// Verificar se é uma confirmação ou execução
+// Verifica se é uma confirmação de exclusão ou apenas exibição da confirmação
 $confirmado = isset($_GET['confirmado']) && $_GET['confirmado'] === 'true';
 
+// Verifica se foi fornecido um ID via GET
 if (isset($_GET['id'])) {
+    // Converte o ID para inteiro para segurança (previne SQL injection)
     $id = intval($_GET['id']);
 
+    // Se a exclusão foi confirmada, procede com a exclusão
     if ($confirmado) {
-        // Executar a exclusão
         try {
-            // Primeiro verificar se a editora existe
+            // Primeiro verifica se a editora existe antes de excluir
             $sql_check = "SELECT Nome_Editora FROM editora WHERE Cod_Editora = :id";
             $stmt_check = $pdo->prepare($sql_check);
             $stmt_check->bindParam(':id', $id, PDO::PARAM_INT);
@@ -19,26 +24,32 @@ if (isset($_GET['id'])) {
             
             $editora = $stmt_check->fetch(PDO::FETCH_ASSOC);
             
+            // Verifica se encontrou a editora
             if (!$editora) {
                 $erro = "Editora não encontrada!";
             } else {
-                // Excluir a editora
+                // Se encontrou, procede com a exclusão
                 $sql = "DELETE FROM editora WHERE Cod_Editora = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
+                // Executa a exclusão e verifica o resultado
                 if ($stmt->execute()) {
+                    // Se sucesso, define mensagem de sucesso com o nome da editora
                     $sucesso = "Editora " . htmlspecialchars($editora['Nome_Editora']) . " excluída com sucesso!";
                 } else {
+                    // Se falhou, define mensagem de erro
                     $erro = "Erro ao excluir editora.";
                 }
             }
         } catch (PDOException $e) {
+            // Em caso de erro na execução, captura e exibe a mensagem
             $erro = "Erro ao excluir editora: " . $e->getMessage();
         }
     }
-    // Se não for confirmado, apenas mostrar a confirmação
+    // Se não for confirmado, apenas mostra a tela de confirmação
 } else {
+    // Se não foi fornecido ID, define mensagem de erro
     $erro = "ID da editora não informado!";
 }
 ?>
