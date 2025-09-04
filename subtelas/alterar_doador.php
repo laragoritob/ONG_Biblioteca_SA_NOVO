@@ -1,44 +1,47 @@
 <?php
+// Inicia a sessão e inclui a conexão com o banco
 session_start();
 require_once '../conexao.php';
 
+// Controle de acesso: apenas Gerente (1), Gestor (2) e Bibliotecário (3)
 if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] != 3) {
         echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
         exit();
     }
 
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
+// Link de voltar conforme perfil do usuário
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Perfil desconhecido: redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
 
-// Verificar se foi passado um ID
+// Valida se foi passado um ID; se não, volta para consulta
 if (!isset($_GET['id'])) {
     header('Location: consultar_doador.php');
     exit;
 }
 
+// Converte o ID para inteiro (segurança)
 $id = intval($_GET['id']);
 
-// Buscar dados do doador
+// Busca os dados do doador a ser alterado
 $sql = "SELECT 
           d.Cod_Doador,
           d.Nome_Doador,
@@ -53,25 +56,30 @@ try {
     $stmt->execute();
     $doador = $stmt->fetch(PDO::FETCH_ASSOC);
     
+    // Se não encontrou, retorna à tela de consulta
     if (!$doador) {
         header('Location: consultar_doador.php');
         exit;
     }
 } catch (PDOException $e) {
+    // Falha na consulta
     die("Erro na consulta: " . $e->getMessage());
 }
 
-// Processar formulário de alteração
+// Processa o envio do formulário (POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Normaliza entradas
     $nome = trim($_POST['nome']);
     $telefone = trim($_POST['telefone']);
     $email = trim($_POST['email']);
     
+    // Validações mínimas
     if (empty($nome)) {
         $erro = "Nome é obrigatório";
     } elseif (empty($email)) {
         $erro = "Email é obrigatório";
     } else {
+        // Executa a atualização se não houver erros
         try {
             $sql_update = "UPDATE doador 
                           SET Nome_Doador = :nome,
@@ -87,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if ($stmt_update->execute()) {
                 $sucesso = "Doador alterado com sucesso!";
-                // Recarregar dados do doador
+                // Recarrega os dados para refletir alterações
                 $stmt->execute();
                 $doador = $stmt->fetch(PDO::FETCH_ASSOC);
             } else {
