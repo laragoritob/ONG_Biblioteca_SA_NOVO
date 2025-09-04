@@ -17,7 +17,7 @@ if (empty($termo)) {
 try {
     // Consulta SQL para buscar autores que contenham o termo no nome
     // Usa LIKE com wildcards para busca parcial
-    $sql = "SELECT Cod_Autor as cod_autor, Nome_Autor as nome FROM autor WHERE Nome_Autor LIKE :termo ORDER BY Nome_Autor";
+    $sql = "SELECT Cod_Autor as cod_autor, Nome_Autor as nome FROM autor WHERE Nome_Autor LIKE :termo AND status = 'ativo' ORDER BY Nome_Autor";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':termo', '%' . $termo . '%', PDO::PARAM_STR);
     $stmt->execute();

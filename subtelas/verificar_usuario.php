@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     try {
         // Consulta SQL para verificar se o usuário já existe na tabela funcionario
-        $sql = "SELECT COUNT(*) as total FROM funcionario WHERE usuario = :usuario";
+        $sql = "SELECT COUNT(*) as total FROM funcionario WHERE usuario = :usuario AND status = 'ativo'";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':usuario', $usuario, PDO::PARAM_STR);
         $stmt->execute();

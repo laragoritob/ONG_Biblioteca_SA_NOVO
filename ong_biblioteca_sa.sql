@@ -31,7 +31,8 @@ CREATE TABLE `autor` (
   `Cod_Autor` int(11) NOT NULL,
   `Nome_Autor` varchar(255) DEFAULT NULL,
   `Telefone` varchar(255) DEFAULT NULL,
-  `Email` varchar(255) NOT NULL
+  `Email` varchar(255) NOT NULL,
+  `status` enum('ativo','inativo') DEFAULT 'ativo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -95,7 +96,8 @@ CREATE TABLE `cliente` (
   `Bairro` varchar(30) NOT NULL,
   `Rua` varchar(40) NOT NULL,
   `Num_Residencia` int(11) NOT NULL,
-  `Foto` longblob NOT NULL
+  `Foto` longblob NOT NULL,
+  `status` enum('ativo','inativo') DEFAULT 'ativo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -153,7 +155,8 @@ CREATE TABLE `doador` (
   `Cod_Doador` int(11) NOT NULL,
   `Nome_Doador` varchar(255) DEFAULT NULL,
   `Telefone` varchar(255) DEFAULT NULL,
-  `Email` varchar(255) DEFAULT NULL
+  `Email` varchar(255) DEFAULT NULL,
+  `status` enum('ativo','inativo') DEFAULT 'ativo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -173,7 +176,8 @@ CREATE TABLE `editora` (
   `Cod_Editora` int(11) NOT NULL,
   `Nome_Editora` varchar(255) DEFAULT NULL,
   `Telefone` varchar(255) DEFAULT NULL,
-  `Email` varchar(255) NOT NULL
+  `Email` varchar(255) NOT NULL,
+  `status` enum('ativo','inativo') DEFAULT 'ativo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -265,7 +269,8 @@ CREATE TABLE `funcionario` (
   `Usuario` varchar(20) NOT NULL,
   `Senha` varchar(20) NOT NULL,
   `Senha_Temporaria` varchar(255) DEFAULT NULL,
-  `Foto` longblob NOT NULL
+  `Foto` longblob NOT NULL,
+  `status` enum('ativo','inativo') DEFAULT 'ativo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -361,7 +366,8 @@ CREATE TABLE `livro` (
   `Data_Registro` varchar(12) DEFAULT NULL,
   `Quantidade` int(11) NOT NULL,
   `Num_Prateleira` char(2) DEFAULT NULL,
-  `Foto` longblob NOT NULL
+  `Foto` longblob NOT NULL,
+  `status` enum('ativo','inativo') DEFAULT 'ativo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

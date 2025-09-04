@@ -9,7 +9,7 @@ if (isset($_GET['id_doador'])) {
     
     try {
         // Consulta SQL para buscar o nome do doador pelo ID
-        $sql = "SELECT Nome_Doador FROM doador WHERE Cod_Doador = :id_doador";
+        $sql = "SELECT Nome_Doador FROM doador WHERE Cod_Doador = :id_doador AND status = 'ativo'";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id_doador', $id_doador);
         $stmt->execute();

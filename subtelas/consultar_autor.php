@@ -38,6 +38,25 @@ switch ($_SESSION['perfil']) {
 
 // Inicializa a variável para armazenar os resultados da consulta
 $autor = [];
+$mostrar_inativos = isset($_GET['inativos']) && $_GET['inativos'] === 'true';
+
+// Processa reativação se solicitada
+if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
+    $id_reativar = intval($_GET['reativar']);
+    try {
+        $sql_reativar = "UPDATE autor SET status = 'ativo' WHERE Cod_Autor = :id";
+        $stmt_reativar = $pdo->prepare($sql_reativar);
+        $stmt_reativar->bindParam(':id', $id_reativar, PDO::PARAM_INT);
+        
+        if ($stmt_reativar->execute()) {
+            $sucesso_reativar = "Autor reativado com sucesso!";
+        } else {
+            $erro_reativar = "Erro ao reativar autor.";
+        }
+    } catch (PDOException $e) {
+        $erro_reativar = "Erro ao reativar autor: " . $e->getMessage();
+    }
+}
 
 // Verifica se o formulário foi enviado e há um termo de busca
 if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
@@ -45,14 +64,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
     $busca = trim($_POST['busca']);
 
     // Verifica se a busca é um número (ID) ou um nome
+    $status_condicao = $mostrar_inativos ? "status = 'inativo'" : "status = 'ativo'";
+    
     if(is_numeric($busca)){
         // Se for numérico, busca por ID do autor
-        $sql = "SELECT * FROM autor WHERE Cod_Autor = :busca ORDER BY Nome_Autor ASC";
+        $sql = "SELECT * FROM autor WHERE Cod_Autor = :busca AND $status_condicao ORDER BY Nome_Autor ASC";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':busca', $busca, PDO::PARAM_INT);
     } else {
         // Se for texto, busca por nome do autor (busca parcial)
-        $sql = "SELECT * FROM autor WHERE Nome_Autor LIKE :busca_nome_autor ORDER BY Nome_Autor ASC";
+        $sql = "SELECT * FROM autor WHERE Nome_Autor LIKE :busca_nome_autor AND $status_condicao ORDER BY Nome_Autor ASC";
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':busca_nome_autor', "$busca%", PDO::PARAM_STR);
     }
@@ -67,7 +88,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
     }
 } else {
     // Se não há busca, lista todos os autores ordenados por nome
-    $sql = "SELECT * FROM autor ORDER BY Nome_Autor ASC";
+    $status_condicao = $mostrar_inativos ? "status = 'inativo'" : "status = 'ativo'";
+    $sql = "SELECT * FROM autor WHERE $status_condicao ORDER BY Nome_Autor ASC";
     
     try {
         // Prepara e executa a consulta para buscar todos os autores
@@ -107,6 +129,60 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
       align-items: center;
       margin-bottom: 20px;
       flex-wrap: wrap;
+    }
+    
+    .status-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .btn-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-left: 270px;
+    }
+    
+    .btn-inativos {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+    
+    .btn-inativos:hover {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+    
+    .btn-ativos {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+    
+    .btn-ativos:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-reactivate {
+      background: linear-gradient(135deg, #10b981, #059669) !important;
+      color: white !important;
+    }
+    
+    .btn-reactivate:hover {
+      background: linear-gradient(135deg, #059669, #047857) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
     
     #search-container {
@@ -217,8 +293,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
         
         <button type="submit" class="btn-filtrar">Buscar</button>
         <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar</button>
-      </form>
+
+        <div class="status-buttons">
+        <?php if (!$mostrar_inativos): ?>
+          <a href="consultar_autor.php?inativos=true" class="btn-status btn-inativos">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+            </svg>
+            Ver Inativos
+          </a>
+        <?php else: ?>
+          <a href="consultar_autor.php" class="btn-status btn-ativos">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+            </svg>
+            Ver Ativos
+          </a>
+        <?php endif; ?>
+      </div>
         </div>
+      </form>
 
 <nav>
   <table id="funcionarios-table">
@@ -238,19 +332,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
               <td><?= htmlspecialchars($autor_item['Telefone']) ?></td>
               <td><?= htmlspecialchars($autor_item['Email']) ?></td>
               <td>
-                  <a href="alterar_autor.php?id=<?= $autor_item['Cod_Autor'] ?>" class="btn-action btn-edit" title="Alterar">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                      <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                    </svg>
-                  </a>
-                  <a href="excluir_autor.php?id=<?= $autor_item['Cod_Autor'] ?>" class="btn-action btn-delete" title="Excluir">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M3 6h18"/>
-                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                    </svg>
-                  </a>
+                  <?php if ($mostrar_inativos): ?>
+                    <a href="consultar_autor.php?reativar=<?= $autor_item['Cod_Autor'] ?>&inativos=true" class="btn-action btn-reactivate" title="Reativar" onclick="return confirm('Deseja reativar este autor?')">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+                      </svg>
+                    </a>
+                  <?php else: ?>
+                    <a href="alterar_autor.php?id=<?= $autor_item['Cod_Autor'] ?>" class="btn-action btn-edit" title="Alterar">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                    </a>
+                    <a href="excluir_autor.php?id=<?= $autor_item['Cod_Autor'] ?>" class="btn-action btn-delete" title="Inativar">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18"/>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                      </svg>
+                    </a>
+                  <?php endif; ?>
                 </td>
            </tr>
           <?php endforeach;?>
@@ -261,6 +363,31 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
 </nav>
     </div>
     <script src="subtelas_javascript/sidebar-dropdown.js"></script>
+    
+    <!-- Notificações de reativação -->
+    <?php if (isset($sucesso_reativar)): ?>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Sucesso!',
+            text: '<?= addslashes($sucesso_reativar) ?>',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            window.location.href = 'consultar_autor.php';
+        });
+    </script>
+    <?php endif; ?>
+    
+    <?php if (isset($erro_reativar)): ?>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro!',
+            text: '<?= addslashes($erro_reativar) ?>',
+            confirmButtonText: 'OK'
+        });
+    </script>
+    <?php endif; ?>
 </body>
     <script>
     function editarAutor(id) {

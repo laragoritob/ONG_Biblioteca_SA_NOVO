@@ -17,7 +17,7 @@ if (isset($_GET['id'])) {
     if ($confirmado) {
         try {
             // Primeiro verifica se a editora existe antes de excluir
-            $sql_check = "SELECT Nome_Editora FROM editora WHERE Cod_Editora = :id";
+            $sql_check = "SELECT Nome_Editora FROM editora WHERE Cod_Editora = :id AND status = 'ativo'";
             $stmt_check = $pdo->prepare($sql_check);
             $stmt_check->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt_check->execute();
@@ -28,23 +28,23 @@ if (isset($_GET['id'])) {
             if (!$editora) {
                 $erro = "Editora não encontrada!";
             } else {
-                // Se encontrou, procede com a exclusão
-                $sql = "DELETE FROM editora WHERE Cod_Editora = :id";
+                // Se encontrou, procede com a inativação (soft delete)
+                $sql = "UPDATE editora SET status = 'inativo' WHERE Cod_Editora = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-                // Executa a exclusão e verifica o resultado
+                // Executa a inativação e verifica o resultado
                 if ($stmt->execute()) {
                     // Se sucesso, define mensagem de sucesso com o nome da editora
-                    $sucesso = "Editora " . htmlspecialchars($editora['Nome_Editora']) . " excluída com sucesso!";
+                    $sucesso = "Editora " . htmlspecialchars($editora['Nome_Editora']) . " inativada com sucesso!";
                 } else {
                     // Se falhou, define mensagem de erro
-                    $erro = "Erro ao excluir editora.";
+                    $erro = "Erro ao inativar editora.";
                 }
             }
         } catch (PDOException $e) {
             // Em caso de erro na execução, captura e exibe a mensagem
-            $erro = "Erro ao excluir editora: " . $e->getMessage();
+            $erro = "Erro ao inativar editora: " . $e->getMessage();
         }
     }
     // Se não for confirmado, apenas mostra a tela de confirmação
@@ -169,11 +169,11 @@ if (isset($_GET['id'])) {
             // Se não houver sucesso nem erro, mostrar confirmação
             <?php if (!isset($sucesso) && !isset($erro)): ?>
                 Swal.fire({
-                    title: 'Confirmar Exclusão',
-                    html: 'Tem certeza que deseja excluir esta editora?<br><br><strong>Esta ação não pode ser desfeita!</strong>',
+                    title: 'Confirmar Inativação',
+                    html: 'Tem certeza que deseja inativar esta editora?<br><br><strong>A editora será marcada como inativa e não aparecerá mais nas consultas!</strong>',
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Sim, Excluir',
+                    confirmButtonText: 'Sim, Inativar',
                     cancelButtonText: 'Cancelar',
                     confirmButtonColor: '#dc2626',
                     cancelButtonColor: '#6b7280',

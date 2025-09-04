@@ -51,6 +51,7 @@ $sql = "SELECT
         LEFT JOIN autor a ON l.Cod_Autor = a.Cod_Autor
         LEFT JOIN editora e ON l.Cod_Editora = e.Cod_Editora
         LEFT JOIN doador d ON l.Cod_Doador = d.Cod_Doador
+        WHERE l.status = 'ativo'
         ORDER BY l.Titulo ASC";
 
 try {

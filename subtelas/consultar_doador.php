@@ -39,6 +39,25 @@ switch ($_SESSION['perfil']) {
 // INICIALIZA VARIÁVEIS
   $doadores = [];
   $erro = null;
+  $mostrar_inativos = isset($_GET['inativos']) && $_GET['inativos'] === 'true';
+
+// Processa reativação se solicitada
+if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
+    $id_reativar = intval($_GET['reativar']);
+    try {
+        $sql_reativar = "UPDATE doador SET status = 'ativo' WHERE Cod_Doador = :id";
+        $stmt_reativar = $pdo->prepare($sql_reativar);
+        $stmt_reativar->bindParam(':id', $id_reativar, PDO::PARAM_INT);
+        
+        if ($stmt_reativar->execute()) {
+            $sucesso_reativar = "Doador reativado com sucesso!";
+        } else {
+            $erro_reativar = "Erro ao reativar doador.";
+        }
+    } catch (PDOException $e) {
+        $erro_reativar = "Erro ao reativar doador: " . $e->getMessage();
+    }
+}
 
   try {
       // SE O FORMULÁRIO FOR ENVIADO, BUSCA A doador PELO ID OU NOME
@@ -46,17 +65,20 @@ switch ($_SESSION['perfil']) {
           $busca = isset($_POST['busca']) ? trim($_POST['busca']) : '';
           
           // CONSTRÓI A CONSULTA SQL BASE
-          $sql = "SELECT Cod_Doador, Nome_Doador, Telefone, Email FROM doador WHERE 1=1 ORDER BY Cod_Doador ASC";
+          $status_condicao = $mostrar_inativos ? "status = 'inativo'" : "status = 'ativo'";
+          $sql = "SELECT Cod_Doador, Nome_Doador, Telefone, Email FROM doador WHERE $status_condicao ORDER BY Cod_Doador ASC";
           
           $params = [];
           
                      // ADICIONA FILTRO POR BUSCA SE FORNECIDA
            if (!empty($busca)) {
                if (is_numeric($busca)) {
-                   $sql = "SELECT Cod_Doador, Nome_Doador, Telefone, Email FROM doador WHERE Cod_Doador = :busca ORDER BY Cod_Doador ASC";
+                   $status_condicao = $mostrar_inativos ? "status = 'inativo'" : "status = 'ativo'";
+                   $sql = "SELECT Cod_Doador, Nome_Doador, Telefone, Email FROM doador WHERE Cod_Doador = :busca AND $status_condicao ORDER BY Cod_Doador ASC";
                    $params[':busca'] = $busca;
                } else {
-                   $sql = "SELECT Cod_Doador, Nome_Doador, Telefone, Email FROM doador WHERE Nome_Doador LIKE :busca_nome ORDER BY Cod_Doador ASC";
+                   $status_condicao = $mostrar_inativos ? "status = 'inativo'" : "status = 'ativo'";
+                   $sql = "SELECT Cod_Doador, Nome_Doador, Telefone, Email FROM doador WHERE Nome_Doador LIKE :busca_nome AND $status_condicao ORDER BY Cod_Doador ASC";
                    $params[':busca_nome'] = "$busca%";
                }
            }
@@ -73,7 +95,8 @@ switch ($_SESSION['perfil']) {
            }
       } else {
           // BUSCA TODAS AS doadores
-          $sql = "SELECT Cod_Doador, Nome_Doador, Telefone, Email FROM doador ORDER BY Cod_Doador ASC";
+          $status_condicao = $mostrar_inativos ? "status = 'inativo'" : "status = 'ativo'";
+          $sql = "SELECT Cod_Doador, Nome_Doador, Telefone, Email FROM doador WHERE $status_condicao ORDER BY Cod_Doador ASC";
           $stmt = $pdo->prepare($sql);
       }
 

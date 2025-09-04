@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
 
     // Consulta SQL para verificar se o email existe no banco de dados
-    $sql = "SELECT * FROM funcionario WHERE email = :email";
+    $sql = "SELECT * FROM funcionario WHERE email = :email AND status = 'ativo'";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':email', $email);
     $stmt->execute();

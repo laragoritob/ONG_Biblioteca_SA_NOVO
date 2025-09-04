@@ -46,17 +46,17 @@ switch ($_SESSION['perfil']) {
           $busca = isset($_POST['busca']) ? trim($_POST['busca']) : '';
           
           // CONSTRÓI A CONSULTA SQL BASE
-          $sql = "SELECT Cod_Editora, Nome_Editora, Telefone, Email FROM editora WHERE 1=1 ORDER BY Cod_Editora ASC";
+          $sql = "SELECT Cod_Editora, Nome_Editora, Telefone, Email FROM editora WHERE status = 'ativo' ORDER BY Cod_Editora ASC";
           
           $params = [];
           
                      // ADICIONA FILTRO POR BUSCA SE FORNECIDA
            if (!empty($busca)) {
                if (is_numeric($busca)) {
-                   $sql = "SELECT Cod_Editora, Nome_Editora, Telefone, Email FROM editora WHERE Cod_Editora = :busca ORDER BY Cod_Editora ASC";
+                   $sql = "SELECT Cod_Editora, Nome_Editora, Telefone, Email FROM editora WHERE Cod_Editora = :busca AND status = 'ativo' ORDER BY Cod_Editora ASC";
                    $params[':busca'] = $busca;
                } else {
-                   $sql = "SELECT Cod_Editora, Nome_Editora, Telefone, Email FROM editora WHERE Nome_Editora LIKE :busca_nome ORDER BY Cod_Editora ASC";
+                   $sql = "SELECT Cod_Editora, Nome_Editora, Telefone, Email FROM editora WHERE Nome_Editora LIKE :busca_nome AND status = 'ativo' ORDER BY Cod_Editora ASC";
                    $params[':busca_nome'] = "$busca%";
                }
            }
@@ -73,7 +73,7 @@ switch ($_SESSION['perfil']) {
            }
       } else {
           // BUSCA TODAS AS EDITORAS
-          $sql = "SELECT Cod_Editora, Nome_Editora, Telefone, Email FROM editora ORDER BY Cod_Editora ASC";
+          $sql = "SELECT Cod_Editora, Nome_Editora, Telefone, Email FROM editora WHERE status = 'ativo' ORDER BY Cod_Editora ASC";
           $stmt = $pdo->prepare($sql);
       }
 
