@@ -386,7 +386,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                                         <circle cx="12" cy="7" r="4"/>
                                     </svg>
-                                    <input type="number" id="cod_doador" name="cod_doador" required placeholder="ID">
+                                    <input type="number" id="cod_doador" name="cod_doador" placeholder="ID">
                                 </div>
                             </div>
 
@@ -398,7 +398,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                                             <circle cx="12" cy="7" r="4"/>
                                         </svg>
-                                        <input type="text" id="nome_doador" name="nome_doador" required placeholder="Digite o nome do doador" autocomplete="off">
+                                        <input type="text" id="nome_doador" name="nome_doador" placeholder="Digite o nome do doador" autocomplete="off">
                                     </div>
                                     <div class="autocomplete-suggestions" id="doador-suggestions"></div>
                                 </div>
