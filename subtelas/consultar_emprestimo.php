@@ -1,35 +1,40 @@
 <?php
+// Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
+
+// Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
-  // VERIFICA SE O USUÁRIO TEM PERMISSÃO
-  if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
+// Verifica se o usuário tem permissão para acessar esta página
+// Gerente (perfil 1), Bibliotecário (perfil 3) e Recreador (perfil 4) podem consultar empréstimos
+if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
+    // Se não tem permissão, exibe alerta e redireciona para login
     echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
     exit();
 }
 
-    // Determina a página de "voltar" dependendo do perfil do usuário
-    switch ($_SESSION['perfil']) {
-        case 1: // Gerente
-            $linkVoltar = "../gerente.php";
-            break;
-        case 2: // Gestor
-            $linkVoltar = "../gestor.php";
-            break;
-        case 3: // Bibliotecário
-            $linkVoltar = "../bibliotecario.php";
-            break;
-        case 4: // Recreador
-            $linkVoltar = "../recreador.php";
-            break;
-        case 5: // Repositor
-            $linkVoltar = "../repositor.php";
-            break;
-        default:
-            // PERFIL NÃO RECONHECIDO, REDIRECIONA PARA LOGIN
-            $linkVoltar = "../index.php";
-            break;
-    }
+// Define qual página o usuário deve retornar baseado em seu perfil
+switch ($_SESSION['perfil']) {
+    case 1: // Gerente - pode acessar todas as funcionalidades
+        $linkVoltar = "../gerente.php";
+        break;
+    case 2: // Gestor - não tem acesso a esta página
+        $linkVoltar = "../gestor.php";
+        break;
+    case 3: // Bibliotecário - pode consultar empréstimos
+        $linkVoltar = "../bibliotecario.php";
+        break;
+    case 4: // Recreador - pode consultar empréstimos
+        $linkVoltar = "../recreador.php";
+        break;
+    case 5: // Repositor - não tem acesso a esta página
+        $linkVoltar = "../repositor.php";
+        break;
+    default:
+        // Se perfil não for reconhecido, redireciona para login
+        $linkVoltar = "../index.php";
+        break;
+}
 
   // INICIALIZA VARIÁVEIS
   $emprestimos = [];
