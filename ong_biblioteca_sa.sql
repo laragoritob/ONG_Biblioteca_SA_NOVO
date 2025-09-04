@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 03/09/2025 às 22:09
--- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
+-- Generation Time: Sep 04, 2025 at 04:03 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `ong_biblioteca_sa`
+-- Database: `ong_biblioteca_sa`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `autor`
+-- Table structure for table `autor`
 --
 
 CREATE TABLE `autor` (
@@ -35,7 +35,7 @@ CREATE TABLE `autor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `autor`
+-- Dumping data for table `autor`
 --
 
 INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`) VALUES
@@ -48,7 +48,7 @@ INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`) VALUES
 (19, 'Gerard', '(28) 47286-2786', 'aaaaaaa@gmail.om');
 
 --
--- Acionadores `autor`
+-- Triggers `autor`
 --
 DELIMITER $$
 CREATE TRIGGER `tr_autor_delete_audit` BEFORE DELETE ON `autor` FOR EACH ROW BEGIN
@@ -82,7 +82,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `cliente`
+-- Table structure for table `cliente`
 --
 
 CREATE TABLE `cliente` (
@@ -105,7 +105,7 @@ CREATE TABLE `cliente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `cliente`
+-- Dumping data for table `cliente`
 --
 
 INSERT INTO `cliente` (`Cod_Cliente`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Nome_Responsavel`, `Telefone`, `Data_Nascimento`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Foto`) VALUES
@@ -117,7 +117,7 @@ INSERT INTO `cliente` (`Cod_Cliente`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sex
 (7, 2, 'rihanna', '985.672.685-78', 'rihanna@gmail.com', 'Feminino', '?', '(66) 66666-6666', '2025-09-02', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 3, 0x363862373439623036663464622e6a7067);
 
 --
--- Acionadores `cliente`
+-- Triggers `cliente`
 --
 DELIMITER $$
 CREATE TRIGGER `tr_cliente_delete_audit` BEFORE DELETE ON `cliente` FOR EACH ROW BEGIN
@@ -151,7 +151,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `doador`
+-- Table structure for table `doador`
 --
 
 CREATE TABLE `doador` (
@@ -162,7 +162,7 @@ CREATE TABLE `doador` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `doador`
+-- Dumping data for table `doador`
 --
 
 INSERT INTO `doador` (`Cod_Doador`, `Nome_Doador`, `Telefone`, `Email`) VALUES
@@ -171,7 +171,7 @@ INSERT INTO `doador` (`Cod_Doador`, `Nome_Doador`, `Telefone`, `Email`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `editora`
+-- Table structure for table `editora`
 --
 
 CREATE TABLE `editora` (
@@ -182,7 +182,7 @@ CREATE TABLE `editora` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `editora`
+-- Dumping data for table `editora`
 --
 
 INSERT INTO `editora` (`Cod_Editora`, `Nome_Editora`, `Telefone`, `Email`) VALUES
@@ -192,7 +192,7 @@ INSERT INTO `editora` (`Cod_Editora`, `Nome_Editora`, `Telefone`, `Email`) VALUE
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `emprestimo`
+-- Table structure for table `emprestimo`
 --
 
 CREATE TABLE `emprestimo` (
@@ -205,7 +205,7 @@ CREATE TABLE `emprestimo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `emprestimo`
+-- Dumping data for table `emprestimo`
 --
 
 INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`, `Status_Emprestimo`) VALUES
@@ -214,7 +214,7 @@ INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Em
 (3, 2, 1, '2025-08-12', '2026-01-16', 'Devolvido');
 
 --
--- Acionadores `emprestimo`
+-- Triggers `emprestimo`
 --
 DELIMITER $$
 CREATE TRIGGER `tr_emprestimo_delete_audit` BEFORE DELETE ON `emprestimo` FOR EACH ROW BEGIN
@@ -248,7 +248,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `funcionario`
+-- Table structure for table `funcionario`
 --
 
 CREATE TABLE `funcionario` (
@@ -269,23 +269,25 @@ CREATE TABLE `funcionario` (
   `Num_Residencia` int(11) NOT NULL,
   `Usuario` varchar(20) NOT NULL,
   `Senha` varchar(20) NOT NULL,
+  `Senha_Temporaria` varchar(255) DEFAULT NULL,
   `Foto` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `funcionario`
+-- Dumping data for table `funcionario`
 --
 
-INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Foto`) VALUES
-(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', ''),
-(7, 3, 'Bruno Henrique Ribeiro', '568.328.325-62', 'brunohribeiro@gmail.com', 'Masculino', '(27) 83562-3856', '2007-03-11', '2025-09-03', '82640-490', 'PR', 'Curitiba', 'Santa Cândida', 'Praça Semen Uniga', 1234, 'bruno_ribeiro', '$2y$10$CHOY/49469q7u', 0x6b61747970657272792e6a7067),
-(8, 2, 'Mason Thames', '287.352.976-28', 'masonthames@gmail.com', 'Masculino', '(87) 53386-5862', '2007-09-02', '2025-09-02', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 4, 'mason_thames', '$2y$10$3RL6IWFtjn1kr', 0x6d61736f6e6e2e6a7067),
-(10, 5, 'Mariska', '287.352.976-28', 'mariska@gmail.com', 'Feminino', '(99) 99999-9999', '1964-01-23', '2025-09-02', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 5, 'mariska', '$2y$10$o0unCC1gdondp', 0x6d617269736b612e6a7067),
-(11, 3, 'Paula', '287.352.976-28', 'paula@gmail.com', 'Feminino', '(32) 33684-9384', '2025-09-02', '2025-09-02', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 6, 'paula_fernandes', '$2y$10$fe6rytf0jAR7k', 0x7061756c612e6a7067),
-(12, 4, 'Dwayne Johnson', '985.735.298-72', 'therock@gmail.com', 'Masculino', '(98) 46794-8766', '1972-04-02', '2025-09-03', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 'the_rock', '12345678', 0x7468655f726f636b2e6a7067);
+INSERT INTO `funcionario` (`Cod_Funcionario`, `Cod_Perfil`, `Nome`, `CPF`, `Email`, `Sexo`, `Telefone`, `Data_Nascimento`, `Data_Efetivacao`, `CEP`, `UF`, `Cidade`, `Bairro`, `Rua`, `Num_Residencia`, `Usuario`, `Senha`, `Senha_Temporaria`, `Foto`) VALUES
+(5, 1, 'Sérgio Luiz da Silveira', '123.456.789-10', '', 'Masculino', '(47) 91234-5678', '1980-09-11', '2005-02-20', '80010-030', 'PR', 'Curitiba', 'Centro', 'Praça Rui Barbosa', 29, 'sergio_luiz', '12345678', NULL, ''),
+(7, 3, 'Bruno Henrique Ribeiro', '568.328.325-62', 'brunohribeiro@gmail.com', 'Masculino', '(27) 83562-3856', '2007-03-11', '2025-09-03', '82640-490', 'PR', 'Curitiba', 'Santa Cândida', 'Praça Semen Uniga', 1234, 'bruno_ribeiro', '12345678', NULL, 0x6b61747970657272792e6a7067),
+(8, 2, 'Mason Thames', '287.352.976-28', 'masonthames@gmail.com', 'Masculino', '(87) 53386-5862', '2007-09-02', '2025-09-02', '09530-210', 'SP', 'São Caetano do Sul', 'Cerâmica', 'Rua São Paulo', 4, 'mason_thames', '12345678', NULL, 0x6d61736f6e6e2e6a7067),
+(10, 5, 'Mariska', '287.352.976-28', 'mariska@gmail.com', 'Feminino', '(99) 99999-9999', '1964-01-23', '2025-09-02', '89228-835', 'SC', 'Joinville', 'Espinheiros', 'Rua Osvaldo Galiza', 5, 'mariska', '12345678', NULL, 0x6d617269736b612e6a7067),
+(11, 3, 'Paula', '287.352.976-28', 'paula@gmail.com', 'Feminino', '(32) 33684-9384', '2025-09-02', '2025-09-02', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 6, 'paula_fernandes', '12345678', NULL, 0x7061756c612e6a7067),
+(12, 4, 'Dwayne Johnson', '985.735.298-72', 'therock@gmail.com', 'Masculino', '(98) 46794-8766', '1972-04-02', '2025-09-03', '89220-618', 'SC', 'Joinville', 'Costa e Silva', 'Rua Pavão', 1234, 'the_rock', '12345678', NULL, 0x7468655f726f636b2e6a7067),
+(16, 2, 'TESTE', '222.222.222-22', 'isyhef@gmail.com', 'Feminino', '(22) 22222-2222', '2000-07-06', '2025-09-03', '89281-000', 'SC', 'São Bento do Sul', 'Progresso', 'Rua Augusto Wunderwald', 1234, 'testeteste', '12345678', NULL, 0x666e61662e6a7067);
 
 --
--- Acionadores `funcionario`
+-- Triggers `funcionario`
 --
 DELIMITER $$
 CREATE TRIGGER `tr_funcionario_delete_audit` BEFORE DELETE ON `funcionario` FOR EACH ROW BEGIN
@@ -319,7 +321,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `genero`
+-- Table structure for table `genero`
 --
 
 CREATE TABLE `genero` (
@@ -328,7 +330,7 @@ CREATE TABLE `genero` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `genero`
+-- Dumping data for table `genero`
 --
 
 INSERT INTO `genero` (`Cod_Genero`, `Nome_Genero`) VALUES
@@ -347,7 +349,7 @@ INSERT INTO `genero` (`Cod_Genero`, `Nome_Genero`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `livro`
+-- Table structure for table `livro`
 --
 
 CREATE TABLE `livro` (
@@ -365,14 +367,14 @@ CREATE TABLE `livro` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `livro`
+-- Dumping data for table `livro`
 --
 
 INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`) VALUES
 (1, 1, 2, 1, 9, 'Harry Potter', '2025-08-12', '2025-08-27', 7778, '3', 0x6c6f676f5f7472616e732e706e67);
 
 --
--- Acionadores `livro`
+-- Triggers `livro`
 --
 DELIMITER $$
 CREATE TRIGGER `tr_livro_delete_audit` BEFORE DELETE ON `livro` FOR EACH ROW BEGIN
@@ -406,7 +408,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `logs_auditoria`
+-- Table structure for table `logs_auditoria`
 --
 
 CREATE TABLE `logs_auditoria` (
@@ -422,7 +424,7 @@ CREATE TABLE `logs_auditoria` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `logs_auditoria`
+-- Dumping data for table `logs_auditoria`
 --
 
 INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_anteriores`, `dados_novos`, `usuario`, `data_operacao`, `ip_usuario`) VALUES
@@ -473,12 +475,30 @@ INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_
 (47, 'emprestimo', 'UPDATE', 3, 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'Cliente: 2, Livro: 1, Data: 2025-08-12', 'root@localhost', '2025-09-03 17:56:33', NULL),
 (48, 'funcionario', 'INSERT', 12, NULL, 'Nome: Dwayne Johnson, Data Nascimento: 1972-04-02', 'root@localhost', '2025-09-03 18:59:20', NULL),
 (49, 'livro', 'INSERT', 5, NULL, 'Título: Amor & Gelato', NULL, '2025-09-03 19:15:48', NULL),
-(50, 'livro', 'DELETE', 5, 'Título: Amor & Gelato', NULL, NULL, '2025-09-03 19:17:37', NULL);
+(50, 'livro', 'DELETE', 5, 'Título: Amor & Gelato', NULL, NULL, '2025-09-03 19:17:37', NULL),
+(51, 'funcionario', 'UPDATE', 7, 'Nome: Bruno Henrique Ribeiro, Data Nascimento: 2007-03-11', 'Nome: Bruno Henrique Ribeiro, Data Nascimento: 2007-03-11', 'root@localhost', '2025-09-03 22:28:51', NULL),
+(52, 'funcionario', 'UPDATE', 8, 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'Nome: Mason Thames, Data Nascimento: 2007-09-02', 'root@localhost', '2025-09-03 22:28:59', NULL),
+(53, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-03 22:29:05', NULL),
+(54, 'funcionario', 'UPDATE', 11, 'Nome: Paula, Data Nascimento: 2025-09-02', 'Nome: Paula, Data Nascimento: 2025-09-02', 'root@localhost', '2025-09-03 22:29:11', NULL),
+(55, 'funcionario', 'INSERT', 13, NULL, 'Nome: Lara Gorito Barbosa De Souza, Data Nascimento: 2007-02-05', 'root@localhost', '2025-09-04 00:29:32', NULL),
+(56, 'funcionario', 'INSERT', 14, NULL, 'Nome: Lara Gorito Barbosa De Souza, Data Nascimento: 2007-02-05', 'root@localhost', '2025-09-04 00:42:51', NULL),
+(57, 'funcionario', 'INSERT', 15, NULL, 'Nome: Lara Gorito Barbosa De Souza, Data Nascimento: 2007-02-05', 'root@localhost', '2025-09-04 00:43:09', NULL),
+(58, 'funcionario', 'INSERT', 16, NULL, 'Nome: TESTE, Data Nascimento: 2000-07-06', 'root@localhost', '2025-09-04 00:44:16', NULL),
+(59, 'funcionario', 'DELETE', 15, 'Nome: Lara Gorito Barbosa De Souza, Data Nascimento: 2007-02-05', NULL, 'root@localhost', '2025-09-04 00:44:31', NULL),
+(60, 'funcionario', 'DELETE', 14, 'Nome: Lara Gorito Barbosa De Souza, Data Nascimento: 2007-02-05', NULL, 'root@localhost', '2025-09-04 00:44:36', NULL),
+(61, 'funcionario', 'DELETE', 13, 'Nome: Lara Gorito Barbosa De Souza, Data Nascimento: 2007-02-05', NULL, 'root@localhost', '2025-09-04 00:44:56', NULL),
+(62, 'funcionario', 'INSERT', 17, NULL, 'Nome: Lara Gorito Barbosa De Souza, Data Nascimento: 2000-02-05', 'root@localhost', '2025-09-04 00:59:23', NULL),
+(63, 'funcionario', 'DELETE', 17, 'Nome: Lara Gorito Barbosa De Souza, Data Nascimento: 2000-02-05', NULL, 'root@localhost', '2025-09-04 00:59:38', NULL),
+(64, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-04 01:49:23', NULL),
+(65, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-04 01:50:20', NULL),
+(66, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-04 01:51:08', NULL),
+(67, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-04 02:01:59', NULL),
+(68, 'funcionario', 'UPDATE', 10, 'Nome: Mariska, Data Nascimento: 1964-01-23', 'Nome: Mariska, Data Nascimento: 1964-01-23', 'root@localhost', '2025-09-04 02:02:30', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `multa`
+-- Table structure for table `multa`
 --
 
 CREATE TABLE `multa` (
@@ -490,7 +510,7 @@ CREATE TABLE `multa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `multa`
+-- Dumping data for table `multa`
 --
 
 INSERT INTO `multa` (`Cod_Multa`, `Cod_Emprestimo`, `Data_Multa`, `Valor_Multa`, `Status_Multa`) VALUES
@@ -505,7 +525,7 @@ INSERT INTO `multa` (`Cod_Multa`, `Cod_Emprestimo`, `Data_Multa`, `Valor_Multa`,
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `perfil_cliente`
+-- Table structure for table `perfil_cliente`
 --
 
 CREATE TABLE `perfil_cliente` (
@@ -514,7 +534,7 @@ CREATE TABLE `perfil_cliente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `perfil_cliente`
+-- Dumping data for table `perfil_cliente`
 --
 
 INSERT INTO `perfil_cliente` (`Cod_Perfil`, `Nome_Perfil`) VALUES
@@ -524,7 +544,7 @@ INSERT INTO `perfil_cliente` (`Cod_Perfil`, `Nome_Perfil`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `perfil_funcionario`
+-- Table structure for table `perfil_funcionario`
 --
 
 CREATE TABLE `perfil_funcionario` (
@@ -533,7 +553,7 @@ CREATE TABLE `perfil_funcionario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Despejando dados para a tabela `perfil_funcionario`
+-- Dumping data for table `perfil_funcionario`
 --
 
 INSERT INTO `perfil_funcionario` (`Cod_Perfil`, `Nome_Perfil`) VALUES
@@ -544,36 +564,36 @@ INSERT INTO `perfil_funcionario` (`Cod_Perfil`, `Nome_Perfil`) VALUES
 (5, 'Repositor');
 
 --
--- Índices para tabelas despejadas
+-- Indexes for dumped tables
 --
 
 --
--- Índices de tabela `autor`
+-- Indexes for table `autor`
 --
 ALTER TABLE `autor`
   ADD PRIMARY KEY (`Cod_Autor`);
 
 --
--- Índices de tabela `cliente`
+-- Indexes for table `cliente`
 --
 ALTER TABLE `cliente`
   ADD PRIMARY KEY (`Cod_Cliente`),
   ADD KEY `fk_Cod_Perfil` (`Cod_Perfil`);
 
 --
--- Índices de tabela `doador`
+-- Indexes for table `doador`
 --
 ALTER TABLE `doador`
   ADD PRIMARY KEY (`Cod_Doador`);
 
 --
--- Índices de tabela `editora`
+-- Indexes for table `editora`
 --
 ALTER TABLE `editora`
   ADD PRIMARY KEY (`Cod_Editora`);
 
 --
--- Índices de tabela `emprestimo`
+-- Indexes for table `emprestimo`
 --
 ALTER TABLE `emprestimo`
   ADD PRIMARY KEY (`Cod_Emprestimo`),
@@ -581,20 +601,20 @@ ALTER TABLE `emprestimo`
   ADD KEY `FK_Livro_Emprestimo` (`Cod_Livro`);
 
 --
--- Índices de tabela `funcionario`
+-- Indexes for table `funcionario`
 --
 ALTER TABLE `funcionario`
   ADD PRIMARY KEY (`Cod_Funcionario`),
   ADD KEY `fk_Cod_Perfil_Func` (`Cod_Perfil`);
 
 --
--- Índices de tabela `genero`
+-- Indexes for table `genero`
 --
 ALTER TABLE `genero`
   ADD PRIMARY KEY (`Cod_Genero`);
 
 --
--- Índices de tabela `livro`
+-- Indexes for table `livro`
 --
 ALTER TABLE `livro`
   ADD PRIMARY KEY (`Cod_Livro`),
@@ -604,7 +624,7 @@ ALTER TABLE `livro`
   ADD KEY `fk_Cod_Genero` (`Cod_Genero`);
 
 --
--- Índices de tabela `logs_auditoria`
+-- Indexes for table `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
   ADD PRIMARY KEY (`id`),
@@ -613,125 +633,125 @@ ALTER TABLE `logs_auditoria`
   ADD KEY `idx_operacao` (`operacao`);
 
 --
--- Índices de tabela `multa`
+-- Indexes for table `multa`
 --
 ALTER TABLE `multa`
   ADD PRIMARY KEY (`Cod_Multa`),
   ADD KEY `FK_Multa_Emprestimo` (`Cod_Emprestimo`);
 
 --
--- Índices de tabela `perfil_cliente`
+-- Indexes for table `perfil_cliente`
 --
 ALTER TABLE `perfil_cliente`
   ADD PRIMARY KEY (`Cod_Perfil`);
 
 --
--- Índices de tabela `perfil_funcionario`
+-- Indexes for table `perfil_funcionario`
 --
 ALTER TABLE `perfil_funcionario`
   ADD PRIMARY KEY (`Cod_Perfil`);
 
 --
--- AUTO_INCREMENT para tabelas despejadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de tabela `autor`
+-- AUTO_INCREMENT for table `autor`
 --
 ALTER TABLE `autor`
   MODIFY `Cod_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT de tabela `cliente`
+-- AUTO_INCREMENT for table `cliente`
 --
 ALTER TABLE `cliente`
   MODIFY `Cod_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT de tabela `doador`
+-- AUTO_INCREMENT for table `doador`
 --
 ALTER TABLE `doador`
   MODIFY `Cod_Doador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de tabela `editora`
+-- AUTO_INCREMENT for table `editora`
 --
 ALTER TABLE `editora`
   MODIFY `Cod_Editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de tabela `emprestimo`
+-- AUTO_INCREMENT for table `emprestimo`
 --
 ALTER TABLE `emprestimo`
   MODIFY `Cod_Emprestimo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de tabela `funcionario`
+-- AUTO_INCREMENT for table `funcionario`
 --
 ALTER TABLE `funcionario`
-  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `Cod_Funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT de tabela `genero`
+-- AUTO_INCREMENT for table `genero`
 --
 ALTER TABLE `genero`
   MODIFY `Cod_Genero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de tabela `livro`
+-- AUTO_INCREMENT for table `livro`
 --
 ALTER TABLE `livro`
   MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de tabela `logs_auditoria`
+-- AUTO_INCREMENT for table `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
--- AUTO_INCREMENT de tabela `multa`
+-- AUTO_INCREMENT for table `multa`
 --
 ALTER TABLE `multa`
   MODIFY `Cod_Multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT de tabela `perfil_cliente`
+-- AUTO_INCREMENT for table `perfil_cliente`
 --
 ALTER TABLE `perfil_cliente`
   MODIFY `Cod_Perfil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de tabela `perfil_funcionario`
+-- AUTO_INCREMENT for table `perfil_funcionario`
 --
 ALTER TABLE `perfil_funcionario`
   MODIFY `Cod_Perfil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- Restrições para tabelas despejadas
+-- Constraints for dumped tables
 --
 
 --
--- Restrições para tabelas `cliente`
+-- Constraints for table `cliente`
 --
 ALTER TABLE `cliente`
   ADD CONSTRAINT `fk_Cod_Perfil` FOREIGN KEY (`Cod_Perfil`) REFERENCES `perfil_cliente` (`Cod_Perfil`);
 
 --
--- Restrições para tabelas `emprestimo`
+-- Constraints for table `emprestimo`
 --
 ALTER TABLE `emprestimo`
   ADD CONSTRAINT `FK_Cliente_Emprestimo` FOREIGN KEY (`Cod_Cliente`) REFERENCES `cliente` (`Cod_Cliente`),
   ADD CONSTRAINT `FK_Livro_Emprestimo` FOREIGN KEY (`Cod_Livro`) REFERENCES `livro` (`Cod_Livro`);
 
 --
--- Restrições para tabelas `funcionario`
+-- Constraints for table `funcionario`
 --
 ALTER TABLE `funcionario`
   ADD CONSTRAINT `fk_Cod_Perfil_Func` FOREIGN KEY (`Cod_Perfil`) REFERENCES `perfil_funcionario` (`Cod_Perfil`);
 
 --
--- Restrições para tabelas `livro`
+-- Constraints for table `livro`
 --
 ALTER TABLE `livro`
   ADD CONSTRAINT `fk_Cod_Autor` FOREIGN KEY (`Cod_Autor`) REFERENCES `autor` (`Cod_Autor`),
@@ -740,7 +760,7 @@ ALTER TABLE `livro`
   ADD CONSTRAINT `fk_Cod_Genero` FOREIGN KEY (`Cod_Genero`) REFERENCES `genero` (`Cod_Genero`);
 
 --
--- Restrições para tabelas `multa`
+-- Constraints for table `multa`
 --
 ALTER TABLE `multa`
   ADD CONSTRAINT `FK_Multa_Emprestimo` FOREIGN KEY (`Cod_Emprestimo`) REFERENCES `emprestimo` (`Cod_Emprestimo`);

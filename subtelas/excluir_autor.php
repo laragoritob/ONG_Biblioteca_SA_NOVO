@@ -49,6 +49,7 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONG Biblioteca - Excluir Autor</title>
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .swal2-title-arial {
@@ -106,6 +107,7 @@ if (isset($_GET['id'])) {
     </style>
 </head>
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <script>
         // Aguardar o SweetAlert2 carregar
         document.addEventListener('DOMContentLoaded', function() {
@@ -171,5 +173,6 @@ if (isset($_GET['id'])) {
             <?php endif; ?>
         });
     </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>

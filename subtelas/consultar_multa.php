@@ -101,6 +101,7 @@
   <title>ONG Biblioteca - Consultar Multas</title>
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     .btn-pagar {
@@ -243,6 +244,7 @@
 </head>
 
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
       <header>
         <a href="<?= $linkVoltar ?>" class="btn-voltar">
@@ -330,5 +332,6 @@
         document.getElementById("search-input").addEventListener("input", filtrarTabela);
       </script>
     </div>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>

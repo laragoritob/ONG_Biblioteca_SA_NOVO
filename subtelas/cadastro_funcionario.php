@@ -90,11 +90,13 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
         <header class="header">
             <a href="<?= $linkVoltar ?>" class="btn-voltar">
@@ -256,7 +258,7 @@
                                         <line x1="8" y1="2" x2="8" y2="6"/>
                                         <line x1="3" y1="10" x2="21" y2="10"/>
                                     </svg>
-                                    <input type="date" id="data_efetivacao" name="data_efetivacao" min="" max="" id="dataEfetivacao" required>
+                                    <input type="date" id="data_efetivacao" name="data_efetivacao" min="" max="" required>
                                 </div>
                             </div>
                         </div>
@@ -417,39 +419,6 @@
     </div>
 
     <script src="subtelas_javascript/validaCadastro.js"></script>
-
-    <script>
-        // Aguardar o SweetAlert2 carregar
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mostrar notificações baseadas no PHP
-            <?php if (isset($sucesso)): ?>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Sucesso!',
-                    html: '<?= addslashes($sucesso) ?>',
-                    confirmButtonText: 'OK',
-                    customClass: {
-                        title: 'swal2-title-arial',
-                        htmlContainer: 'swal2-html-arial',
-                        confirmButton: 'swal2-confirm'
-                    }
-                });
-            <?php endif; ?>
-            
-            <?php if (isset($erro)): ?>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erro!',
-                    html: '<?= addslashes($erro) ?>',
-                    confirmButtonText: 'OK',
-                    customClass: {
-                        title: 'swal2-title-arial',
-                        htmlContainer: 'swal2-html-arial',
-                        confirmButton: 'swal2-confirm'
-                    }
-                });
-            <?php endif; ?>
-        });
-    </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>

@@ -91,11 +91,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo_completo'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Senha</title>
     <link rel="stylesheet" href="subtelas_css/codigo_verificacao.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <div class="container">
-    <header>
+    <div class="page-wrapper">
+        <header class="header">
         <form action="recuperar_senha.php" method="POST">
             <button class="btn-voltar">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -347,5 +348,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo_completo'])) {
             }, 3000);
         }
     </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>

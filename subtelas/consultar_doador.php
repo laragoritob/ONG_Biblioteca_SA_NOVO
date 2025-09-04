@@ -92,6 +92,7 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] 
   <title>ONG Biblioteca - Consultar Doadores</title>
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css" />
+  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
@@ -190,6 +191,7 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] 
 </head>
 
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
       <header>
         <a href="<?= $linkVoltar ?>" class="btn-voltar">
@@ -314,6 +316,7 @@ if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] 
         });
     }
   </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
     </div>
 </body>
 </html>

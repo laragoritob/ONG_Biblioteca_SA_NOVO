@@ -75,6 +75,7 @@
   <title>ONG Biblioteca - Ficha do Cliente</title>
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css" />
+  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     a {
@@ -235,6 +236,7 @@
 </head>
 
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
   <div class="page-wrapper">
     <header>
       <a href="consultar_cliente.php" class="btn-voltar">
@@ -362,6 +364,6 @@
   </div>
 
   <script src="subtelas_javascript/consultas.js"></script>
-
+  <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>

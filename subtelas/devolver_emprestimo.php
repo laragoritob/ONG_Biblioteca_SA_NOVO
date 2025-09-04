@@ -123,6 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
     <title>Devolver Empréstimo</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="subtelas_css/cadastros.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
@@ -396,5 +397,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
             return false;
         }
     </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>

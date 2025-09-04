@@ -76,6 +76,7 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -112,9 +113,56 @@
             outline: 2px solid #6366f1 !important;
             outline-offset: 2px !important;
         }
+        
+        /* Estilos para autocomplete */
+        .autocomplete-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            display: none;
+        }
+        
+        .autocomplete-suggestion {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background-color 0.2s;
+        }
+        
+        .autocomplete-suggestion:hover {
+            background-color:rgb(233, 233, 233);
+        }
+        
+        .autocomplete-suggestion:last-child {
+            border-bottom: none;
+        }
+        
+        .autocomplete-suggestion.highlighted {
+            background-color: #6366f1;
+            color: white;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
     </style>
 </head>
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
         <header class="header">
                 <a href="<?= $linkVoltar ?>" class="btn-voltar">
@@ -163,11 +211,14 @@
 
                             <div class="input-group" style="flex: 1.5;">
                                 <label for="autor">Nome do Autor</label>
-                                <div class="input-wrapper">
-                                    <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40">
-                                        <path d="M432.5 82.3L382.4 132.4L507.7 257.7L557.8 207.6C579.7 185.7 579.7 150.3 557.8 128.4L511.7 82.3C489.8 60.4 454.4 60.4 432.5 82.3zM343.3 161.2L342.8 161.3L198.7 204.5C178.8 210.5 163 225.7 156.4 245.5L67.8 509.8C64.9 518.5 65.9 528 70.3 535.8L225.7 380.4C224.6 376.4 224.1 372.3 224.1 368C224.1 341.5 245.6 320 272.1 320C298.6 320 320.1 341.5 320.1 368C320.1 394.5 298.6 416 272.1 416C267.8 416 263.6 415.4 259.7 414.4L104.3 569.7C112.1 574.1 121.5 575.1 130.3 572.2L394.6 483.6C414.3 477 429.6 461.2 435.6 441.3L478.8 297.2L478.9 296.7L343.4 161.2z"/>
-                                    </svg>
-                                    <input type="text" id="autor" name="autor" required placeholder="Nome do autor" readonly>
+                                <div class="autocomplete-container">
+                                    <div class="input-wrapper">
+                                        <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40">
+                                            <path d="M432.5 82.3L382.4 132.4L507.7 257.7L557.8 207.6C579.7 185.7 579.7 150.3 557.8 128.4L511.7 82.3C489.8 60.4 454.4 60.4 432.5 82.3zM343.3 161.2L342.8 161.3L198.7 204.5C178.8 210.5 163 225.7 156.4 245.5L67.8 509.8C64.9 518.5 65.9 528 70.3 535.8L225.7 380.4C224.6 376.4 224.1 372.3 224.1 368C224.1 341.5 245.6 320 272.1 320C298.6 320 320.1 341.5 320.1 368C320.1 394.5 298.6 416 272.1 416C267.8 416 263.6 415.4 259.7 414.4L104.3 569.7C112.1 574.1 121.5 575.1 130.3 572.2L394.6 483.6C414.3 477 429.6 461.2 435.6 441.3L478.8 297.2L478.9 296.7L343.4 161.2z"/>
+                                        </svg>
+                                        <input type="text" id="autor" name="autor" required placeholder="Digite o nome do autor" autocomplete="off">
+                                    </div>
+                                    <div class="autocomplete-suggestions" id="autor-suggestions"></div>
                                 </div>
                             </div>
                         </div>
@@ -256,11 +307,14 @@
 
                         <div class="input-group" style="flex: 1.5;">
                             <label for="nome_editora">Nome da Editora</label>
-                            <div class="input-wrapper">
-                                <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="50"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                                    <path d="M96.5 160L96.5 309.5C96.5 326.5 103.2 342.8 115.2 354.8L307.2 546.8C332.2 571.8 372.7 571.8 397.7 546.8L547.2 397.3C572.2 372.3 572.2 331.8 547.2 306.8L355.2 114.8C343.2 102.7 327 96 310 96L160.5 96C125.2 96 96.5 124.7 96.5 160zM208.5 176C226.2 176 240.5 190.3 240.5 208C240.5 225.7 226.2 240 208.5 240C190.8 240 176.5 225.7 176.5 208C176.5 190.3 190.8 176 208.5 176z"/>
-                                </svg>
-                                <input type="text" id="nome_editora" name="nome_editora" required placeholder="Nome da editora" readonly>
+                            <div class="autocomplete-container">
+                                <div class="input-wrapper">
+                                    <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="50"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                                        <path d="M96.5 160L96.5 309.5C96.5 326.5 103.2 342.8 115.2 354.8L307.2 546.8C332.2 571.8 372.7 571.8 397.7 546.8L547.2 397.3C572.2 372.3 572.2 331.8 547.2 306.8L355.2 114.8C343.2 102.7 327 96 310 96L160.5 96C125.2 96 96.5 124.7 96.5 160zM208.5 176C226.2 176 240.5 190.3 240.5 208C240.5 225.7 226.2 240 208.5 240C190.8 240 176.5 225.7 176.5 208C176.5 190.3 190.8 176 208.5 176z"/>
+                                    </svg>
+                                    <input type="text" id="nome_editora" name="nome_editora" required placeholder="Digite o nome da editora" autocomplete="off">
+                                </div>
+                                <div class="autocomplete-suggestions" id="editora-suggestions"></div>
                             </div>
                         </div> 
                     </div>
@@ -286,7 +340,7 @@
                                         <line x1="8" y1="2" x2="8" y2="6"/>
                                         <line x1="3" y1="10" x2="21" y2="10"/>
                                     </svg>
-                                    <input type="date" id="data_registro" id="dataRegistro" name="data_registro" required placeholder="Digite a data de registro">
+                                    <input type="date" id="data_registro" name="data_registro" required placeholder="Digite a data de registro">
                                 </div>
                             </div>
                         
@@ -327,12 +381,15 @@
 
                             <div class="input-group" style="flex: 1.5;">
                                 <label for="nome_doador">Nome do Doador</label>
-                                <div class="input-wrapper">
-                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="12" cy="7" r="4"/>
-                                    </svg>
-                                    <input type="text" id="nome_doador" name="nome_doador" required placeholder="Nome do doador" readonly>
+                                <div class="autocomplete-container">
+                                    <div class="input-wrapper">
+                                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                            <circle cx="12" cy="7" r="4"/>
+                                        </svg>
+                                        <input type="text" id="nome_doador" name="nome_doador" required placeholder="Digite o nome do doador" autocomplete="off">
+                                    </div>
+                                    <div class="autocomplete-suggestions" id="doador-suggestions"></div>
                                 </div>
                             </div>
                         </div>
@@ -362,6 +419,7 @@
 
     <script src="subtelas_javascript/validaLivro.js"></script>
     <script src="subtelas_javascript/buscarID.js"></script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 
     
     <script>

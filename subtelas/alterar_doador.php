@@ -107,12 +107,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>ONG Biblioteca - Alterar Doador</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
         <header class="header">
             <form action="consultar_doador.php" method="POST">
@@ -320,5 +322,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
     </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>

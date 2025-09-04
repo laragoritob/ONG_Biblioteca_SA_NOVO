@@ -4,9 +4,9 @@ require_once '../conexao.php';
 
   // VERIFICA SE O USUÁRIO TEM PERMISSÃO
   if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
-        echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
-        exit();
-    }
+    echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
+    exit();
+}
 
     // Determina a página de "voltar" dependendo do perfil do usuário
     switch ($_SESSION['perfil']) {
@@ -148,6 +148,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
   <title>ONG Biblioteca - Sala Arco-íris</title>
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css" />
+  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     .filtro-container {
@@ -241,6 +242,7 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
   <div class="page-wrapper">
     <header>
       <a href="<?= $linkVoltar ?>" class="btn-voltar">
@@ -518,5 +520,6 @@ $usuarios= $stmt-> fetchAll(PDO::FETCH_ASSOC);
       Swal.fire(<?php echo $erro_swal; ?>);
     <?php endif; ?>
   </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>

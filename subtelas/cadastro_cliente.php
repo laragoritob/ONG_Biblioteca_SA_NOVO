@@ -47,6 +47,12 @@
         $bairro = $_POST['bairro'];
         $rua = $_POST['rua'];
         $num_residencia = $_POST['num_residencia'];
+        
+        // Se o tipo for "Responsável" (valor 2), o nome_responsavel pode ser vazio
+        if ($perfil == '2' && empty($nome_responsavel)) {
+            $nome_responsavel = null; // Define como NULL no banco
+        }
+
         // Processar upload da foto
         $foto = ''; // Valor padrão vazio
         
@@ -111,10 +117,12 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
         <header class="header">
             <a href="<?= $linkVoltar ?>" class="btn-voltar">
@@ -498,7 +506,53 @@
                     });
                 }
             });
+
+            // Controlar obrigatoriedade do campo "Nome do Responsável" baseado no tipo de cliente
+            const perfilSelect = document.getElementById('perfil');
+            const nomeResponsavelInput = document.getElementById('nome_responsavel');
+            const nomeResponsavelLabel = document.querySelector('label[for="nome_responsavel"]');
+
+            function atualizarObrigatoriedadeResponsavel() {
+                const tipoCliente = perfilSelect.value;
+                
+                if (tipoCliente === '2') { // Responsável
+                    nomeResponsavelInput.required = false;
+                    nomeResponsavelInput.placeholder = "Digite o nome do responsável (OPCIONAL)";
+                    nomeResponsavelLabel.innerHTML = 'Nome do Responsável <span style="color: #666; font-weight: normal;">(opcional)</span>';
+                } else { // Criança
+                    nomeResponsavelInput.required = true;
+                    nomeResponsavelInput.placeholder = "Digite o nome do responsável";
+                    nomeResponsavelLabel.innerHTML = 'Nome do Responsável';
+                }
+            }
+
+            // Executar na mudança do select
+            perfilSelect.addEventListener('change', atualizarObrigatoriedadeResponsavel);
+            
+            // Executar no carregamento da página se já houver um valor selecionado
+            atualizarObrigatoriedadeResponsavel();
         });
+
+        // VALIDAÇÃO DO FORMULÁRIO DE CLIENTE
+        function validaFormulario() {
+            const perfilSelect = document.getElementById('perfil');
+            const nomeResponsavelInput = document.getElementById('nome_responsavel');
+            const tipoCliente = perfilSelect.value;
+            
+            // Se for criança (valor 1) e o nome do responsável estiver vazio, mostrar erro
+            if (tipoCliente === '1' && (!nomeResponsavelInput.value || nomeResponsavelInput.value.trim() === '')) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Campo obrigatório',
+                    text: 'O nome do responsável é obrigatório para clientes do tipo "Criança".',
+                    confirmButtonColor: '#6366f1'
+                });
+                nomeResponsavelInput.focus();
+                return false;
+            }
+            
+            return true; // Permite o envio do formulário
+        }
 
         // Mostrar notificações baseadas no PHP
         <?php if (isset($sucesso)): ?>
@@ -530,5 +584,6 @@
             });
         <?php endif; ?>
     </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>

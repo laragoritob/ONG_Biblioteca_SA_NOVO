@@ -109,6 +109,7 @@
   <title>ONG Biblioteca - Sala Arco-íris</title>
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     a {
@@ -215,6 +216,7 @@
 </head>
 
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
       <header>
         <a href="<?= $linkVoltar ?>" class="btn-voltar">
@@ -315,6 +317,7 @@
     window.location.href = `ficha_funcionario.php?id=${funcionarioId}`;
   }
   </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
     </div>
 </body>
 </html>

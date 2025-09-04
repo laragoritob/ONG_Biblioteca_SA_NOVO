@@ -110,10 +110,12 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
         <header class="header">
             <a href="consultar_editora.php" class="btn-voltar">
@@ -188,12 +190,13 @@
                                 <line x1="10" y1="11" x2="10" y2="17"/>
                                 <line x1="14" y1="11" x2="14" y2="17"/>
                             </svg>
-                            Limpar Formulário
+                            Cancelar
                         </button>
                     </div>
             </form>
         </div>
     </div>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 <script src="subtelas_javascript/validaCadastro.js"></script>
 

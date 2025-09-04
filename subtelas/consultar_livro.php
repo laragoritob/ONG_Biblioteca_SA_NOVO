@@ -63,6 +63,7 @@ try {
   <title>ONG Biblioteca - Consultar Livros</title>
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <style>
@@ -169,6 +170,7 @@ try {
 </style>
 
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
       <header>
         <a href="<?= $linkVoltar ?>" class="btn-voltar">
@@ -276,5 +278,6 @@ try {
       }
     }
     </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>

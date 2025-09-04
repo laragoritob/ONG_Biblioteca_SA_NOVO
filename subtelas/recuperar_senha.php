@@ -42,6 +42,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/recuperarsenha.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -66,6 +67,7 @@
             <a href="../index.php"> ← Voltar </a>
         </div>
     </div>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 <footer>
     <p>Copyright © 2024 - ONG Biblioteca - Sala Arco-íris</p>

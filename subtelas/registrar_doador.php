@@ -61,11 +61,13 @@
     <title>ONG Biblioteca - Sala Arco-íris</title>
     <link rel="stylesheet" type="text/css" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
         <header class="header">
             <a href="<?= $linkVoltar ?>" class="btn-voltar">
@@ -148,6 +150,7 @@
             </form>
         </div>
     </div>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
     <script src="subtelas_javascript/validaCadastro.js"></script>
 

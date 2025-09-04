@@ -364,11 +364,36 @@
                 <p><strong>Próximos passos:</strong> Realize algumas operações (cadastros, alterações, exclusões) e elas aparecerão aqui automaticamente.</p>
             </div>
         <?php else: ?>
-            <!-- Logs agrupados por tabela -->
-            <?php foreach ($logs_por_tabela as $tabela => $logs_tabela): ?>
-                <div class="tabela-section">
-                    <h2 class="tabela-title">📋 <?= ucfirst(htmlspecialchars($tabela)) ?></h2>
-                    <div class="tabela-content">
+            <!-- Botões de controle global -->
+            <div class="controles-globais">
+                <button class="btn-controle" onclick="expandirTodas()">
+                    🔓 Expandir Todas
+                </button>
+                <button class="btn-controle" onclick="colapsarTodas()">
+                    🔒 Colapsar Todas
+                </button>
+                <button class="btn-controle" onclick="expandirComOperacoes()">
+                    📊 Apenas com Operações
+                </button>
+            </div>
+
+            <!-- Logs agrupados por tabela (apenas as permitidas para repositor) -->
+            <?php 
+            // Filtrar apenas as tabelas que o repositor pode ver
+            $tabelas_permitidas_repositor = ['livro'];
+            $logs_filtrados = array_intersect_key($logs_por_tabela, array_flip($tabelas_permitidas_repositor));
+            ?>
+            
+            <?php foreach ($logs_filtrados as $tabela => $logs_tabela): ?>
+                <div class="tabela-section" id="tabela-<?= $tabela ?>">
+                    <div class="tabela-header" onclick="toggleTabela('<?= $tabela ?>')">
+                        <h2 class="tabela-title">
+                            <span class="toggle-icon" id="icon-<?= $tabela ?>">▼</span>
+                            📋 <?= ucfirst(htmlspecialchars($tabela)) ?>
+                            <span class="tabela-count">(<?= count($logs_tabela) ?> operações)</span>
+                        </h2>
+                    </div>
+                    <div class="tabela-content" id="content-<?= $tabela ?>">
                         <?php foreach ($logs_tabela as $log): ?>
                             <div class="log-entry" data-tabela="<?= htmlspecialchars($log['tabela']) ?>" data-operacao="<?= htmlspecialchars($log['operacao']) ?>">
                                 <div class="log-header">
@@ -418,13 +443,12 @@
     function atualizarGrafico() {
         let qtdInsert = 0, qtdUpdate = 0, qtdDelete = 0;
 
+        // Contar todas as operações, independentemente de estarem visíveis
         document.querySelectorAll('.log-entry').forEach(entry => {
-            if (entry.offsetParent !== null) {  // Verifica se o elemento está visível
-                const operacao = entry.dataset.operacao;
-                if (operacao === "INSERT") qtdInsert++;
-                if (operacao === "UPDATE") qtdUpdate++;
-                if (operacao === "DELETE") qtdDelete++;
-            }
+            const operacao = entry.dataset.operacao;
+            if (operacao === "INSERT") qtdInsert++;
+            if (operacao === "UPDATE") qtdUpdate++;
+            if (operacao === "DELETE") qtdDelete++;
         });
 
         const ctx = document.getElementById("graficoOperacoes").getContext("2d");
@@ -527,6 +551,83 @@
             window.print();
         }
     }
+
+    // ===== FUNÇÕES DE TOGGLE PARA CATEGORIAS =====
+    
+    // Função para expandir/colapsar todas as tabelas
+    function expandirTodas() {
+        document.querySelectorAll('.tabela-section').forEach(secao => {
+            secao.style.display = 'block';
+            secao.classList.remove('colapsada');
+            secao.querySelector('.toggle-icon').textContent = '▼';
+            secao.querySelector('.tabela-content').style.display = 'block';
+        });
+        
+        // Atualizar gráfico
+        setTimeout(atualizarGrafico, 100);
+    }
+
+    function colapsarTodas() {
+        document.querySelectorAll('.tabela-section').forEach(secao => {
+            secao.style.display = 'block';
+            secao.classList.add('colapsada');
+            secao.querySelector('.toggle-icon').textContent = '▶';
+            secao.querySelector('.tabela-content').style.display = 'none';
+        });
+        
+        // Atualizar gráfico
+        setTimeout(atualizarGrafico, 100);
+    }
+
+    // Função para expandir apenas as tabelas com operações
+    function expandirComOperacoes() {
+        document.querySelectorAll('.tabela-section').forEach(secao => {
+            const temOperacoes = secao.querySelectorAll('.log-entry').length > 0;
+            if (temOperacoes) {
+                secao.style.display = 'block';
+                secao.classList.remove('colapsada');
+                secao.querySelector('.toggle-icon').textContent = '▼';
+                secao.querySelector('.tabela-content').style.display = 'block';
+            } else {
+                secao.style.display = 'none';
+            }
+        });
+        
+        // Atualizar gráfico
+        setTimeout(atualizarGrafico, 100);
+    }
+
+    // Função para alternar a visibilidade de uma tabela
+    function toggleTabela(tabelaId) {
+        const secao = document.getElementById('tabela-' + tabelaId);
+        const conteudo = secao.querySelector('.tabela-content');
+        const icon = secao.querySelector('#icon-' + tabelaId);
+
+        if (conteudo.style.display === 'none' || secao.classList.contains('colapsada')) {
+            conteudo.style.display = 'block';
+            secao.classList.remove('colapsada');
+            icon.textContent = '▼';
+        } else {
+            conteudo.style.display = 'none';
+            secao.classList.add('colapsada');
+            icon.textContent = '▶';
+        }
+        
+        // Atualizar gráfico após toggle
+        setTimeout(atualizarGrafico, 100);
+    }
+
+    // Inicializar estado das tabelas (todas expandidas por padrão)
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aguardar um pouco para garantir que o DOM esteja carregado
+        setTimeout(() => {
+            document.querySelectorAll('.tabela-section').forEach(secao => {
+                secao.classList.remove('colapsada');
+                secao.querySelector('.tabela-content').style.display = 'block';
+                secao.querySelector('.toggle-icon').textContent = '▼';
+            });
+        }, 100);
+    });
 </script>
 
     </body>

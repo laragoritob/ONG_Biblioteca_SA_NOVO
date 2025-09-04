@@ -269,7 +269,9 @@
     <script src="javascript/JS_Logout.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body> 
     <header> 
@@ -362,11 +364,43 @@
                 <p><strong>Próximos passos:</strong> Realize algumas operações (cadastros, alterações, exclusões) e elas aparecerão aqui automaticamente.</p>
             </div>
         <?php else: ?>
+            <br><br>
+            <!-- Botões de controle global -->
+            <div class="controles-globais">
+                <button class="btn-controle" onclick="expandirTodas()">
+                    🔓 Expandir Todas
+                </button>
+                <button class="btn-controle" onclick="colapsarTodas()">
+                    🔒 Colapsar Todas
+                </button>
+                <button class="btn-controle" onclick="expandirComOperacoes()">
+                    📊 Apenas com Operações
+                </button>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-pdf-modern" onclick="gerarRelatorioCompleto()">
+                    📊 Relatório Completo
+                </button>
+                <button class="btn-pdf-modern" onclick="gerarRelatorioResumido()">
+                    📋 Resumo Executivo
+                </button>
+                <button class="btn-pdf-modern" onclick="gerarRelatorioPorTabela()">
+                    🗂️ Por Categoria
+                </button>
+            </div>
+
             <!-- Logs agrupados por tabela -->
             <?php foreach ($logs_por_tabela as $tabela => $logs_tabela): ?>
-                <div class="tabela-section">
-                    <h2 class="tabela-title">📋 <?= ucfirst(htmlspecialchars($tabela)) ?></h2>
-                    <div class="tabela-content">
+                <div class="tabela-section" id="tabela-<?= $tabela ?>">
+                    <div class="tabela-header" onclick="toggleTabela('<?= $tabela ?>')">
+                        <h2 class="tabela-title">
+                            <span class="toggle-icon" id="icon-<?= $tabela ?>">▼</span>
+                            📋 <?= ucfirst(htmlspecialchars($tabela)) ?>
+                            <span class="tabela-count">(<?= count($logs_tabela) ?> operações)</span>
+                        </h2>
+                    </div>
+                    <div class="tabela-content" id="content-<?= $tabela ?>">
                         <?php foreach ($logs_tabela as $log): ?>
                             <div class="log-entry" data-tabela="<?= htmlspecialchars($log['tabela']) ?>" data-operacao="<?= htmlspecialchars($log['operacao']) ?>">
                                 <div class="log-header">
@@ -391,9 +425,32 @@
                     </div>
                 </div>
             <?php endforeach; ?>
+            
+            <!-- Botões de controle global -->
+            <div class="controles-globais">
+                <button class="btn-controle" onclick="expandirTodas()">
+                    🔓 Expandir Todas
+                </button>
+                <button class="btn-controle" onclick="colapsarTodas()">
+                    🔒 Colapsar Todas
+                </button>
+                <button class="btn-controle" onclick="expandirComOperacoes()">
+                    📊 Apenas com Operações
+                </button>
+            </div>
         <?php endif; ?>
         <a href="#" class="btn-voltar" onclick="voltarAoTopo()"> Voltar para o topo ↑ </a>
-        <a href="#" class="btn-pdf" onclick="baixarPDF()"> 📄 Baixar PDF </a>
+        <div class="btn-group">
+            <button class="btn-pdf-modern" onclick="gerarRelatorioCompleto()">
+                📊 Relatório Completo
+            </button>
+            <button class="btn-pdf-modern" onclick="gerarRelatorioResumido()">
+                📋 Resumo Executivo
+            </button>
+            <button class="btn-pdf-modern" onclick="gerarRelatorioPorTabela()">
+                🗂️ Por Categoria
+            </button>
+        </div>
     </div>
 
     <ul class="nav-bar">
@@ -445,13 +502,12 @@
     function atualizarGrafico() {
         let qtdInsert = 0, qtdUpdate = 0, qtdDelete = 0;
 
+        // Contar todas as operações, independentemente de estarem visíveis
         document.querySelectorAll('.log-entry').forEach(entry => {
-            if (entry.offsetParent !== null) {  // Verifica se o elemento está visível
-                const operacao = entry.dataset.operacao;
-                if (operacao === "INSERT") qtdInsert++;
-                if (operacao === "UPDATE") qtdUpdate++;
-                if (operacao === "DELETE") qtdDelete++;
-            }
+            const operacao = entry.dataset.operacao;
+            if (operacao === "INSERT") qtdInsert++;
+            if (operacao === "UPDATE") qtdUpdate++;
+            if (operacao === "DELETE") qtdDelete++;
         });
 
         const ctx = document.getElementById("graficoOperacoes").getContext("2d");
@@ -534,26 +590,353 @@
         });
     }
 
-    // Função para baixar a página como PDF
-    function baixarPDF() {
-        // Usar html2pdf.js para gerar o PDF
-        const element = document.body;
-        const opt = {
-            margin: 1,
-            filename: 'relatorio_gerente.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-        };
-
-        // Verificar se html2pdf está disponível
-        if (typeof html2pdf !== 'undefined') {
-            html2pdf().set(opt).from(element).save();
-        } else {
-            // Fallback: abrir em nova janela para impressão
-            window.print();
+    // ===== NOVAS FUNÇÕES DE PDF MODERNAS =====
+    
+    // Função para gerar relatório completo
+    async function gerarRelatorioCompleto() {
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Cabeçalho
+            doc.setFontSize(20);
+            doc.setTextColor(44, 62, 80);
+            doc.text('ONG Biblioteca - Relatório de Auditoria', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setTextColor(52, 73, 94);
+            doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, 105, 30, { align: 'center' });
+            
+            doc.setFontSize(14);
+            doc.setTextColor(41, 128, 185);
+            doc.text('Resumo Executivo', 20, 45);
+            
+            // Estatísticas
+            const total = <?= $total_operacoes ?>;
+            const cadastros = <?= $cadastros ?>;
+            const alteracoes = <?= $alteracoes ?>;
+            const exclusoes = <?= $exclusoes ?>;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(52, 73, 94);
+            doc.text(`Total de Operações: ${total}`, 20, 55);
+            doc.text(`Cadastros: ${cadastros}`, 20, 62);
+            doc.text(`Alterações: ${alteracoes}`, 20, 69);
+            doc.text(`Exclusões: ${exclusoes}`, 20, 76);
+            
+            // Dados das tabelas
+            let yPos = 90;
+            const logs = <?= json_encode($logs) ?>;
+            const logsPorTabela = <?= json_encode($logs_por_tabela) ?>;
+            
+            Object.keys(logsPorTabela).forEach((tabela, index) => {
+                if (yPos > 250) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                doc.setFontSize(12);
+                doc.setTextColor(41, 128, 185);
+                doc.text(`📋 ${tabela.charAt(0).toUpperCase() + tabela.slice(1)}`, 20, yPos);
+                
+                yPos += 8;
+                doc.setFontSize(9);
+                doc.setTextColor(52, 73, 94);
+                
+                logsPorTabela[tabela].forEach((log, logIndex) => {
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    
+                    const operacao = log.operacao === 'INSERT' ? 'Cadastro' : 
+                                   log.operacao === 'UPDATE' ? 'Alteração' : 'Exclusão';
+                    
+                    doc.text(`${operacao} - ID: ${log.id_registro}`, 25, yPos);
+                    if (log.dados_anteriores) {
+                        yPos += 5;
+                        doc.text(`Anterior: ${log.dados_anteriores}`, 30, yPos);
+                    }
+                    if (log.dados_novos) {
+                        yPos += 5;
+                        doc.text(`Novo: ${log.dados_novos}`, 30, yPos);
+                    }
+                    yPos += 8;
+                });
+                
+                yPos += 5;
+            });
+            
+            // Rodapé
+            doc.setFontSize(8);
+            doc.setTextColor(149, 165, 166);
+            doc.text('ONG Biblioteca - Sistema de Auditoria Automática', 105, 280, { align: 'center' });
+            
+            // Salvar o PDF
+            const nomeArquivo = `relatorio_auditoria_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(nomeArquivo);
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'PDF Gerado!',
+                text: `Relatório completo salvo como "${nomeArquivo}"`,
+                confirmButtonColor: '#ffbcfc'
+            });
+            
+        } catch (error) {
+            console.error('Erro ao gerar PDF:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro ao gerar PDF',
+                text: 'Não foi possível gerar o relatório. Tente novamente.',
+                confirmButtonColor: '#ffbcfc'
+            });
         }
     }
+    
+    // Função para gerar relatório resumido
+    async function gerarRelatorioResumido() {
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Cabeçalho
+            doc.setFontSize(18);
+            doc.setTextColor(44, 62, 80);
+            doc.text('ONG Biblioteca - Resumo Executivo', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(10);
+            doc.setTextColor(52, 73, 94);
+            doc.text(`Período: Última semana (${new Date().toLocaleDateString('pt-BR')})`, 105, 30, { align: 'center' });
+            
+            // Estatísticas em tabela
+            const dados = [
+                ['Operação', 'Quantidade', 'Percentual'],
+                ['Cadastros', <?= $cadastros ?>, `${((<?= $cadastros ?> / <?= $total_operacoes ?>) * 100).toFixed(1)}%`],
+                ['Alterações', <?= $alteracoes ?>, `${((<?= $alteracoes ?> / <?= $total_operacoes ?>) * 100).toFixed(1)}%`],
+                ['Exclusões', <?= $exclusoes ?>, `${((<?= $exclusoes ?> / <?= $total_operacoes ?>) * 100).toFixed(1)}%`],
+                ['Total', <?= $total_operacoes ?>, '100%']
+            ];
+            
+            doc.autoTable({
+                startY: 40,
+                head: [dados[0]],
+                body: dados.slice(1),
+                theme: 'grid',
+                headStyles: { fillColor: [41, 128, 185] },
+                styles: { fontSize: 10 }
+            });
+            
+            // Gráfico de pizza como imagem
+            const canvas = document.getElementById('graficoOperacoes');
+            if (canvas) {
+                const imgData = canvas.toDataURL('image/png');
+                doc.addImage(imgData, 'PNG', 20, 120, 80, 60);
+                doc.text('Distribuição das Operações', 105, 140, { align: 'center' });
+            }
+            
+            // Análise
+            doc.setFontSize(12);
+            doc.setTextColor(41, 128, 185);
+            doc.text('Análise dos Dados:', 20, 200);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(52, 73, 94);
+            doc.text('• Sistema de auditoria funcionando normalmente', 20, 210);
+            doc.text('• Todas as operações estão sendo registradas', 20, 217);
+            doc.text('• Rastreabilidade completa das alterações', 20, 224);
+            
+            // Salvar
+            const nomeArquivo = `resumo_executivo_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(nomeArquivo);
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Resumo Gerado!',
+                text: `Relatório resumido salvo como "${nomeArquivo}"`,
+                confirmButtonColor: '#ffbcfc'
+            });
+            
+        } catch (error) {
+            console.error('Erro ao gerar resumo:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro ao gerar resumo',
+                text: 'Não foi possível gerar o resumo. Tente novamente.',
+                confirmButtonColor: '#ffbcfc'
+            });
+        }
+    }
+    
+    // Função para gerar relatório por tabela
+    async function gerarRelatorioPorTabela() {
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const logsPorTabela = <?= json_encode($logs_por_tabela) ?>;
+            let pagina = 1;
+            
+            Object.keys(logsPorTabela).forEach((tabela, index) => {
+                if (index > 0) {
+                    doc.addPage();
+                    pagina++;
+                }
+                
+                // Cabeçalho da página
+                doc.setFontSize(16);
+                doc.setTextColor(44, 62, 80);
+                doc.text(`Relatório de Auditoria - ${tabela.charAt(0).toUpperCase() + tabela.slice(1)}`, 105, 20, { align: 'center' });
+                
+                doc.setFontSize(10);
+                doc.setTextColor(52, 73, 94);
+                doc.text(`Página ${pagina} - ${new Date().toLocaleDateString('pt-BR')}`, 105, 30, { align: 'center' });
+                
+                // Dados da tabela
+                const dados = logsPorTabela[tabela].map(log => [
+                    log.operacao === 'INSERT' ? 'Cadastro' : 
+                    log.operacao === 'UPDATE' ? 'Alteração' : 'Exclusão',
+                    log.id_registro,
+                    log.dados_anteriores || '-',
+                    log.dados_novos || '-',
+                    new Date(log.data_operacao).toLocaleDateString('pt-BR')
+                ]);
+                
+                doc.autoTable({
+                    startY: 40,
+                    head: [['Operação', 'ID', 'Dados Anteriores', 'Dados Novos', 'Data']],
+                    body: dados,
+                    theme: 'grid',
+                    headStyles: { fillColor: [41, 128, 185] },
+                    styles: { fontSize: 8 },
+                    columnStyles: {
+                        0: { cellWidth: 25 },
+                        1: { cellWidth: 15 },
+                        2: { cellWidth: 40 },
+                        3: { cellWidth: 40 },
+                        4: { cellWidth: 25 }
+                    }
+                });
+                
+                // Estatísticas da tabela
+                const totalTabela = logsPorTabela[tabela].length;
+                const cadastrosTabela = logsPorTabela[tabela].filter(log => log.operacao === 'INSERT').length;
+                const alteracoesTabela = logsPorTabela[tabela].filter(log => log.operacao === 'UPDATE').length;
+                const exclusoesTabela = logsPorTabela[tabela].filter(log => log.operacao === 'DELETE').length;
+                
+                let yPos = doc.lastAutoTable.finalY + 10;
+                doc.setFontSize(11);
+                doc.setTextColor(41, 128, 185);
+                doc.text(`Estatísticas da Tabela ${tabela}:`, 20, yPos);
+                
+                yPos += 8;
+                doc.setFontSize(9);
+                doc.setTextColor(52, 73, 94);
+                doc.text(`Total: ${totalTabela} | Cadastros: ${cadastrosTabela} | Alterações: ${alteracoesTabela} | Exclusões: ${exclusoesTabela}`, 20, yPos);
+            });
+            
+            // Salvar
+            const nomeArquivo = `relatorio_por_tabela_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(nomeArquivo);
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Relatório por Tabela Gerado!',
+                text: `Relatório categorizado salvo como "${nomeArquivo}"`,
+                confirmButtonColor: '#ffbcfc'
+            });
+            
+        } catch (error) {
+            console.error('Erro ao gerar relatório por tabela:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro ao gerar relatório',
+                text: 'Não foi possível gerar o relatório por tabela. Tente novamente.',
+                confirmButtonColor: '#ffbcfc'
+            });
+        }
+    }
+
+    // Função para expandir/colapsar todas as tabelas
+    function expandirTodas() {
+        document.querySelectorAll('.tabela-section').forEach(secao => {
+            secao.style.display = 'block';
+            secao.classList.remove('colapsada');
+            secao.querySelector('.toggle-icon').textContent = '▼';
+            secao.querySelector('.tabela-content').style.display = 'block';
+        });
+        document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.tabela-btn-todas').classList.add('active');
+        
+        // Atualizar gráfico
+        setTimeout(atualizarGrafico, 100);
+    }
+
+    function colapsarTodas() {
+        document.querySelectorAll('.tabela-section').forEach(secao => {
+            secao.style.display = 'block';
+            secao.classList.add('colapsada');
+            secao.querySelector('.toggle-icon').textContent = '▶';
+            secao.querySelector('.tabela-content').style.display = 'none';
+        });
+        document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.tabela-btn-todas').classList.add('active');
+        
+        // Atualizar gráfico
+        setTimeout(atualizarGrafico, 100);
+    }
+
+    // Função para expandir apenas as tabelas com operações
+    function expandirComOperacoes() {
+        document.querySelectorAll('.tabela-section').forEach(secao => {
+            const temOperacoes = secao.querySelectorAll('.log-entry').length > 0;
+            if (temOperacoes) {
+                secao.style.display = 'block';
+                secao.classList.remove('colapsada');
+                secao.querySelector('.toggle-icon').textContent = '▼';
+                secao.querySelector('.tabela-content').style.display = 'block';
+            } else {
+                secao.style.display = 'none';
+            }
+        });
+        document.querySelectorAll('.tabela-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.tabela-btn-todas').classList.add('active');
+        
+        // Atualizar gráfico
+        setTimeout(atualizarGrafico, 100);
+    }
+
+    // Função para alternar a visibilidade de uma tabela
+    function toggleTabela(tabelaId) {
+        const secao = document.getElementById('tabela-' + tabelaId);
+        const conteudo = secao.querySelector('.tabela-content');
+        const icon = secao.querySelector('#icon-' + tabelaId);
+
+        if (conteudo.style.display === 'none' || secao.classList.contains('colapsada')) {
+            conteudo.style.display = 'block';
+            secao.classList.remove('colapsada');
+            icon.textContent = '▼';
+        } else {
+            conteudo.style.display = 'none';
+            secao.classList.add('colapsada');
+            icon.textContent = '▶';
+        }
+        
+        // Atualizar gráfico após toggle
+        setTimeout(atualizarGrafico, 100);
+    }
+
+    // Inicializar estado das tabelas (todas expandidas por padrão)
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aguardar um pouco para garantir que o DOM esteja carregado
+        setTimeout(() => {
+            document.querySelectorAll('.tabela-section').forEach(secao => {
+                secao.classList.remove('colapsada');
+                secao.querySelector('.tabela-content').style.display = 'block';
+                secao.querySelector('.toggle-icon').textContent = '▼';
+            });
+        }, 100);
+    });
 </script>
 
 

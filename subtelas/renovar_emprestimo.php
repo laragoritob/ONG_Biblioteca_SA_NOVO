@@ -109,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
     <title>Renovar Empréstimo</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="subtelas_css/cadastros.css">
+    <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .swal2-title-arial {
@@ -227,6 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
     </style>
 </head>
 <body>
+    <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="main-container">
         <div class="header">
             <h1>Renovar Empréstimo #<?php echo $emprestimo['Cod_Emprestimo']; ?></h1>
@@ -434,5 +436,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
             });
         }
     </script>
+    <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
 </html>
