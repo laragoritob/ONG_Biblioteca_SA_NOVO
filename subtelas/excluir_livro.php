@@ -1,17 +1,22 @@
 <?php
+// Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
+
+// Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
-// Verificar se é uma confirmação ou execução
+// Verifica se é uma confirmação de exclusão ou apenas exibição da confirmação
 $confirmado = isset($_GET['confirmado']) && $_GET['confirmado'] === 'true';
 
+// Verifica se foi fornecido um ID via GET
 if (isset($_GET['id'])) {
+    // Converte o ID para inteiro para segurança (previne SQL injection)
     $id = intval($_GET['id']);
 
+    // Se a exclusão foi confirmada, procede com a exclusão
     if ($confirmado) {
-        // Executar a exclusão
         try {
-            // Primeiro verificar se o livro existe
+            // Primeiro verifica se o livro existe antes de excluir
             $sql_check = "SELECT Cod_Livro, Titulo FROM livro WHERE Cod_Livro = :id";
             $stmt_check = $pdo->prepare($sql_check);
             $stmt_check->bindParam(':id', $id, PDO::PARAM_INT);
@@ -19,32 +24,38 @@ if (isset($_GET['id'])) {
             
             $livro = $stmt_check->fetch(PDO::FETCH_ASSOC);
             
+            // Verifica se encontrou o livro
             if (!$livro) {
                 $erro = "Livro não encontrado!";
             } else {
-                // Verificar se o livro está emprestado
+                // Verifica se o livro está emprestado antes de excluir
                 $sql_emprestimo = "SELECT COUNT(*) as total FROM emprestimo WHERE Cod_Livro = :id AND Data_Devolucao IS NULL";
                 $stmt_emprestimo = $pdo->prepare($sql_emprestimo);
                 $stmt_emprestimo->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt_emprestimo->execute();
                 $emprestimo = $stmt_emprestimo->fetch(PDO::FETCH_ASSOC);
 
+                // Se o livro está emprestado, impede a exclusão
                 if ($emprestimo['total'] > 0) {
                     $erro = "Não é possível excluir este livro pois ele está emprestado!";
                 } else {
-                    // Excluir o livro
+                    // Se não está emprestado, procede com a exclusão
                     $sql = "DELETE FROM livro WHERE Cod_Livro = :id";
                     $stmt = $pdo->prepare($sql);
                     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
+                    // Executa a exclusão e verifica o resultado
                     if ($stmt->execute()) {
+                        // Se sucesso, define mensagem de sucesso com o título do livro
                         $sucesso = "Livro " . htmlspecialchars($livro['Titulo']) . " excluído com sucesso!";
                     } else {
+                        // Se falhou, define mensagem de erro
                         $erro = "Erro ao excluir livro.";
                     }
                 }
             }
         } catch (PDOException $e) {
+            // Em caso de erro na execução, captura e exibe a mensagem
             $erro = "Erro ao excluir livro: " . $e->getMessage();
         }
     }
