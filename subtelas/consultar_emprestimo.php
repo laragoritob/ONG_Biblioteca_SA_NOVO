@@ -1,4 +1,4 @@
-<?php
+  <?php
 session_start();
 require_once '../conexao.php';
 
@@ -311,6 +311,28 @@ try {
                 confirmButtonText: 'OK'
             }";
         }
+        
+        // Verificar se há alerta de estoque baixo
+        if (isset($_GET['estoque_baixo']) && $_GET['estoque_baixo'] == '1') {
+            $quantidade = $_GET['quantidade'];
+            $titulo = htmlspecialchars($_GET['titulo']);
+            $alerta_estoque_swal = "{
+                title: '⚠️ Alerta de Estoque Baixo',
+                html: `
+                    <div style='text-align: center;'>
+                        <p style='margin: 20px 0; font-size: 16px; color: #d97706;'>O livro ainda possui estoque baixo após a devolução!</p>
+                        <div style='background: #fffbeb; border: 1px solid #fed7aa; border-radius: 8px; padding: 15px; margin: 15px 0;'>
+                            <p style='margin: 8px 0; font-size: 14px;'><strong>📚 Livro:</strong> $titulo</p>
+                            <p style='margin: 8px 0; font-size: 14px;'><strong>📦 Quantidade atual:</strong> $quantidade exemplar(es)</p>
+                            <p style='margin: 8px 0; font-size: 14px;'><strong>⚠️ Status:</strong> Estoque abaixo de 5 unidades</p>
+                        </div>
+                    </div>
+                `,
+                icon: 'warning',
+                confirmButtonColor: '#f59e0b',
+                confirmButtonText: 'Entendi'
+            }";
+        }
     }
     
     if (isset($_GET['erro'])) {
@@ -590,7 +612,12 @@ try {
   <script>
     // Exibir SweetAlert2 para mensagens de sucesso ou erro
     <?php if (!empty($sucesso_swal)): ?>
-      Swal.fire(<?php echo $sucesso_swal; ?>);
+      Swal.fire(<?php echo $sucesso_swal; ?>).then(() => {
+        <?php if (!empty($alerta_estoque_swal)): ?>
+          // Mostra alerta de estoque baixo após o sucesso
+          Swal.fire(<?php echo $alerta_estoque_swal; ?>);
+        <?php endif; ?>
+      });
     <?php endif; ?>
     
     <?php if (!empty($erro_swal)): ?>
