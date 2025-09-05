@@ -336,7 +336,7 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
           <?php foreach ($doadores as $d): ?>
             <tr>
               <td><?= htmlspecialchars($d['Cod_Doador']) ?></td>
-              <td><span class="nome-clicavel"><?= htmlspecialchars($d['Nome_Doador']) ?></span></td>
+              <td><?= htmlspecialchars($d['Nome_Doador']) ?></span></td>
               <td><?= htmlspecialchars($d['Telefone']) ?></td>
               <td><?= htmlspecialchars($d['Email']) ?></td>
               <td>
