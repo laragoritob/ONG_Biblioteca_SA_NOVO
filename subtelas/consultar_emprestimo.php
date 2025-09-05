@@ -1,118 +1,100 @@
 <?php
-// Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
-
-// Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
-// Verifica se o usuário tem permissão para acessar esta página
-// Gerente (perfil 1), Bibliotecário (perfil 3) e Recreador (perfil 4) podem consultar empréstimos
-if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
-    // Se não tem permissão, exibe alerta e redireciona para login
+// Verifica permissão: Gerente (1), Bibliotecário (3), Recreador (4)
+if (!in_array($_SESSION['perfil'], [1, 3, 4])) {
     echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
     exit();
 }
 
-// Define qual página o usuário deve retornar baseado em seu perfil
+// Define link de retorno por perfil
 switch ($_SESSION['perfil']) {
-    case 1: // Gerente - pode acessar todas as funcionalidades
-        $linkVoltar = "../gerente.php";
-        break;
-    case 2: // Gestor - não tem acesso a esta página
-        $linkVoltar = "../gestor.php";
-        break;
-    case 3: // Bibliotecário - pode consultar empréstimos
-        $linkVoltar = "../bibliotecario.php";
-        break;
-    case 4: // Recreador - pode consultar empréstimos
-        $linkVoltar = "../recreador.php";
-        break;
-    case 5: // Repositor - não tem acesso a esta página
-        $linkVoltar = "../repositor.php";
-        break;
-    default:
-        // Se perfil não for reconhecido, redireciona para login
-        $linkVoltar = "../index.php";
-        break;
+    case 1: $linkVoltar = "../gerente.php"; break;
+    case 3: $linkVoltar = "../bibliotecario.php"; break;
+    case 4: $linkVoltar = "../recreador.php"; break;
+    default: $linkVoltar = "../index.php"; break;
 }
 
-  // INICIALIZA VARIÁVEIS
-  $emprestimos = [];
-  $emprestimos_todos = []; // Para histórico completo
-  $erro = null;
+// Inicializa variáveis
+$emprestimos = [];
+$emprestimos_todos = [];
+$erro = null;
+$mostrar_inativos = isset($_GET['inativos']) && $_GET['inativos'] === 'true';
 
-  try {
-      // SE O FORMULÁRIO FOR ENVIADO, BUSCA O EMPRÉSTIMO PELO ID OU NOME DO CLIENTE
-      if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])) {
-          $busca = trim($_POST['busca']);
-          
-          // VERIFICA SE A BUSCA É UM NÚMERO (ID) OU UM NOME
-          if (is_numeric($busca)) {
-              $sql = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                             e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
-                        FROM emprestimo e 
-                        INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
-                        INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
-                        WHERE e.Cod_Emprestimo = :busca AND e.Status_Emprestimo = 'Pendente'
-                        ORDER BY e.Data_Emprestimo DESC";
-              
-              $stmt = $pdo->prepare($sql);
-              $stmt->bindParam(":busca", $busca, PDO::PARAM_INT);
-          } else {
-              $sql = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                             e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
-                        FROM emprestimo e 
-                        INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
-                        INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
-                        WHERE c.Nome LIKE :busca_nome AND e.Status_Emprestimo = 'Pendente'
-                        ORDER BY e.Data_Emprestimo DESC";
-              
-              $stmt = $pdo->prepare($sql);
-              $stmt->bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
-          }
-      } else {
-          // BUSCA APENAS EMPRÉSTIMOS PENDENTES
-          $sql = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                         e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
-                    FROM emprestimo e 
-                    INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
-                    INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
-                    WHERE e.Status_Emprestimo = 'Pendente'
-                    ORDER BY e.Data_Emprestimo DESC";
-          
-          $stmt = $pdo->prepare($sql);
-      }
+// Reativação
+if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
+    $id_reativar = intval($_GET['reativar']);
+    try {
+        $sql_reativar = "UPDATE emprestimo SET Status_Emprestimo = 'ativo' WHERE Cod_Emprestimo = :id";
+        $stmt_reativar = $pdo->prepare($sql_reativar);
+        $stmt_reativar->bindParam(':id', $id_reativar, PDO::PARAM_INT);
+        $stmt_reativar->execute();
+        $sucesso_reativar = "Empréstimo reativado com sucesso!";
+    } catch (PDOException $e) {
+        $erro_reativar = "Erro ao reativar empréstimo: " . $e->getMessage();
+    }
+}
 
-            $stmt->execute();
-      $emprestimos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      
-      // GARANTIR QUE $emprestimos SEJA SEMPRE UM ARRAY
-      if (!is_array($emprestimos)) {
-          $emprestimos = [];
-      }
-      
-      // BUSCAR APENAS EMPRÉSTIMOS DEVOLVIDOS PARA O HISTÓRICO
-      $sql_todos = "SELECT e.Cod_Emprestimo, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
+try {
+    // Define filtro de status
+    $statusFiltro = $mostrar_inativos ? "e.Status_Emprestimo = 'inativo'" : "e.Status_Emprestimo = 'Pendente'";
+
+    // Busca por POST
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])) {
+        $busca = trim($_POST['busca']);
+        if (is_numeric($busca)) {
+            $sql = "SELECT e.Cod_Emprestimo, c.Nome AS Nome_Cliente, l.Titulo AS Nome_Livro,
                            e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
-                      FROM emprestimo e 
-                      INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
-                      INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
-                      WHERE e.Status_Emprestimo = 'Devolvido'
+                      FROM emprestimo e
+                      INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+                      INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+                      WHERE e.Cod_Emprestimo = :busca AND $statusFiltro
                       ORDER BY e.Data_Emprestimo DESC";
-      
-      $stmt_todos = $pdo->prepare($sql_todos);
-      $stmt_todos->execute();
-      $emprestimos_todos = $stmt_todos->fetchAll(PDO::FETCH_ASSOC);
-      
-      if (!is_array($emprestimos_todos)) {
-          $emprestimos_todos = [];
-      }
-      
-  } catch (PDOException $e) {
-      $erro = "Erro na consulta: " . $e->getMessage();
-      $emprestimos = [];
-  }
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':busca', $busca, PDO::PARAM_INT);
+        } else {
+            $sql = "SELECT e.Cod_Emprestimo, c.Nome AS Nome_Cliente, l.Titulo AS Nome_Livro,
+                           e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
+                      FROM emprestimo e
+                      INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+                      INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+                      WHERE c.Nome LIKE :busca_nome AND $statusFiltro
+                      ORDER BY e.Data_Emprestimo DESC";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
+        }
+    } else {
+        // Apenas pendentes ou inativos
+        $sql = "SELECT e.Cod_Emprestimo, c.Nome AS Nome_Cliente, l.Titulo AS Nome_Livro,
+                       e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
+                  FROM emprestimo e
+                  INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+                  INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+                  WHERE $statusFiltro
+                  ORDER BY e.Data_Emprestimo DESC";
+        $stmt = $pdo->prepare($sql);
+    }
 
+    $stmt->execute();
+    $emprestimos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Histórico completo (devolvidos)
+    $sql_todos = "SELECT e.Cod_Emprestimo, c.Nome AS Nome_Cliente, l.Titulo AS Nome_Livro,
+                         e.Data_Emprestimo, e.Data_Devolucao, e.Status_Emprestimo
+                    FROM emprestimo e
+                    INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+                    INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+                    WHERE e.Status_Emprestimo = 'Devolvido'
+                    ORDER BY e.Data_Emprestimo DESC";
+    $stmt_todos = $pdo->prepare($sql_todos);
+    $stmt_todos->execute();
+    $emprestimos_todos = $stmt_todos->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    $erro = "Erro na consulta: " . $e->getMessage();
+    $emprestimos = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -211,6 +193,65 @@ switch ($_SESSION['perfil']) {
        font-size: 12px;
        font-weight: bold;
      }
+     
+     .status-buttons {
+       display: flex;
+       gap: 10px;
+       align-items: center;
+       margin-top: 15px;
+     }
+     
+     .btn-status {
+       display: inline-flex;
+       align-items: center;
+       gap: 8px;
+       padding: 10px 16px;
+       border: none;
+       border-radius: 8px;
+       font-size: 14px;
+       font-weight: 600;
+       text-decoration: none;
+       cursor: pointer;
+       transition: all 0.2s ease;
+       margin-left: 270px;
+     }
+     
+     .btn-inativos {
+       background: linear-gradient(135deg, #f59e0b, #d97706);
+       color: white;
+     }
+     
+     .btn-inativos:hover {
+       background: linear-gradient(135deg, #d97706, #b45309);
+       transform: translateY(-2px);
+       box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+     }
+     
+     .btn-ativos {
+       background: linear-gradient(135deg, #10b981, #059669);
+       color: white;
+     }
+     
+     .btn-ativos:hover {
+       background: linear-gradient(135deg, #059669, #047857);
+       transform: translateY(-2px);
+       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+     }
+     
+     .btn-reactivate {
+       background: linear-gradient(135deg, #10b981, #059669) !important;
+       color: white !important;
+     }
+     
+     .btn-reactivate:hover {
+       background: linear-gradient(135deg, #059669, #047857) !important;
+       transform: translateY(-2px);
+       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+     }
+     
+     a {
+       text-decoration: none;
+     }
   </style>
 </head>
 
@@ -274,7 +315,7 @@ switch ($_SESSION['perfil']) {
     
     if (isset($_GET['erro'])) {
         $erro_swal = "{
-            title: '❌ Erro na Operação',
+            title: ' Erro na Operação',
             text: '" . htmlspecialchars($_GET['erro']) . "',
             icon: 'error',
             confirmButtonColor: '#ef4444',
@@ -302,6 +343,24 @@ switch ($_SESSION['perfil']) {
              <button type="button" id="btn-historico" class="btn-filtrar" onclick="alternarVisualizacao()">
                Ver Histórico de Devolvidos
              </button>
+           </div>
+           
+           <div class="status-buttons">
+             <?php if (!$mostrar_inativos): ?>
+               <a href="consultar_emprestimo.php?inativos=true" class="btn-status btn-inativos">
+                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                   <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                 </svg>
+                 Ver Inativos
+               </a>
+             <?php else: ?>
+               <a href="consultar_emprestimo.php" class="btn-status btn-ativos">
+                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                   <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+                 </svg>
+                 Ver Ativos
+               </a>
+             <?php endif; ?>
            </div>
         </div>
     </form>
@@ -335,8 +394,23 @@ switch ($_SESSION['perfil']) {
                 <td><?= $e['Data_Devolucao'] ? date("d/m/Y", strtotime($e['Data_Devolucao'])) : 'Não devolvido' ?></td>
                 <td><?= htmlspecialchars($e['Status_Emprestimo']) ?></td>
                 <td>
-                  <a href="renovar_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="renovar">Renovar</a>
-                  <a href="devolver_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="devolver">Devolver</a>
+                  <?php if ($mostrar_inativos): ?>
+                    <a href="consultar_emprestimo.php?reativar=<?= $e['Cod_Emprestimo'] ?>&inativos=true" class="btn-action btn-reactivate" title="Reativar" onclick="return confirm('Deseja reativar este empréstimo?')">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+                      </svg>
+                    </a>
+                  <?php else: ?>
+                    <a href="renovar_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="renovar">Renovar</a>
+                    <a href="devolver_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="devolver">Devolver</a>
+                    <a href="excluir_emprestimo.php?id=<?= $e['Cod_Emprestimo'] ?>" class="btn-action btn-delete" title="Inativar">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18"/>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                      </svg>
+                    </a>
+                  <?php endif; ?>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -488,6 +562,30 @@ switch ($_SESSION['perfil']) {
 
   <script src="subtelas_javascript/telconsultar_funcionarios.js"></script>
 
+  <!-- Notificações de reativação -->
+  <?php if (isset($sucesso_reativar)): ?>
+  <script>
+      Swal.fire({
+          icon: 'success',
+          title: 'Sucesso!',
+          text: '<?= addslashes($sucesso_reativar) ?>',
+          confirmButtonText: 'OK'
+      }).then(() => {
+          window.location.href = 'consultar_emprestimo.php';
+      });
+  </script>
+  <?php endif; ?>
+  
+  <?php if (isset($erro_reativar)): ?>
+  <script>
+      Swal.fire({
+          icon: 'error',
+          title: 'Erro!',
+          text: '<?= addslashes($erro_reativar) ?>',
+          confirmButtonText: 'OK'
+      });
+  </script>
+  <?php endif; ?>
   
   <script>
     // Exibir SweetAlert2 para mensagens de sucesso ou erro

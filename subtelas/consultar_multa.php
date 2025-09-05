@@ -8,95 +8,72 @@ require_once '../conexao.php';
 // Verifica se o usuário tem permissão para acessar esta página
 // Gerente (perfil 1), Bibliotecário (perfil 3) e Recreador (perfil 4) podem consultar multas
 if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4) {
-    // Se não tem permissão, exibe alerta e redireciona para login
     echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
     exit();
 }
 
-// Define qual página o usuário deve retornar baseado em seu perfil
+// Define link de retorno conforme perfil
 switch ($_SESSION['perfil']) {
-    case 1: // Gerente - pode acessar todas as funcionalidades
-        $linkVoltar = "../gerente.php";
-        break;
-    case 2: // Gestor - não tem acesso a esta página
-        $linkVoltar = "../gestor.php";
-        break;
-    case 3: // Bibliotecário - pode consultar multas
-        $linkVoltar = "../bibliotecario.php";
-        break;
-    case 4: // Recreador - pode consultar multas
-        $linkVoltar = "../recreador.php";
-        break;
-    case 5: // Repositor - não tem acesso a esta página
-        $linkVoltar = "../repositor.php";
-        break;
-    default:
-        // Se perfil não for reconhecido, redireciona para login
-        $linkVoltar = "../index.php";
-        break;
+  case 1: $linkVoltar = "../gerente.php"; break;
+  case 2: $linkVoltar = "../gestor.php"; break;
+  case 3: $linkVoltar = "../bibliotecario.php"; break;
+  case 4: $linkVoltar = "../recreador.php"; break;
+  case 5: $linkVoltar = "../repositor.php"; break;
+  default: $linkVoltar = "../index.php"; break;
 }
 
-  // INICIALIZA VARIÁVEIS
-  $multas = [];
-  $erro = null;
+$multas = [];
+$erro = null;
 
-  try {
-      // SE O FORMULÁRIO FOR ENVIADO, BUSCA A MULTA PELO ID OU NOME DO CLIENTE
-      if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])) {
-          $busca = trim($_POST['busca']);
-          
-          // VERIFICA SE A BUSCA É UM NÚMERO (ID) OU UM NOME
-          if (is_numeric($busca)) {
-              $sql = "SELECT m.Cod_Multa, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                             m.Data_Multa, m.Valor_Multa
-                        FROM multa m 
-                        INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo 
-                        INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
-                        INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
-                        WHERE m.Cod_Multa = :busca AND (m.Status_Multa IS NULL OR m.Status_Multa != 'Paga')
-                        ORDER BY m.Data_Multa DESC";
-              
-              $stmt = $pdo->prepare($sql);
-              $stmt->bindParam(":busca", $busca, PDO::PARAM_INT);
-          } else {
-              $sql = "SELECT m.Cod_Multa, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                             m.Data_Multa, m.Valor_Multa
-                        FROM multa m 
-                        INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo 
-                        INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
-                        INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
-                        WHERE c.Nome LIKE :busca_nome AND (m.Status_Multa IS NULL OR m.Status_Multa != 'Paga')
-                        ORDER BY m.Data_Multa DESC";
-              
-              $stmt = $pdo->prepare($sql);
-              $stmt->bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
-          }
-      } else {
-          // BUSCA APENAS MULTAS PENDENTES (não pagas)
-          $sql = "SELECT m.Cod_Multa, c.Nome as Nome_Cliente, l.Titulo as Nome_Livro, 
-                         m.Data_Multa, m.Valor_Multa
-                    FROM multa m 
-                    INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo 
-                    INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente 
-                    INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro 
-                    WHERE m.Status_Multa IS NULL OR m.Status_Multa != 'Paga'
-                    ORDER BY m.Data_Multa DESC";
-          
+try {
+  if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])) {
+      $busca = trim($_POST['busca']);
+
+      if (is_numeric($busca)) {
+          // Busca por ID
+          $sql = "SELECT m.Cod_Multa, c.Nome AS Nome_Cliente, l.Titulo AS Nome_Livro, 
+                         m.Data_Multa, m.Valor_Multa, m.Status_Multa
+                  FROM multa m
+                  INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo
+                  INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+                  INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+                  WHERE m.Cod_Multa = :busca
+                  ORDER BY m.Data_Multa DESC";
           $stmt = $pdo->prepare($sql);
+          $stmt->bindParam(":busca", $busca, PDO::PARAM_INT);
+      } else {
+          // Busca por Nome
+          $sql = "SELECT m.Cod_Multa, c.Nome AS Nome_Cliente, l.Titulo AS Nome_Livro, 
+                         m.Data_Multa, m.Valor_Multa, m.Status_Multa
+                  FROM multa m
+                  INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo
+                  INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+                  INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+                  WHERE c.Nome LIKE :busca_nome
+                  ORDER BY m.Data_Multa DESC";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
       }
-
-      $stmt->execute();
-      $multas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      
-      // GARANTIR QUE $multas SEJA SEMPRE UM ARRAY
-      if (!is_array($multas)) {
-          $multas = [];
-      }
-      
-  } catch (PDOException $e) {
-      $erro = "Erro na consulta: " . $e->getMessage();
-      $multas = [];
+  } else {
+      // Todas as multas
+      $sql = "SELECT m.Cod_Multa, c.Nome AS Nome_Cliente, l.Titulo AS Nome_Livro, 
+                     m.Data_Multa, m.Valor_Multa, m.Status_Multa
+              FROM multa m
+              INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo
+              INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+              INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+              ORDER BY m.Data_Multa DESC";
+      $stmt = $pdo->prepare($sql);
   }
+
+  $stmt->execute();
+  $multas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  if (!is_array($multas)) $multas = [];
+
+} catch (PDOException $e) {
+  $erro = "Erro na consulta: " . $e->getMessage();
+  $multas = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -306,11 +283,11 @@ switch ($_SESSION['perfil']) {
     <div class="page-wrapper">
       <header>
         <a href="<?= $linkVoltar ?>" class="btn-voltar">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
-                    </svg>
-                    Voltar
-                </a>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Voltar
+        </a>
         <h1>Consultar Multas</h1>
       </header>
 
@@ -348,28 +325,40 @@ switch ($_SESSION['perfil']) {
             </tr>
           </thead>
           <tbody>
-            <?php if (!empty($multas) && is_array($multas)): ?>
-              <?php foreach ($multas as $m): ?>
-                <tr id="multa-<?= htmlspecialchars($m['Cod_Multa']) ?>">
-                  <td><?= htmlspecialchars($m['Cod_Multa']) ?></td>
-                  <td><?= htmlspecialchars($m['Nome_Cliente']) ?></td>
-                  <td><?= htmlspecialchars($m['Nome_Livro']) ?></td>
-                  <td><?= date("d/m/Y", strtotime($m['Data_Multa'])) ?></td>
-                  <td>R$ <?= number_format($m['Valor_Multa'], 2, ',', '.') ?></td>
-                  <td>
-                    <span class="status-pendente">PENDENTE</span>
-                  </td>
-                  <td>
-                    <button class="btn-pagar" onclick="confirmarPagamento(<?= htmlspecialchars($m['Cod_Multa']) ?>, '<?= htmlspecialchars($m['Nome_Cliente']) ?>', '<?= htmlspecialchars($m['Nome_Livro']) ?>', <?= htmlspecialchars($m['Valor_Multa']) ?>)">Pagar</button>
-                  </td>
-                </tr>
-              <?php endforeach; ?>
-            <?php else: ?>
-                <tr><td colspan="7">Nenhuma multa pendente encontrada</td></tr>
-            <?php endif; ?>
-          </tbody>
-        </table>
-      </nav>
+          <tbody>
+  <?php if (!empty($multas) && is_array($multas)): ?>
+    <?php foreach ($multas as $m): ?>
+      <tr id="multa-<?= htmlspecialchars($m['Cod_Multa']) ?>" class="<?= $m['Status_Multa'] === "Paga" ? 'multa-paga' : '' ?>">
+        <td><?= htmlspecialchars($m['Cod_Multa']) ?></td>
+        <td><?= htmlspecialchars($m['Nome_Cliente']) ?></td>
+        <td><?= htmlspecialchars($m['Nome_Livro']) ?></td>
+        <td><?= date("d/m/Y", strtotime($m['Data_Multa'])) ?></td>
+        <td>R$ <?= number_format($m['Valor_Multa'], 2, ',', '.') ?></td>
+        <td>
+          <?php if ($m['Status_Multa'] === "Paga"): ?>
+            <span class="status-paga">PAGA</span>
+          <?php else: ?>
+            <span class="status-pendente">PENDENTE</span>
+          <?php endif; ?>
+        </td>
+        <td>
+          <?php if ($m['Status_Multa'] !== "Paga"): ?>
+            <button class="btn-pagar" onclick="confirmarPagamento(
+                <?= htmlspecialchars($m['Cod_Multa']) ?>,
+                '<?= htmlspecialchars($m['Nome_Cliente']) ?>',
+                '<?= htmlspecialchars($m['Nome_Livro']) ?>',
+                <?= htmlspecialchars($m['Valor_Multa']) ?>
+            )">Pagar</button>
+          <?php endif; ?>
+        </td>
+      </tr>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <tr><td colspan="7">Nenhuma multa encontrada</td></tr>
+  <?php endif; ?>
+</tbody>
+  </table>
+  </nav>
 
       <script src="subtelas_javascript/consultas.js"></script>
 
@@ -392,17 +381,17 @@ switch ($_SESSION['perfil']) {
             title: 'Confirmar Pagamento',
             html: `Tem certeza que deseja marcar como paga a multa do cliente <strong>${nomeCliente}</strong> pelo livro <strong>"${nomeLivro}"</strong> no valor de <strong>R$ ${valorMulta.toFixed(2).replace('.', ',')}</strong>?`,
             icon: 'warning',
-                confirmButtonText: 'Sim, Excluir',
-                cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#6b7280',
-                showCancelButton: true,
-                customClass: {
-                    title: 'swal2-title-arial',
-                    htmlContainer: 'swal2-html-arial',
-                    cancelButton: 'swal2-cancel',
-                    confirmButton: 'swal2-confirm',
-                }
+            confirmButtonText: 'Sim, Pagar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            showCancelButton: true,
+            customClass: {
+                title: 'swal2-title-arial',
+                htmlContainer: 'swal2-html-arial',
+                cancelButton: 'swal2-cancel',
+                confirmButton: 'swal2-confirm',
+            }
           }).then((result) => {
             if (result.isConfirmed) {
               // Redireciona para pagar a multa
@@ -423,4 +412,4 @@ switch ($_SESSION['perfil']) {
     </div>
     <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>
-</html>
+</
