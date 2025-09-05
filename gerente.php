@@ -615,7 +615,7 @@
             const total = <?= $total_operacoes ?>;
             const cadastros = <?= $cadastros ?>;
             const alteracoes = <?= $alteracoes ?>;
-            const exclusoes = <?= $exclusoes ?>;
+            const exclusoes = <?= $exclusoes ?>; 
             
             doc.setFontSize(10);
             doc.setTextColor(52, 73, 94);
@@ -729,11 +729,28 @@
             
             // Gráfico de pizza como imagem
             const canvas = document.getElementById('graficoOperacoes');
-            if (canvas) {
-                const imgData = canvas.toDataURL('image/png');
-                doc.addImage(imgData, 'PNG', 20, 120, 80, 60);
-                doc.text('Distribuição das Operações', 105, 140, { align: 'center' });
-            }
+                if (canvas) {
+                    const imgData = canvas.toDataURL('image/png');
+
+                    const x = 60;              // posição X do gráfico
+                    const y = 100;             // posição Y do gráfico (início da imagem)
+                    const pdfWidth = 80;       // largura do gráfico no PDF
+                    const pdfHeight = 80;      // altura do gráfico no PDF
+
+                    // Centralizar o texto considerando a largura da página (geralmente 210 para A4)
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const textoY = y - 10;     // 10 unidades acima do gráfico
+
+                    // Escrever o texto acima do gráfico, centralizado
+                    doc.setFontSize(12);
+                     doc.setTextColor(41, 128, 185);
+                    doc.text('Distribuição das Operações', pageWidth / 2, textoY, { align: 'center' });
+
+                    // Inserir a imagem do gráfico abaixo do texto
+                    doc.addImage(imgData, 'PNG', x, y, pdfWidth, pdfHeight);
+                }
+
+
             
             // Análise
             doc.setFontSize(12);
@@ -816,7 +833,7 @@
                         3: { cellWidth: 40 },
                         4: { cellWidth: 25 }
                     }
-                });
+                });  
                 
                 // Estatísticas da tabela
                 const totalTabela = logsPorTabela[tabela].length;
