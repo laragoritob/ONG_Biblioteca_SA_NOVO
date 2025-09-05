@@ -345,7 +345,6 @@ try {
             <?php endif; ?>
           </div>
         </div>
-      </div>
     </form>
   
   <?php if (isset($erro)) { ?>
