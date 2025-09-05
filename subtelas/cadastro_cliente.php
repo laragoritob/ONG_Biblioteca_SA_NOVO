@@ -39,12 +39,12 @@ switch ($_SESSION['perfil']) {
 // Executado apenas quando o formulário é enviado via POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Obtém os dados do formulário
-    $nome = $_POST['nome'];
+    $nome = trim($_POST['nome']);
     $perfil = $_POST['perfil'];
-    $nome_responsavel = $_POST['nome_responsavel'];
+    $nome_responsavel = trim($_POST['nome_responsavel']);
     $cpf = $_POST['cpf'];
     $sexo = $_POST['sexo'];
-    $email = $_POST['email'];
+    $email = trim($_POST['email']);
     $telefone = $_POST['telefone'];
     $data_nascimento = $_POST['data_nascimento'];
     $cep = $_POST['cep'];
@@ -88,7 +88,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $foto = 'Perna de Grilo.png'; // Valor padrão para evitar NULL
     }
 
-    // Query SQL para inserir o novo cliente no banco de dados
+    // Verificar se o email já existe
+    $sql_verificar_email = "SELECT COUNT(*) FROM cliente WHERE email = :email";
+    $stmt_verificar = $pdo->prepare($sql_verificar_email);
+    $stmt_verificar->bindParam(':email', $email);
+    $stmt_verificar->execute();
+    $email_existe = $stmt_verificar->fetchColumn();
+    
+    if ($email_existe > 0) {
+        $erro = "Este email já está cadastrado! Por favor, use um email diferente.";
+    } else {
+        // Query SQL para inserir o novo cliente no banco de dados
     $sql = "INSERT INTO cliente (cod_perfil, nome, nome_responsavel, cpf, sexo, email, telefone, data_nascimento, cep, uf, cidade, bairro, rua, num_residencia, foto) 
                 VALUES (:cod_perfil, :nome, :nome_responsavel, :cpf, :sexo, :email, :telefone, :data_nascimento, :cep, :uf, :cidade, :bairro, :rua, :num_residencia, :foto)";
 
@@ -110,15 +120,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bindParam(':num_residencia', $num_residencia);
     $stmt->bindParam(':foto', $foto);
 
-    // Executa a inserção e verifica o resultado
-    if ($stmt->execute()) {
-        // Se sucesso, define mensagem de sucesso
-        $sucesso = "Cliente cadastrado com sucesso!";
-    } else {
-        // Se falhou, define mensagem de erro
-        $erro = "Erro ao cadastrar cliente!";
+        // Executa a inserção e verifica o resultado
+        if ($stmt->execute()) {
+            // Se sucesso, define mensagem de sucesso
+            $sucesso = "Cliente cadastrado com sucesso!";
+        } else {
+            // Se falhou, define mensagem de erro
+            $erro = "Erro ao cadastrar cliente!";
+        }
     }
-    }
+}
 ?>
 
 

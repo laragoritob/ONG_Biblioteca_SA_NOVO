@@ -44,24 +44,67 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data_emprestimo = $_POST['data_emprestimo'];
     $data_devolucao = $_POST['data_devolucao'];
 
-    // Query SQL para inserir o novo empréstimo no banco de dados
-    $sql = "INSERT INTO emprestimo (cod_livro,cod_cliente,data_emprestimo,data_devolucao) 
-                VALUES (:cod_livro,:cod_cliente,:data_emprestimo,:data_devolucao)";
+    try {
+        // Inicia transação para garantir consistência dos dados
+        $pdo->beginTransaction();
+        
+        // Primeiro, verifica se há estoque disponível
+        $sql_estoque = "SELECT Quantidade, Titulo FROM livro WHERE Cod_Livro = :cod_livro AND status = 'ativo'";
+        $stmt_estoque = $pdo->prepare($sql_estoque);
+        $stmt_estoque->bindParam(':cod_livro', $cod_livro);
+        $stmt_estoque->execute();
+        $livro = $stmt_estoque->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$livro) {
+            throw new Exception("Livro não encontrado ou inativo!");
+        }
+        
+        if ($livro['Quantidade'] <= 0) {
+            throw new Exception("Estoque insuficiente! Não há exemplares disponíveis do livro '{$livro['Titulo']}'.");
+        }
+        
+        // Query SQL para inserir o novo empréstimo no banco de dados
+        $sql = "INSERT INTO emprestimo (cod_livro,cod_cliente,data_emprestimo,data_devolucao) 
+                    VALUES (:cod_livro,:cod_cliente,:data_emprestimo,:data_devolucao)";
 
-    // Prepara a query usando prepared statement para segurança
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':cod_livro', $cod_livro);
-    $stmt->bindParam(':cod_cliente', $cod_cliente);
-    $stmt->bindParam(':data_emprestimo', $data_emprestimo);
-    $stmt->bindParam(':data_devolucao', $data_devolucao);
+        // Prepara a query usando prepared statement para segurança
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':cod_livro', $cod_livro);
+        $stmt->bindParam(':cod_cliente', $cod_cliente);
+        $stmt->bindParam(':data_emprestimo', $data_emprestimo);
+        $stmt->bindParam(':data_devolucao', $data_devolucao);
 
-    // Executa a inserção e verifica o resultado
-    if ($stmt->execute()) {
-        // Se sucesso, define mensagem de sucesso
+        // Executa a inserção do empréstimo
+        if (!$stmt->execute()) {
+            throw new Exception("Erro ao cadastrar empréstimo!");
+        }
+        
+        // Decrementa o estoque do livro
+        $nova_quantidade = $livro['Quantidade'] - 1;
+        $sql_update_estoque = "UPDATE livro SET Quantidade = :quantidade WHERE Cod_Livro = :cod_livro";
+        $stmt_update = $pdo->prepare($sql_update_estoque);
+        $stmt_update->bindParam(':quantidade', $nova_quantidade);
+        $stmt_update->bindParam(':cod_livro', $cod_livro);
+        
+        if (!$stmt_update->execute()) {
+            throw new Exception("Erro ao atualizar estoque!");
+        }
+        
+        // Confirma a transação
+        $pdo->commit();
+        
+        // Verifica se precisa emitir alerta de estoque baixo
+        if ($nova_quantidade < 5) {
+            $alerta_estoque = "⚠️ ALERTA: Estoque baixo! O livro '{$livro['Titulo']}' possui apenas {$nova_quantidade} exemplar(es) restante(s).";
+        }
+        
+        // Define mensagem de sucesso
         $sucesso = "Empréstimo cadastrado com sucesso!";
-    } else {
-        // Se falhou, define mensagem de erro
-        $erro = "Erro ao cadastrar empréstimo!";
+        
+    } catch (Exception $e) {
+        // Em caso de erro, desfaz a transação
+        $pdo->rollBack();
+        $erro = $e->getMessage();
     }
 }
 
@@ -289,6 +332,21 @@ $data_devolucao_padrao = date('Y-m-d', strtotime('+1 week'));
                         title: 'swal2-title-arial',
                         confirmButton: 'swal2-confirm'
                     }
+                }).then(() => {
+                    <?php if (isset($alerta_estoque)): ?>
+                        // Mostra alerta de estoque baixo após o sucesso
+                        Swal.fire({
+                            title: 'Alerta de Estoque',
+                            text: '<?= addslashes($alerta_estoque) ?>',
+                            icon: 'warning',
+                            confirmButtonText: 'Entendi',
+                            confirmButtonColor: '#ff9800',
+                            customClass: {
+                                title: 'swal2-title-arial',
+                                confirmButton: 'swal2-confirm'
+                            }
+                        });
+                    <?php endif; ?>
                 });
             });
         <?php endif; ?>

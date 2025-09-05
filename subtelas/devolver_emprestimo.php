@@ -100,6 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
         $stmt_livro->bindParam(':cod_livro', $emprestimo['Cod_Livro']);
         $stmt_livro->execute();
         
+        // Verifica se ainda está com estoque baixo após a devolução
+        $estoque_baixo = $nova_quantidade < 5;
+        
         // Marcar o empréstimo como devolvido (não deletar)
         $sql_update = "UPDATE emprestimo SET Status_Emprestimo = 'Devolvido' WHERE Cod_Emprestimo = :id";
         $stmt_update = $pdo->prepare($sql_update);
@@ -109,11 +112,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
         $pdo->commit();
         
         // Redirecionar com mensagem de sucesso
+        $params = ['sucesso=1'];
         if ($multa > 0) {
-            header('Location: consultar_emprestimo.php?sucesso=1&multa=' . $multa . '&dias=' . $dias_atraso);
-        } else {
-            header('Location: consultar_emprestimo.php?sucesso=1');
+            $params[] = 'multa=' . $multa;
+            $params[] = 'dias=' . $dias_atraso;
         }
+        if ($estoque_baixo) {
+            $params[] = 'estoque_baixo=1';
+            $params[] = 'quantidade=' . $nova_quantidade;
+            $params[] = 'titulo=' . urlencode($emprestimo['Nome_Livro']);
+        }
+        
+        header('Location: consultar_emprestimo.php?' . implode('&', $params));
         exit;
         
     } catch (PDOException $e) {

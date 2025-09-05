@@ -1,4 +1,4 @@
-<?php
+  <?php
 session_start();
 require_once '../conexao.php';
 
@@ -106,26 +106,35 @@ try {
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    .filtro-container {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    
     #search-container {
       display: flex;
       align-items: center;
       gap: 15px;
       flex: 1;
-      min-width: 1205px;
-      margin-left: 75px;
+      min-width: 300px;
     }
     
     .input-wrapper {
       flex: 1;
       position: relative;
+    }
+    
+    .filtro-select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: white;
+      min-width: 150px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+    
+    .filtro-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
     }
     
     .btn-filtrar {
@@ -158,100 +167,92 @@ try {
       background: #c53030;
     }
     
-         /* Responsividade */
-     @media (max-width: 768px) {
-       .filtro-container {
-         flex-direction: column;
-         align-items: stretch;
-       }
-       
-       #search-container {
-         flex-direction: column;
-         min-width: auto;
-       }
-       
-       .input-wrapper {
-         width: 100%;
-       }
-     }
-     
-     /* Estilos para status dos empréstimos */
-     .status-pendente {
-       background-color: #fef3c7;
-       color: #92400e;
-       padding: 4px 8px;
-       border-radius: 4px;
-       font-size: 12px;
-       font-weight: bold;
-     }
-     
-     .status-devolvido {
-       background-color: #d1fae5;
-       color: #065f46;
-       padding: 4px 8px;
-       border-radius: 4px;
-       font-size: 12px;
-       font-weight: bold;
-     }
-     
-     .status-buttons {
-       display: flex;
-       gap: 10px;
-       align-items: center;
-       margin-top: 15px;
-     }
-     
-     .btn-status {
-       display: inline-flex;
-       align-items: center;
-       gap: 8px;
-       padding: 10px 16px;
-       border: none;
-       border-radius: 8px;
-       font-size: 14px;
-       font-weight: 600;
-       text-decoration: none;
-       cursor: pointer;
-       transition: all 0.2s ease;
-       margin-left: 270px;
-     }
-     
-     .btn-inativos {
-       background: linear-gradient(135deg, #f59e0b, #d97706);
-       color: white;
-     }
-     
-     .btn-inativos:hover {
-       background: linear-gradient(135deg, #d97706, #b45309);
-       transform: translateY(-2px);
-       box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-     }
-     
-     .btn-ativos {
-       background: linear-gradient(135deg, #10b981, #059669);
-       color: white;
-     }
-     
-     .btn-ativos:hover {
-       background: linear-gradient(135deg, #059669, #047857);
-       transform: translateY(-2px);
-       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-     }
-     
-     .btn-reactivate {
-       background: linear-gradient(135deg, #10b981, #059669) !important;
-       color: white !important;
-     }
-     
-     .btn-reactivate:hover {
-       background: linear-gradient(135deg, #059669, #047857) !important;
-       transform: translateY(-2px);
-       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-     }
-     
-     a {
-       text-decoration: none;
-     }
+    .status-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 15px;
+    }
+    
+    .btn-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-left: 270px;
+    }
+    
+    .btn-inativos {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+    
+    .btn-inativos:hover {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+    
+    .btn-ativos {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+    
+    .btn-ativos:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-reactivate {
+      background: linear-gradient(135deg, #10b981, #059669) !important;
+      color: white !important;
+    }
+    
+    .btn-reactivate:hover {
+      background: linear-gradient(135deg, #059669, #047857) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    a {
+      text-decoration: none;
+    }
+    
+    .nome-clicavel {
+      cursor: pointer;
+      color: #667eea;
+      text-decoration: none;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .filtro-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      #search-container {
+        flex-direction: column;
+        min-width: auto;
+      }
+      
+      .input-wrapper {
+        width: 100%;
+      }
+      
+      .filtro-select {
+        min-width: auto;
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
@@ -311,6 +312,28 @@ try {
                 confirmButtonText: 'OK'
             }";
         }
+        
+        // Verificar se há alerta de estoque baixo
+        if (isset($_GET['estoque_baixo']) && $_GET['estoque_baixo'] == '1') {
+            $quantidade = $_GET['quantidade'];
+            $titulo = htmlspecialchars($_GET['titulo']);
+            $alerta_estoque_swal = "{
+                title: '⚠️ Alerta de Estoque Baixo',
+                html: `
+                    <div style='text-align: center;'>
+                        <p style='margin: 20px 0; font-size: 16px; color: #d97706;'>O livro ainda possui estoque baixo após a devolução!</p>
+                        <div style='background: #fffbeb; border: 1px solid #fed7aa; border-radius: 8px; padding: 15px; margin: 15px 0;'>
+                            <p style='margin: 8px 0; font-size: 14px;'><strong>📚 Livro:</strong> $titulo</p>
+                            <p style='margin: 8px 0; font-size: 14px;'><strong>📦 Quantidade atual:</strong> $quantidade exemplar(es)</p>
+                            <p style='margin: 8px 0; font-size: 14px;'><strong>⚠️ Status:</strong> Estoque abaixo de 5 unidades</p>
+                        </div>
+                    </div>
+                `,
+                icon: 'warning',
+                confirmButtonColor: '#f59e0b',
+                confirmButtonText: 'Entendi'
+            }";
+        }
     }
     
     if (isset($_GET['erro'])) {
@@ -329,6 +352,7 @@ try {
         </div>
     <?php } ?>
     <form action="consultar_emprestimo.php" method="POST">
+    <div class="filtro-container">
       <div id="search-container">
           <div class="input-wrapper">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
@@ -590,7 +614,12 @@ try {
   <script>
     // Exibir SweetAlert2 para mensagens de sucesso ou erro
     <?php if (!empty($sucesso_swal)): ?>
-      Swal.fire(<?php echo $sucesso_swal; ?>);
+      Swal.fire(<?php echo $sucesso_swal; ?>).then(() => {
+        <?php if (!empty($alerta_estoque_swal)): ?>
+          // Mostra alerta de estoque baixo após o sucesso
+          Swal.fire(<?php echo $alerta_estoque_swal; ?>);
+        <?php endif; ?>
+      });
     <?php endif; ?>
     
     <?php if (!empty($erro_swal)): ?>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 05/09/2025 às 01:49
+-- Tempo de geração: 05/09/2025 às 19:25
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -40,7 +40,22 @@ CREATE TABLE `autor` (
 --
 
 INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`, `status`) VALUES
-(1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com', 'ativo');
+(1, 'Suzanne Collins', '(21) 98123-5638', 'suzannecollins@gmail.com', 'ativo'),
+(20, 'Jenna Evans Welch', '(47) 98266-3527', 'jennaevans@gmail.com', 'ativo'),
+(21, 'J.K. Rowling', '(11) 99999-1234', 'jkrowling@email.com', 'ativo'),
+(22, 'George R.R. Martin', '(21) 98888-5678', 'grrmartin@email.com', 'ativo'),
+(23, 'Stephen King', '(31) 97777-4321', 'sking@email.com', 'ativo'),
+(24, 'Agatha Christie', '(41) 96666-9876', 'achristie@email.com', 'inativo'),
+(25, 'J.R.R. Tolkien', '(51) 95555-3456', 'jrrtolkien@email.com', 'ativo'),
+(26, 'Dan Brown', '(61) 94444-6789', 'danbrown@email.com', 'ativo'),
+(27, 'Paulo Coelho', '(71) 93333-1122', 'pcoelho@email.com', 'ativo'),
+(28, 'Isaac Asimov', '(81) 92222-3344', 'iasimov@email.com', 'ativo'),
+(29, 'Arthur Conan Doyle', '(91) 91111-5566', 'acdoyle@email.com', 'inativo'),
+(30, 'Harper Lee', '(21) 98888-8899', 'hlee@email.com', 'inativo'),
+(31, 'Ernest Hemingway', '(31) 97777-9900', 'ehemingway@email.com', 'inativo'),
+(32, 'Gabriel García Márquez', '(41) 96666-0011', 'ggmarquez@email.com', 'inativo'),
+(33, 'Clarice Lispector', '(51) 95555-2233', 'clispector@email.com', 'inativo'),
+(34, 'Machado de Assis', '(61) 94444-3344', 'machado@email.com', 'ativo');
 
 --
 -- Acionadores `autor`
@@ -164,7 +179,22 @@ CREATE TABLE `doador` (
 --
 
 INSERT INTO `doador` (`Cod_Doador`, `Nome_Doador`, `Telefone`, `Email`, `status`) VALUES
-(1, 'Frank Ocean', '(21) 92636-6969', 'frankocean@gmail.com', 'ativo');
+(1, 'Frank Ocean', '(21) 92636-6969', 'frankocean@gmail.com', 'ativo'),
+(5, 'Lucas Almeida', '(11) 98888-1122', 'lucas.almeida@email.com', 'ativo'),
+(6, 'Fernanda Costa', '(21) 97777-3344', 'fernanda.costa@email.com', 'ativo'),
+(7, 'Rafael Sousa', '(31) 96666-5566', 'rafael.sousa@email.com', 'ativo'),
+(8, 'Amanda Oliveira', '(41) 95555-7788', 'amanda.oliveira@email.com', 'inativo'),
+(9, 'Carlos Mendes', '(51) 94444-9900', 'carlos.mendes@email.com', 'ativo'),
+(10, 'Juliana Rocha', '(61) 93333-2211', 'juliana.rocha@email.com', 'ativo'),
+(11, 'Marcelo Tavares', '(71) 92222-3344', 'marcelo.tavares@email.com', 'ativo'),
+(12, 'Patrícia Lima', '(81) 91111-4455', 'patricia.lima@email.com', 'inativo'),
+(13, 'Thiago Martins', '(91) 90000-5566', 'thiago.martins@email.com', 'ativo'),
+(14, 'Bianca Ferreira', '(11) 98888-6677', 'bianca.ferreira@email.com', 'ativo'),
+(15, 'André Nascimento', '(21) 97777-7788', 'andre.nascimento@email.com', 'ativo'),
+(16, 'Renata Pires', '(31) 96666-8899', 'renata.pires@email.com', 'ativo'),
+(17, 'Eduardo Barros', '(41) 95555-9900', 'eduardo.barros@email.com', 'inativo'),
+(18, 'Sofia Ribeiro', '(51) 94444-1010', 'sofia.ribeiro@email.com', 'ativo'),
+(19, 'Gustavo Cunha', '(61) 93333-1111', 'gustavo.cunha@email.com', 'ativo');
 
 -- --------------------------------------------------------
 
@@ -186,7 +216,22 @@ CREATE TABLE `editora` (
 
 INSERT INTO `editora` (`Cod_Editora`, `Nome_Editora`, `Telefone`, `Email`, `status`) VALUES
 (1, 'Moderna', '(47) 98231-2647', 'moderna_editora@gmail.com', 'ativo'),
-(2, 'Panini', '(78) 35627-8562', 'panini@gmail.com', 'ativo');
+(2, 'Panini', '(78) 35627-8562', 'panini@gmail.com', 'ativo'),
+(3, 'Editora Rocco', '(11) 98888-1001', 'contato@rocco.com.br', 'ativo'),
+(4, 'Companhia das Letras', '(21) 97777-2002', 'contato@companhiadasletras.com.br', 'ativo'),
+(5, 'Editora Intrínseca', '(31) 96666-3003', 'atendimento@intrinseca.com.br', 'ativo'),
+(6, 'HarperCollins Brasil', '(41) 95555-4004', 'contato@harpercollins.com.br', 'ativo'),
+(7, 'Editora Record', '(51) 94444-5005', 'contato@record.com.br', 'ativo'),
+(8, 'Editora Sextante', '(61) 93333-6006', 'contato@sextante.com.br', 'ativo'),
+(9, 'Editora Globo Livros', '(71) 92222-7007', 'contato@globolivros.com.br', 'ativo'),
+(10, 'Editora Objetiva', '(81) 91111-8008', 'contato@objetiva.com.br', 'ativo'),
+(11, 'Editora Martins Fontes', '(91) 90000-9009', 'editorial@martinsfontes.com.br', 'ativo'),
+(12, 'Editora Aleph', '(11) 98888-1010', 'contato@editoraaleph.com.br', 'ativo'),
+(13, 'Editora Zahar', '(21) 97777-2020', 'contato@zahar.com.br', 'ativo'),
+(14, 'Editora L&PM', '(31) 96666-3030', 'contato@lpm.com.br', 'ativo'),
+(15, 'Editora Nova Fronteira', '(41) 95555-4040', 'contato@novafronteira.com.br', 'ativo'),
+(16, 'Editora Scipione', '(51) 94444-5050', 'contato@scipione.com.br', 'ativo'),
+(17, 'Editora Saraiva', '(61) 93333-6060', 'contato@saraiva.com.br', 'ativo');
 
 -- --------------------------------------------------------
 
@@ -366,7 +411,7 @@ CREATE TABLE `livro` (
 --
 
 INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`, `status`) VALUES
-(1, 1, 2, 1, 9, 'Harry Potter', '2025-08-12', '2025-08-27', 7778, '3', 0x6c6f676f5f7472616e732e706e67, 'ativo');
+(12, 21, 4, 9, 9, 'Harry Potter e a Pedra Filosofal', '1990-08-20', '2025-09-05', 10, '5', 0x3831696266596b34716d4c2e6a7067, 'ativo');
 
 --
 -- Acionadores `livro`
@@ -542,7 +587,34 @@ INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_
 (125, 'cliente', 'UPDATE', 12, 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'root@localhost', '2025-09-04 23:36:43', NULL),
 (126, 'cliente', 'UPDATE', 12, 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'Nome: Drake, CPF: 832.782.576-24, Email: drake@gmail.com', 'root@localhost', '2025-09-04 23:37:00', NULL),
 (127, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:40:01', NULL),
-(128, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:40:01', NULL);
+(128, 'funcionario', 'UPDATE', 5, 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'Nome: Sérgio Luiz da Silveira, Data Nascimento: 1980-09-11', 'root@localhost', '2025-09-04 23:40:01', NULL),
+(129, 'livro', 'UPDATE', 1, 'Título: Harry Potter', 'Título: Harry Potter', NULL, '2025-09-05 16:40:02', NULL),
+(130, 'livro', 'UPDATE', 1, 'Título: Harry Potter', 'Título: Harry Potter', NULL, '2025-09-05 16:40:16', NULL),
+(131, 'livro', 'UPDATE', 1, 'Título: Harry Potter', 'Título: Harry Potter', NULL, '2025-09-05 16:41:46', NULL),
+(132, 'livro', 'UPDATE', 1, 'Título: Harry Potter', 'Título: Harry Potter', NULL, '2025-09-05 16:41:53', NULL),
+(133, 'livro', 'UPDATE', 1, 'Título: Harry Potter', 'Título: Harry Potter', NULL, '2025-09-05 16:43:45', NULL),
+(134, 'autor', 'INSERT', 20, NULL, 'Nome: Jenna Evans Welch, Telefone: (47) 98266-3527, Email: jennaevans@gmail.com', 'root@localhost', '2025-09-05 16:55:57', NULL),
+(135, 'autor', 'INSERT', 21, NULL, 'Nome: J.K. Rowling, Telefone: (11) 99999-1234, Email: jkrowling@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(136, 'autor', 'INSERT', 22, NULL, 'Nome: George R.R. Martin, Telefone: (21) 98888-5678, Email: grrmartin@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(137, 'autor', 'INSERT', 23, NULL, 'Nome: Stephen King, Telefone: (31) 97777-4321, Email: sking@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(138, 'autor', 'INSERT', 24, NULL, 'Nome: Agatha Christie, Telefone: (41) 96666-9876, Email: achristie@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(139, 'autor', 'INSERT', 25, NULL, 'Nome: J.R.R. Tolkien, Telefone: (51) 95555-3456, Email: jrrtolkien@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(140, 'autor', 'INSERT', 26, NULL, 'Nome: Dan Brown, Telefone: (61) 94444-6789, Email: danbrown@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(141, 'autor', 'INSERT', 27, NULL, 'Nome: Paulo Coelho, Telefone: (71) 93333-1122, Email: pcoelho@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(142, 'autor', 'INSERT', 28, NULL, 'Nome: Isaac Asimov, Telefone: (81) 92222-3344, Email: iasimov@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(143, 'autor', 'INSERT', 29, NULL, 'Nome: Arthur Conan Doyle, Telefone: (91) 91111-5566, Email: acdoyle@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(144, 'autor', 'INSERT', 30, NULL, 'Nome: Harper Lee, Telefone: (21) 98888-8899, Email: hlee@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(145, 'autor', 'INSERT', 31, NULL, 'Nome: Ernest Hemingway, Telefone: (31) 97777-9900, Email: ehemingway@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(146, 'autor', 'INSERT', 32, NULL, 'Nome: Gabriel García Márquez, Telefone: (41) 96666-0011, Email: ggmarquez@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(147, 'autor', 'INSERT', 33, NULL, 'Nome: Clarice Lispector, Telefone: (51) 95555-2233, Email: clispector@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(148, 'autor', 'INSERT', 34, NULL, 'Nome: Machado de Assis, Telefone: (61) 94444-3344, Email: machado@email.com', 'root@localhost', '2025-09-05 16:58:36', NULL),
+(149, 'autor', 'UPDATE', 34, 'Nome: Machado de Assis, Telefone: (61) 94444-3344, Email: machado@email.com', 'Nome: Machado de Assis, Telefone: (61) 94444-3344, Email: machado@email.com', 'root@localhost', '2025-09-05 17:02:36', NULL),
+(150, 'autor', 'UPDATE', 25, 'Nome: J.R.R. Tolkien, Telefone: (51) 95555-3456, Email: jrrtolkien@email.com', 'Nome: J.R.R. Tolkien, Telefone: (51) 95555-3456, Email: jrrtolkien@email.com', 'root@localhost', '2025-09-05 17:02:48', NULL),
+(151, 'autor', 'UPDATE', 28, 'Nome: Isaac Asimov, Telefone: (81) 92222-3344, Email: iasimov@email.com', 'Nome: Isaac Asimov, Telefone: (81) 92222-3344, Email: iasimov@email.com', 'root@localhost', '2025-09-05 17:02:58', NULL),
+(152, 'livro', 'INSERT', 8, NULL, 'Título: AAAAAAAAAAAAAAAAA', NULL, '2025-09-05 17:14:56', NULL),
+(153, 'livro', 'DELETE', 8, 'Título: AAAAAAAAAAAAAAAAA', NULL, NULL, '2025-09-05 17:15:15', NULL),
+(154, 'livro', 'DELETE', 1, 'Título: Harry Potter', NULL, NULL, '2025-09-05 17:24:03', NULL),
+(155, 'livro', 'INSERT', 12, NULL, 'Título: Harry Potter e a Pedra Filosofal', NULL, '2025-09-05 17:25:07', NULL);
 
 -- --------------------------------------------------------
 
@@ -695,7 +767,7 @@ ALTER TABLE `perfil_funcionario`
 -- AUTO_INCREMENT de tabela `autor`
 --
 ALTER TABLE `autor`
-  MODIFY `Cod_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `Cod_Autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de tabela `cliente`
@@ -707,13 +779,13 @@ ALTER TABLE `cliente`
 -- AUTO_INCREMENT de tabela `doador`
 --
 ALTER TABLE `doador`
-  MODIFY `Cod_Doador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Cod_Doador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de tabela `editora`
 --
 ALTER TABLE `editora`
-  MODIFY `Cod_Editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Cod_Editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de tabela `emprestimo`
@@ -737,13 +809,13 @@ ALTER TABLE `genero`
 -- AUTO_INCREMENT de tabela `livro`
 --
 ALTER TABLE `livro`
-  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=156;
 
 --
 -- AUTO_INCREMENT de tabela `multa`

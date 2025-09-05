@@ -48,6 +48,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (strlen($telefone_limpo) < 10 || strlen($telefone_limpo) > 11) {
         $erro = "O telefone deve ter 10 ou 11 dígitos!";
     } else {
+        // Verificar se o email já existe
+        $sql_verificar_email = "SELECT COUNT(*) FROM autor WHERE email = :email";
+        $stmt_verificar = $pdo->prepare($sql_verificar_email);
+        $stmt_verificar->bindParam(':email', $email);
+        $stmt_verificar->execute();
+        $email_existe = $stmt_verificar->fetchColumn();
+        
+        if ($email_existe > 0) {
+            $erro = "Este email já está cadastrado! Por favor, use um email diferente.";
+        } else {
         // Query SQL para inserir o novo autor no banco de dados
         $sql = "INSERT INTO autor (nome_autor,telefone,email) 
                     VALUES (:nome_autor,:telefone,:email)";
@@ -58,13 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':telefone', $telefone);
         $stmt->bindParam(':email', $email);
 
-        // Executa a inserção e verifica o resultado
-        if ($stmt->execute()) {
-            // Se sucesso, define mensagem de sucesso
-            $sucesso = "Autor cadastrado com sucesso!";
-        } else {
-            // Se falhou, define mensagem de erro
-            $erro = "Erro ao cadastrar autor!";
+            // Executa a inserção e verifica o resultado
+            if ($stmt->execute()) {
+                // Se sucesso, define mensagem de sucesso
+                $sucesso = "Autor cadastrado com sucesso!";
+            } else {
+                // Se falhou, define mensagem de erro
+                $erro = "Erro ao cadastrar autor!";
+            }
         }
     }
 }

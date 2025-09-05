@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cod_genero = trim($_POST['cod_genero']);
     $data_lancamento = trim($_POST['data_lancamento']);
     $data_registro = trim($_POST['data_registro']);
-    $quantidade = trim($_POST['quantidade']);
+    $quantidade = intval(trim($_POST['quantidade'])); // Converte para inteiro
     $num_prateleira = trim($_POST['num_prateleira']);
     
     if (empty($titulo)) {
@@ -98,6 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = "Autor é obrigatório";
     } elseif (empty($cod_editora)) {
         $erro = "Editora é obrigatória";
+    } elseif ($quantidade <= 0) {
+        $erro = "A quantidade deve ser maior que zero! Por favor, insira uma quantidade válida.";
     } else {
         try {
             $sql_update = "UPDATE livro 
@@ -126,6 +128,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if ($stmt_update->execute()) {
                 $sucesso = "Livro alterado com sucesso!";
+                
+                // Verifica se precisa emitir alerta de estoque baixo
+                if ($quantidade < 5) {
+                    $alerta_estoque = "⚠️ ALERTA: O livro '{$titulo}' foi alterado com estoque baixo ({$quantidade} exemplar(es)). Considere adquirir mais exemplares.";
+                }
+                
                 // Recarregar dados do livro
                 $stmt->execute();
                 $livro = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -413,7 +421,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40">
                                             <path d="M112 120C112 106.7 101.3 96 88 96C74.7 96 64 106.7 64 120L64 464C64 508.2 99.8 544 144 544L552 544C565.3 544 576 533.3 576 520C576 506.7 565.3 496 552 496L144 496C126.3 496 112 481.7 112 464L112 120zM216 192L424 192C437.3 192 448 181.3 448 168C448 154.7 437.3 144 424 144L216 144C202.7 144 192 154.7 192 168C192 181.3 202.7 192 216 192zM216 256C202.7 256 192 266.7 192 280C192 293.3 202.7 304 216 304L360 304C373.3 304 384 293.3 384 280C384 266.7 373.3 256 360 256L216 256zM216 368C202.7 368 192 378.7 192 392C192 405.3 202.7 416 216 416L488 416C501.3 416 512 405.3 512 392C512 378.7 501.3 368 488 368L216 368z"/>
                                         </svg>
-                                        <input type="number" id="quantidade" name="quantidade" value="<?= htmlspecialchars($livro['Quantidade']) ?>" required placeholder="Digite a quantidade do livro">
+                                        <input type="number" id="quantidade" name="quantidade" value="<?= htmlspecialchars($livro['Quantidade']) ?>" required placeholder="Digite a quantidade do livro" min="1" oninput="validarQuantidade(this)">
                                     </div>
                                 </div>
 
@@ -466,6 +474,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="subtelas_javascript/validaCadastro.js"></script>
     <script src="subtelas_javascript/buscarID.js"></script>
     <script>
+        // Função para validar quantidade em tempo real
+        function validarQuantidade(input) {
+            const valor = parseInt(input.value);
+            const quantidadeDiv = input.closest('.input-group');
+            
+            // Remove mensagens de erro anteriores
+            const mensagemErro = quantidadeDiv.querySelector('.mensagem-erro');
+            const mensagemAviso = quantidadeDiv.querySelector('.mensagem-aviso');
+            if (mensagemErro) {
+                mensagemErro.remove();
+            }
+            if (mensagemAviso) {
+                mensagemAviso.remove();
+            }
+            
+            if (input.value !== '' && valor <= 0) {
+                // Adiciona mensagem de erro
+                const erroDiv = document.createElement('div');
+                erroDiv.className = 'mensagem-erro';
+                erroDiv.style.color = '#dc2626';
+                erroDiv.style.fontSize = '0.875rem';
+                erroDiv.style.marginTop = '0.25rem';
+                erroDiv.innerHTML = '⚠️ A quantidade deve ser maior que zero!';
+                quantidadeDiv.appendChild(erroDiv);
+                
+                // Destaca o campo
+                input.style.borderColor = '#dc2626';
+                input.style.backgroundColor = '#fef2f2';
+                
+                return false;
+            } else {
+                // Remove destaque de erro
+                input.style.borderColor = '';
+                input.style.backgroundColor = '';
+                
+                // Mostra aviso se quantidade for baixa
+                if (valor > 0 && valor < 5) {
+                    const avisoDiv = document.createElement('div');
+                    avisoDiv.className = 'mensagem-aviso';
+                    avisoDiv.style.color = '#f59e0b';
+                    avisoDiv.style.fontSize = '0.875rem';
+                    avisoDiv.style.marginTop = '0.25rem';
+                    avisoDiv.innerHTML = '⚠️ Estoque baixo! Considere adquirir mais exemplares.';
+                    quantidadeDiv.appendChild(avisoDiv);
+                }
+                
+                return true;
+            }
+        }
+        
         // Validação específica para alterar livro
         document.querySelector('form').addEventListener('submit', function(e) {
             const titulo = document.getElementById('titulo').value.trim();
@@ -516,17 +574,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             // Validação da quantidade
-            if (quantidade !== '' && parseInt(quantidade) < 0) {
+            if (quantidade !== '' && parseInt(quantidade) <= 0) {
                 e.preventDefault();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Quantidade Inválida',
-                    text: 'A quantidade deve ser maior ou igual a zero!',
+                    title: 'Erro de Validação',
+                    text: 'A quantidade deve ser maior que zero!',
                     customClass: {
                         title: 'swal2-title-arial',
                         confirmButton: 'swal2-confirm'
                     }
                 });
+                document.getElementById('quantidade').focus();
                 return false;
             }
         });
@@ -543,6 +602,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         title: 'swal2-title-arial',
                         confirmButton: 'swal2-confirm'
                     }
+                }).then(() => {
+                    <?php if (isset($alerta_estoque)): ?>
+                        // Mostra alerta de estoque baixo após o sucesso
+                        Swal.fire({
+                            title: 'Alerta de Estoque',
+                            text: '<?= addslashes($alerta_estoque) ?>',
+                            icon: 'warning',
+                            confirmButtonText: 'Entendi',
+                            confirmButtonColor: '#f59e0b',
+                            customClass: {
+                                title: 'swal2-title-arial',
+                                confirmButton: 'swal2-confirm'
+                            }
+                        });
+                    <?php endif; ?>
                 });
             });
         <?php endif; ?>

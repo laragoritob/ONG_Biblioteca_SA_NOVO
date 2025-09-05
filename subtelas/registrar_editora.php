@@ -39,11 +39,21 @@ switch ($_SESSION['perfil']) {
 // Executado apenas quando o formulário é enviado via POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Obtém os dados do formulário
-    $nome_editora = $_POST['nome_editora'];
-    $telefone = $_POST['telefone'];
-    $email = $_POST['email'];
+    $nome_editora = trim($_POST['nome_editora']);
+    $telefone = trim($_POST['telefone']);
+    $email = trim($_POST['email']);
 
-    // Query SQL para inserir a nova editora no banco de dados
+    // Verificar se o email já existe
+    $sql_verificar_email = "SELECT COUNT(*) FROM editora WHERE email = :email";
+    $stmt_verificar = $pdo->prepare($sql_verificar_email);
+    $stmt_verificar->bindParam(':email', $email);
+    $stmt_verificar->execute();
+    $email_existe = $stmt_verificar->fetchColumn();
+    
+    if ($email_existe > 0) {
+        $erro = "Este email já está cadastrado! Por favor, use um email diferente.";
+    } else {
+        // Query SQL para inserir a nova editora no banco de dados
     $sql = "INSERT INTO editora (nome_editora,telefone,email) 
                 VALUES (:nome_editora,:telefone,:email)";
 
@@ -53,13 +63,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bindParam(':telefone', $telefone);
     $stmt->bindParam(':email', $email);
 
-    // Executa a inserção e verifica o resultado
-    if ($stmt->execute()) {
-        // Se sucesso, define mensagem de sucesso
-        $sucesso = "Editora cadastrada com sucesso!";
-    } else {
-        // Se falhou, define mensagem de erro
-        $erro = "Erro ao cadastrar editora!";
+        // Executa a inserção e verifica o resultado
+        if ($stmt->execute()) {
+            // Se sucesso, define mensagem de sucesso
+            $sucesso = "Editora cadastrada com sucesso!";
+        } else {
+            // Se falhou, define mensagem de erro
+            $erro = "Erro ao cadastrar editora!";
+        }
     }
 }
 ?>
