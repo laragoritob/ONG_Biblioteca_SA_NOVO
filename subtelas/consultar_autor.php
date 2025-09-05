@@ -68,12 +68,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
     
     if(is_numeric($busca)){
         // Se for numérico, busca por ID do autor
-        $sql = "SELECT * FROM autor WHERE Cod_Autor = :busca AND $status_condicao ORDER BY Nome_Autor ASC";
+        $sql = "SELECT * FROM autor WHERE Cod_Autor = :busca AND $status_condicao ORDER BY Cod_Autor ASC";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':busca', $busca, PDO::PARAM_INT);
     } else {
         // Se for texto, busca por nome do autor (busca parcial)
-        $sql = "SELECT * FROM autor WHERE Nome_Autor LIKE :busca_nome_autor AND $status_condicao ORDER BY Nome_Autor ASC";
+        $sql = "SELECT * FROM autor WHERE Nome_Autor LIKE :busca_nome_autor AND $status_condicao ORDER BY Cod_Autor ASC";
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':busca_nome_autor', "$busca%", PDO::PARAM_STR);
     }
@@ -87,9 +87,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
         die("Erro na consulta: " . $e->getMessage());
     }
 } else {
-    // Se não há busca, lista todos os autores ordenados por nome
+    // Se não há busca, lista todos os autores ordenados por ID
     $status_condicao = $mostrar_inativos ? "status = 'inativo'" : "status = 'ativo'";
-    $sql = "SELECT * FROM autor WHERE $status_condicao ORDER BY Nome_Autor ASC";
+    $sql = "SELECT * FROM autor WHERE $status_condicao ORDER BY Cod_Autor ASC";
     
     try {
         // Prepara e executa a consulta para buscar todos os autores
