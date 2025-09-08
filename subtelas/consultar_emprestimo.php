@@ -368,24 +368,6 @@ try {
                Ver Histórico de Devolvidos
              </button>
            </div>
-           
-           <div class="status-buttons">
-             <?php if (!$mostrar_inativos): ?>
-               <a href="consultar_emprestimo.php?inativos=true" class="btn-status btn-inativos">
-                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                   <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
-                 </svg>
-                 Ver Inativos
-               </a>
-             <?php else: ?>
-               <a href="consultar_emprestimo.php" class="btn-status btn-ativos">
-                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                   <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
-                 </svg>
-                 Ver Ativos
-               </a>
-             <?php endif; ?>
-           </div>
         </div>
     </form>
 
@@ -427,13 +409,6 @@ try {
                   <?php else: ?>
                     <a href="renovar_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="renovar">Renovar</a>
                     <a href="devolver_emprestimo.php?id=<?= htmlspecialchars($e['Cod_Emprestimo']) ?>" class="devolver">Devolver</a>
-                    <a href="excluir_emprestimo.php?id=<?= $e['Cod_Emprestimo'] ?>" class="btn-action btn-delete" title="Inativar">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 6h18"/>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                      </svg>
-                    </a>
                   <?php endif; ?>
                 </td>
               </tr>
