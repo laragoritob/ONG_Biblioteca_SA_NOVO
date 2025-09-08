@@ -24,6 +24,8 @@ switch ($_SESSION['perfil']) {
 
 $multas = [];
 $erro = null;
+// Histórico de multas pagas
+$multas_pagas = [];
 
 try {
   if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])) {
@@ -37,7 +39,7 @@ try {
                   INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo
                   INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
                   INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
-                  WHERE m.Cod_Multa = :busca
+                  WHERE m.Cod_Multa = :busca AND m.Status_Multa <> 'Paga'
                   ORDER BY m.Data_Multa DESC";
           $stmt = $pdo->prepare($sql);
           $stmt->bindParam(":busca", $busca, PDO::PARAM_INT);
@@ -49,7 +51,7 @@ try {
                   INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo
                   INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
                   INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
-                  WHERE c.Nome LIKE :busca_nome
+                  WHERE c.Nome LIKE :busca_nome AND m.Status_Multa <> 'Paga'
                   ORDER BY m.Data_Multa DESC";
           $stmt = $pdo->prepare($sql);
           $stmt->bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
@@ -62,6 +64,7 @@ try {
               INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo
               INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
               INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+              WHERE m.Status_Multa <> 'Paga'
               ORDER BY m.Data_Multa DESC";
       $stmt = $pdo->prepare($sql);
   }
@@ -69,6 +72,19 @@ try {
   $stmt->execute();
   $multas = $stmt->fetchAll(PDO::FETCH_ASSOC);
   if (!is_array($multas)) $multas = [];
+
+  // Buscar histórico contendo apenas multas pagas
+  $sql_pagas = "SELECT m.Cod_Multa, c.Nome AS Nome_Cliente, l.Titulo AS Nome_Livro,
+                       m.Data_Multa, m.Valor_Multa, m.Status_Multa
+                FROM multa m
+                INNER JOIN emprestimo e ON m.Cod_Emprestimo = e.Cod_Emprestimo
+                INNER JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+                INNER JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+                WHERE m.Status_Multa = 'Paga'
+                ORDER BY m.Data_Multa DESC";
+  $stmt_pagas = $pdo->prepare($sql_pagas);
+  $stmt_pagas->execute();
+  $multas_pagas = $stmt_pagas->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
   $erro = "Erro na consulta: " . $e->getMessage();
@@ -302,7 +318,11 @@ try {
         
         <button type="submit" class="btn-filtrar">Buscar</button>
         <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar</button>
+        <div>
+          <button type="button" id="btn-historico" class="btn-filtrar" onclick="alternarVisualizacao()">Ver Histórico de Pagas</button>
+        </div>
       </form>
+      
         </div>
       
       <?php if (isset($erro)) { ?>
@@ -311,6 +331,11 @@ try {
           </div>
       <?php } ?>
       
+      <!-- Campo hidden para armazenar dados de multas pagas -->
+      <div id="dados-pagas" style="display: none;">
+        <?php echo json_encode($multas_pagas); ?>
+      </div>
+
       <nav>
         <table id="funcionarios-table">
           <thead>
@@ -324,7 +349,6 @@ try {
               <th>AÇÕES</th>
             </tr>
           </thead>
-          <tbody>
           <tbody>
   <?php if (!empty($multas) && is_array($multas)): ?>
     <?php foreach ($multas as $m): ?>
@@ -354,7 +378,7 @@ try {
       </tr>
     <?php endforeach; ?>
   <?php else: ?>
-    <tr><td colspan="7">Nenhuma multa encontrada</td></tr>
+    <tr><td colspan="7">Nenhuma multa pendente encontrada</td></tr>
   <?php endif; ?>
 </tbody>
   </table>
@@ -363,6 +387,107 @@ try {
       <script src="subtelas_javascript/consultas.js"></script>
 
       <script>
+        let visualizacaoAtual = 'todas'; // 'todas' ou 'pagas'
+        let dadosTodas = [];
+        let dadosPagas = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+          // Captura dados atuais renderizados na tabela
+          const tabela = document.getElementById('funcionarios-table');
+          const linhas = tabela.querySelectorAll('tbody tr');
+          dadosTodas = Array.from(linhas)
+            .filter(l => l.cells && l.cells.length >= 6)
+            .map(l => ({
+              id: l.cells[0] ? l.cells[0].textContent.trim() : '',
+              cliente: l.cells[1] ? l.cells[1].textContent.trim() : '',
+              livro: l.cells[2] ? l.cells[2].textContent.trim() : '',
+              dataMulta: l.cells[3] ? l.cells[3].textContent.trim() : '',
+              valor: l.cells[4] ? l.cells[4].textContent.trim() : '',
+              status: l.cells[5] ? l.cells[5].textContent.trim() : ''
+            }));
+
+          // Carrega multas pagas do hidden
+          const dadosPagasElement = document.getElementById('dados-pagas');
+          if (dadosPagasElement && dadosPagasElement.textContent && dadosPagasElement.textContent.trim()) {
+            try {
+              dadosPagas = JSON.parse(dadosPagasElement.textContent);
+            } catch (e) {
+              console.error('Erro ao fazer parse das multas pagas:', e);
+              dadosPagas = [];
+            }
+          }
+        });
+
+        function alternarVisualizacao() {
+          const btnHistorico = document.getElementById('btn-historico');
+          const tabela = document.getElementById('funcionarios-table');
+          const tbody = tabela.querySelector('tbody');
+
+          if (visualizacaoAtual === 'todas') {
+            visualizacaoAtual = 'pagas';
+            btnHistorico.textContent = 'Ver Pendentes';
+            btnHistorico.style.backgroundColor = '#e53e3e';
+
+            tbody.innerHTML = '';
+            if (dadosPagas.length > 0) {
+              dadosPagas.forEach(multa => {
+                const linha = document.createElement('tr');
+                linha.className = 'multa-paga';
+                linha.innerHTML = `
+                  <td>${multa.Cod_Multa}</td>
+                  <td>${multa.Nome_Cliente}</td>
+                  <td>${multa.Nome_Livro}</td>
+                  <td>${formatarData(multa.Data_Multa)}</td>
+                  <td>R$ ${Number(multa.Valor_Multa).toFixed(2).replace('.', ',')}</td>
+                  <td><span class="status-paga">PAGA</span></td>
+                  <td><span style="color:#666;font-style:italic;">Multa paga</span></td>
+                `;
+                tbody.appendChild(linha);
+              });
+            } else {
+              tbody.innerHTML = '<tr><td colspan="7">Nenhuma multa paga encontrada</td></tr>';
+            }
+          } else {
+            visualizacaoAtual = 'todas';
+            btnHistorico.textContent = 'Ver Histórico de Pagas';
+            btnHistorico.style.backgroundColor = 'rgb(83, 86, 238)';
+
+            tbody.innerHTML = '';
+            if (dadosTodas.length > 0) {
+              dadosTodas.forEach(multa => {
+                const linha = document.createElement('tr');
+                if ((multa.status || '').toLowerCase() === 'paga') {
+                  linha.className = 'multa-paga';
+                }
+                // Preparar valor numérico para o onclick
+                const valorNumerico = parseFloat((multa.valor || '').replace(/[^0-9,.-]/g, '').replace('.', '').replace(',', '.')) || 0;
+                linha.innerHTML = `
+                  <td>${multa.id}</td>
+                  <td>${multa.cliente}</td>
+                  <td>${multa.livro}</td>
+                  <td>${multa.dataMulta}</td>
+                  <td>${multa.valor}</td>
+                  <td>${(multa.status || '').toUpperCase() === 'PAGA' ? '<span class="status-paga">PAGA</span>' : '<span class="status-pendente">PENDENTE</span>'}</td>
+                  <td>${(multa.status || '').toUpperCase() === 'PAGA' ? '' : `<button class="btn-pagar" onclick="confirmarPagamento(${multa.id}, '${escapeJs(multa.cliente)}', '${escapeJs(multa.livro)}', ${valorNumerico})">Pagar</button>`}</td>
+                `;
+                tbody.appendChild(linha);
+              });
+            } else {
+              tbody.innerHTML = '<tr><td colspan="7">Nenhuma multa pendente encontrada</td></tr>';
+            }
+          }
+        }
+
+        function formatarData(dataString) {
+          if (!dataString) return 'Não informado';
+          const data = new Date(dataString);
+          if (isNaN(data.getTime())) return dataString;
+          return data.toLocaleDateString('pt-BR');
+        }
+
+        function escapeJs(str) {
+          return String(str).replace(/['"\\]/g, '\\$&');
+        }
         // Função para filtrar tabela pelo input de busca
         function filtrarTabela() {
           const input = document.getElementById("search-input").value.toLowerCase();
