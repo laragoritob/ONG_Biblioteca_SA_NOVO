@@ -123,26 +123,35 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    .filtro-container {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    
     #search-container {
       display: flex;
       align-items: center;
       gap: 15px;
       flex: 1;
-      min-width: 1205px;
-      margin-left: 75px;
+      min-width: 300px;
     }
     
     .input-wrapper {
       flex: 1;
       position: relative;
+    }
+    
+    .filtro-select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: white;
+      min-width: 150px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+    
+    .filtro-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
     }
     
     .btn-filtrar {
@@ -234,6 +243,12 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
       text-decoration: none;
     }
     
+    .nome-clicavel {
+      cursor: pointer;
+      color: #667eea;
+      text-decoration: none;
+    }
+    
     /* Responsividade */
     @media (max-width: 768px) {
       .filtro-container {
@@ -247,6 +262,11 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
       }
       
       .input-wrapper {
+        width: 100%;
+      }
+      
+      .filtro-select {
+        min-width: auto;
         width: 100%;
       }
     }
@@ -267,7 +287,8 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
     </header>
 
       <form method="POST" action="consultar_editora.php">
-        <div id="search-container">
+      <div class="filtro-container">
+       <div id="search-container">
           <div class="input-wrapper">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
             <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 05/09/2025 às 19:25
+-- Tempo de geração: 05/09/2025 às 22:05
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -383,7 +383,9 @@ INSERT INTO `genero` (`Cod_Genero`, `Nome_Genero`) VALUES
 (8, 'Horror'),
 (9, 'Fantasia'),
 (10, 'Autobiografia'),
-(11, 'Infanto Juvenil');
+(11, 'Infanto Juvenil'),
+(12, 'Thriller'),
+(13, 'Mistério');
 
 -- --------------------------------------------------------
 
@@ -411,7 +413,10 @@ CREATE TABLE `livro` (
 --
 
 INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`, `status`) VALUES
-(12, 21, 4, 9, 9, 'Harry Potter e a Pedra Filosofal', '1990-08-20', '2025-09-05', 10, '5', 0x3831696266596b34716d4c2e6a7067, 'ativo');
+(12, 21, 4, 9, 9, 'Harry Potter e a Pedra Filosofal', '1990-08-20', '2025-09-05', 10, '5', 0x3831696266596b34716d4c2e6a7067, 'ativo'),
+(14, 20, 5, 9, 3, 'Amor & Gelato', '2016-06-03', '2025-09-05', 10, '8', 0x30373165333764342d643862322d343665372d393039652d3333333934656335636664392e6a7067, 'ativo'),
+(15, 23, 17, 15, 6, 'It a Coisa', '1986-09-15', '2025-09-05', 15, '9', 0x69745f636f6973612e6a7067, 'ativo'),
+(16, 26, 8, 14, 13, 'O Código da Vinci', '2006-06-19', '2025-09-05', 1, '14', 0x37316d617277582b6c794c2e5f5546313030302c313030305f514c38305f2e6a7067, 'ativo');
 
 --
 -- Acionadores `livro`
@@ -614,7 +619,12 @@ INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_
 (152, 'livro', 'INSERT', 8, NULL, 'Título: AAAAAAAAAAAAAAAAA', NULL, '2025-09-05 17:14:56', NULL),
 (153, 'livro', 'DELETE', 8, 'Título: AAAAAAAAAAAAAAAAA', NULL, NULL, '2025-09-05 17:15:15', NULL),
 (154, 'livro', 'DELETE', 1, 'Título: Harry Potter', NULL, NULL, '2025-09-05 17:24:03', NULL),
-(155, 'livro', 'INSERT', 12, NULL, 'Título: Harry Potter e a Pedra Filosofal', NULL, '2025-09-05 17:25:07', NULL);
+(155, 'livro', 'INSERT', 12, NULL, 'Título: Harry Potter e a Pedra Filosofal', NULL, '2025-09-05 17:25:07', NULL),
+(156, 'livro', 'INSERT', 13, NULL, 'Título: AAAAAAAAAAA', NULL, '2025-09-05 18:00:19', NULL),
+(157, 'livro', 'DELETE', 13, 'Título: AAAAAAAAAAA', NULL, NULL, '2025-09-05 18:00:27', NULL),
+(158, 'livro', 'INSERT', 14, NULL, 'Título: Amor & Gelato', NULL, '2025-09-05 19:38:34', NULL),
+(159, 'livro', 'INSERT', 15, NULL, 'Título: It a Coisa', NULL, '2025-09-05 19:45:48', NULL),
+(160, 'livro', 'INSERT', 16, NULL, 'Título: O Código da Vinci', NULL, '2025-09-05 20:04:43', NULL);
 
 -- --------------------------------------------------------
 
@@ -803,19 +813,19 @@ ALTER TABLE `funcionario`
 -- AUTO_INCREMENT de tabela `genero`
 --
 ALTER TABLE `genero`
-  MODIFY `Cod_Genero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `Cod_Genero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `livro`
 --
 ALTER TABLE `livro`
-  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=156;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
 
 --
 -- AUTO_INCREMENT de tabela `multa`

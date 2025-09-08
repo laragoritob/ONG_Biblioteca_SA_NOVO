@@ -122,20 +122,10 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
   <meta charset="UTF-8">
   <title>ONG Biblioteca - Consultar Doadores</title>
   <link rel="stylesheet" type="text/css" href="subtelas_css/consultas.css" />
-  <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar.css" />
   <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-
-    .filtro-container {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    
     #search-container {
       display: flex;
       align-items: center;
@@ -149,23 +139,23 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
       position: relative;
     }
     
-        .filtro-select {
-       padding: 10px !important;
-       border: 1px solid #ddd !important;
-       border-radius: 5px !important;
-       background: white !important;
-       min-width: 150px !important;
-       font-size: 14px !important;
-       color: #333 !important;
-       cursor: pointer !important;
-       transition: border-color 0.3s !important;
-     }
-     
-     .filtro-select:focus {
-       outline: none !important;
-       border-color: #667eea !important;
-       box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1) !important;
-     }
+    .filtro-select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: white;
+      min-width: 150px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+    
+    .filtro-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+    }
     
     .btn-filtrar {
       padding: 10px 20px;
@@ -196,7 +186,7 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
     .btn-limpar:hover {
       background: #c53030;
     }
-
+    
     .status-buttons {
       display: flex;
       gap: 10px;
@@ -252,6 +242,16 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
     
+    a {
+      text-decoration: none;
+    }
+    
+    .nome-clicavel {
+      cursor: pointer;
+      color: #667eea;
+      text-decoration: none;
+    }
+    
     /* Responsividade */
     @media (max-width: 768px) {
       .filtro-container {
@@ -268,10 +268,10 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
         width: 100%;
       }
       
-             .filtro-select {
-         min-width: auto !important;
-         width: 100% !important;
-       }
+      .filtro-select {
+        min-width: auto;
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -289,8 +289,9 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
       <h1>Consultar Doadores</h1>
   </header>
 
+  <form method="POST" action="consultar_doador.php">
   <div class="filtro-container">
-    <form method="POST" action="consultar_doador.php" id="search-container">
+  <div id="search-container">
       <div class="input-wrapper">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1;color:#9ca3af;">
           <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
@@ -317,8 +318,9 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
               </a>
             <?php endif; ?>
           </div>
+          </div>
     </form>
-  </div>
+  
   
   <nav>
     <table id="funcionarios-table">
@@ -334,7 +336,7 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
           <?php foreach ($doadores as $d): ?>
             <tr>
               <td><?= htmlspecialchars($d['Cod_Doador']) ?></td>
-              <td><span class="nome-clicavel"><?= htmlspecialchars($d['Nome_Doador']) ?></span></td>
+              <td><?= htmlspecialchars($d['Nome_Doador']) ?></span></td>
               <td><?= htmlspecialchars($d['Telefone']) ?></td>
               <td><?= htmlspecialchars($d['Email']) ?></td>
               <td>

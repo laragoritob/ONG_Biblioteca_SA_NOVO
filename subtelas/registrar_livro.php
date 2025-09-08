@@ -5,6 +5,12 @@ session_start();
 // Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
+// Busca todos os gêneros do banco de dados
+$sql_generos = "SELECT Cod_Genero, Nome_Genero FROM genero ORDER BY Nome_Genero";
+$stmt_generos = $pdo->prepare($sql_generos);
+$stmt_generos->execute();
+$generos = $stmt_generos->fetchAll(PDO::FETCH_ASSOC);
+
 // Verifica se o usuário tem permissão para acessar esta página
 // Gerente (perfil 1), Bibliotecário (perfil 3) e Repositor (perfil 5) podem registrar livros
 if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 5) {
@@ -281,18 +287,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <line x1="3" y1="10" x2="21" y2="10"/>
                                     </svg>
                                     <select id="cod_genero" name="cod_genero" class="custom-select" required>
-                                        <option value="">Selecione o(s) gênero(s)</option>
-                                        <option value="1">Ação</option>
-                                        <option value="2">Aventura</option>
-                                        <option value="3">Romance</option>
-                                        <option value="4">Suspense</option>
-                                        <option value="5">Ficção Científica</option>
-                                        <option value="6">Terror</option>
-                                        <option value="7">Educacional</option>
-                                        <option value="8">Horror</option>
-                                        <option value="9">Fantasia</option>
-                                        <option value="10">Autobiografia</option>
-                                        <option value="11">Infanto Juvenil</option>
+                                        <option value="">Selecione o gênero</option>
+                                        <?php foreach ($generos as $genero): ?>
+                                            <option value="<?= $genero['Cod_Genero'] ?>"><?= htmlspecialchars($genero['Nome_Genero']) ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>

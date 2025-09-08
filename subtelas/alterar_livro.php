@@ -5,6 +5,12 @@ session_start();
 // Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
+// Busca todos os gêneros do banco de dados
+$sql_generos = "SELECT Cod_Genero, Nome_Genero FROM genero ORDER BY Nome_Genero";
+$stmt_generos = $pdo->prepare($sql_generos);
+$stmt_generos->execute();
+$generos = $stmt_generos->fetchAll(PDO::FETCH_ASSOC);
+
 // Verifica se o usuário tem permissão para acessar esta página
 // Gerente (1), Bibliotecário (3), Recreador (4) e Repositor (5) podem alterar livros
 if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4 && $_SESSION['perfil'] != 5) {
@@ -322,18 +328,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <line x1="3" y1="10" x2="21" y2="10"/>
                                     </svg>
                                     <select id="cod_genero" name="cod_genero" class="custom-select" required>
-                                        <option value="">Selecione o(s) gênero(s)</option>
-                                        <option value="1" <?= ($livro['Cod_Genero'] == '1') ? 'selected' : '' ?>>Ação</option>
-                                        <option value="2" <?= ($livro['Cod_Genero'] == '2') ? 'selected' : '' ?>>Aventura</option>
-                                        <option value="3" <?= ($livro['Cod_Genero'] == '3') ? 'selected' : '' ?>>Romance</option>
-                                        <option value="4" <?= ($livro['Cod_Genero'] == '4') ? 'selected' : '' ?>>Suspense</option>
-                                        <option value="5" <?= ($livro['Cod_Genero'] == '5') ? 'selected' : '' ?>>Ficção Científica</option>
-                                        <option value="6" <?= ($livro['Cod_Genero'] == '6') ? 'selected' : '' ?>>Terror</option>
-                                        <option value="7" <?= ($livro['Cod_Genero'] == '7') ? 'selected' : '' ?>>Educacional</option>
-                                        <option value="8" <?= ($livro['Cod_Genero'] == '8') ? 'selected' : '' ?>>Horror</option>
-                                        <option value="9" <?= ($livro['Cod_Genero'] == '9') ? 'selected' : '' ?>>Fantasia</option>
-                                        <option value="10" <?= ($livro['Cod_Genero'] == '10') ? 'selected' : '' ?>>Autobiografia</option>
-                                        <option value="11" <?= ($livro['Cod_Genero'] == '11') ? 'selected' : '' ?>>Infanto Juvenil</option>
+                                        <option value="">Selecione o gênero</option>
+                                        <?php foreach ($generos as $genero): ?>
+                                            <option value="<?= $genero['Cod_Genero'] ?>" <?= ($livro['Cod_Genero'] == $genero['Cod_Genero']) ? 'selected' : '' ?>><?= htmlspecialchars($genero['Nome_Genero']) ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>
