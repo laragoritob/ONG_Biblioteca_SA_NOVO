@@ -331,28 +331,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     return false;
                 }
             }
-            
-            // Confirmação antes de salvar
-            Swal.fire({
-                title: 'Confirmar Alteração',
-                text: 'Tem certeza que deseja salvar as alterações?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Sim, Salvar',
-                cancelButtonText: 'Cancelar',
-                customClass: {
-                    title: 'swal2-title-arial',
-                    confirmButton: 'swal2-confirm',
-                    cancelButton: 'swal2-cancel'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Continua com o envio do formulário
-                } else {
-                    e.preventDefault();
-                    return false;
-                }
-            });
         });
     </script>
     

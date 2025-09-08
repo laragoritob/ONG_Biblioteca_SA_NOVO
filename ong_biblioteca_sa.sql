@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 05/09/2025 às 22:05
+-- Tempo de geração: 08/09/2025 às 19:48
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -55,7 +55,7 @@ INSERT INTO `autor` (`Cod_Autor`, `Nome_Autor`, `Telefone`, `Email`, `status`) V
 (31, 'Ernest Hemingway', '(31) 97777-9900', 'ehemingway@email.com', 'inativo'),
 (32, 'Gabriel García Márquez', '(41) 96666-0011', 'ggmarquez@email.com', 'inativo'),
 (33, 'Clarice Lispector', '(51) 95555-2233', 'clispector@email.com', 'inativo'),
-(34, 'Machado de Assis', '(61) 94444-3344', 'machado@email.com', 'ativo');
+(34, 'Machado de Assis', '(61) 98441-3344', 'machado@email.com', 'ativo');
 
 --
 -- Acionadores `autor`
@@ -249,6 +249,14 @@ CREATE TABLE `emprestimo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Despejando dados para a tabela `emprestimo`
+--
+
+INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`, `Status_Emprestimo`) VALUES
+(4, 8, 15, '2025-09-08', '2025-09-14', 'Devolvido'),
+(5, 9, 14, '2025-09-08', '2025-09-14', 'Pendente');
+
+--
 -- Acionadores `emprestimo`
 --
 DELIMITER $$
@@ -414,7 +422,7 @@ CREATE TABLE `livro` (
 
 INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod_Genero`, `Titulo`, `Data_Lancamento`, `Data_Registro`, `Quantidade`, `Num_Prateleira`, `Foto`, `status`) VALUES
 (12, 21, 4, 9, 9, 'Harry Potter e a Pedra Filosofal', '1990-08-20', '2025-09-05', 10, '5', 0x3831696266596b34716d4c2e6a7067, 'ativo'),
-(14, 20, 5, 9, 3, 'Amor & Gelato', '2016-06-03', '2025-09-05', 10, '8', 0x30373165333764342d643862322d343665372d393039652d3333333934656335636664392e6a7067, 'ativo'),
+(14, 20, 5, 9, 3, 'Amor & Gelato', '2016-06-03', '2025-09-05', 9, '8', 0x30373165333764342d643862322d343665372d393039652d3333333934656335636664392e6a7067, 'ativo'),
 (15, 23, 17, 15, 6, 'It a Coisa', '1986-09-15', '2025-09-05', 15, '9', 0x69745f636f6973612e6a7067, 'ativo'),
 (16, 26, 8, 14, 13, 'O Código da Vinci', '2006-06-19', '2025-09-05', 1, '14', 0x37316d617277582b6c794c2e5f5546313030302c313030305f514c38305f2e6a7067, 'ativo');
 
@@ -624,7 +632,15 @@ INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_
 (157, 'livro', 'DELETE', 13, 'Título: AAAAAAAAAAA', NULL, NULL, '2025-09-05 18:00:27', NULL),
 (158, 'livro', 'INSERT', 14, NULL, 'Título: Amor & Gelato', NULL, '2025-09-05 19:38:34', NULL),
 (159, 'livro', 'INSERT', 15, NULL, 'Título: It a Coisa', NULL, '2025-09-05 19:45:48', NULL),
-(160, 'livro', 'INSERT', 16, NULL, 'Título: O Código da Vinci', NULL, '2025-09-05 20:04:43', NULL);
+(160, 'livro', 'INSERT', 16, NULL, 'Título: O Código da Vinci', NULL, '2025-09-05 20:04:43', NULL),
+(161, 'autor', 'UPDATE', 34, 'Nome: Machado de Assis, Telefone: (61) 94444-3344, Email: machado@email.com', 'Nome: Machado de Assis, Telefone: (61) 94441-3344, Email: machado@email.com', 'root@localhost', '2025-09-08 17:31:50', NULL),
+(162, 'autor', 'UPDATE', 34, 'Nome: Machado de Assis, Telefone: (61) 94441-3344, Email: machado@email.com', 'Nome: Machado de Assis, Telefone: (61) 98441-3344, Email: machado@email.com', 'root@localhost', '2025-09-08 17:33:29', NULL),
+(163, 'emprestimo', 'INSERT', 4, NULL, 'Cliente: 8, Livro: 15, Data: 2025-09-08', 'root@localhost', '2025-09-08 17:34:27', NULL),
+(164, 'livro', 'UPDATE', 15, 'Título: It a Coisa', 'Título: It a Coisa', NULL, '2025-09-08 17:34:27', NULL),
+(165, 'livro', 'UPDATE', 15, 'Título: It a Coisa', 'Título: It a Coisa', NULL, '2025-09-08 17:36:51', NULL),
+(166, 'emprestimo', 'UPDATE', 4, 'Cliente: 8, Livro: 15, Data: 2025-09-08', 'Cliente: 8, Livro: 15, Data: 2025-09-08', 'root@localhost', '2025-09-08 17:36:51', NULL),
+(167, 'emprestimo', 'INSERT', 5, NULL, 'Cliente: 9, Livro: 14, Data: 2025-09-08', 'root@localhost', '2025-09-08 17:41:11', NULL),
+(168, 'livro', 'UPDATE', 14, 'Título: Amor & Gelato', 'Título: Amor & Gelato', NULL, '2025-09-08 17:41:11', NULL);
 
 -- --------------------------------------------------------
 
@@ -801,7 +817,7 @@ ALTER TABLE `editora`
 -- AUTO_INCREMENT de tabela `emprestimo`
 --
 ALTER TABLE `emprestimo`
-  MODIFY `Cod_Emprestimo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Cod_Emprestimo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `funcionario`
@@ -825,7 +841,7 @@ ALTER TABLE `livro`
 -- AUTO_INCREMENT de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=169;
 
 --
 -- AUTO_INCREMENT de tabela `multa`
