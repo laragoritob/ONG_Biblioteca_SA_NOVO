@@ -317,7 +317,6 @@ try {
         </div>
         
         <button type="submit" class="btn-filtrar">Buscar</button>
-        <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar</button>
         <div>
           <button type="button" id="btn-historico" class="btn-filtrar" onclick="alternarVisualizacao()">Ver Histórico de Pagas</button>
         </div>

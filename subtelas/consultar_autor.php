@@ -292,7 +292,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])){
         </div>
         
         <button type="submit" class="btn-filtrar">Buscar</button>
-        <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar</button>
 
         <div class="status-buttons">
         <?php if (!$mostrar_inativos): ?>
