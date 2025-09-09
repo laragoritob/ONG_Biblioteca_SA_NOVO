@@ -810,30 +810,29 @@
                 doc.text(`Página ${pagina} - ${new Date().toLocaleDateString('pt-BR')}`, 105, 30, { align: 'center' });
                 
                 // Dados da tabela
-                const dados = logsPorTabela[tabela].map(log => [
-                    log.operacao === 'INSERT' ? 'Cadastro' : 
-                    log.operacao === 'UPDATE' ? 'Alteração' : 'Exclusão',
-                    log.id_registro,
-                    log.dados_anteriores || '-',
-                    log.dados_novos || '-',
-                    new Date(log.data_operacao).toLocaleDateString('pt-BR')
-                ]);
-                
-                doc.autoTable({
-                    startY: 40,
-                    head: [['Operação', 'ID', 'Dados Anteriores', 'Dados Novos', 'Data']],
-                    body: dados,
-                    theme: 'grid',
-                    headStyles: { fillColor: [41, 128, 185] },
-                    styles: { fontSize: 8 },
-                    columnStyles: {
-                        0: { cellWidth: 25 },
-                        1: { cellWidth: 15 },
-                        2: { cellWidth: 40 },
-                        3: { cellWidth: 40 },
-                        4: { cellWidth: 25 }
-                    }
-                });  
+                    const dados = logsPorTabela[tabela].map(log => [
+                        log.operacao === 'INSERT' ? 'Cadastro' : 
+                        log.operacao === 'UPDATE' ? 'Alteração' : 'Exclusão',
+                        log.id_registro,
+                        log.dados_novos || '-', 
+                        new Date(log.data_operacao).toLocaleDateString('pt-BR')
+                    ]);
+
+                    doc.autoTable({
+                        startY: 40,
+                        head: [['Operação', 'ID', 'Dados Principais', 'Data']], 
+                        body: dados,
+                        theme: 'grid',
+                        headStyles: { fillColor: [41, 128, 185] },
+                        styles: { fontSize: 8 },
+                        columnStyles: {
+                            0: { cellWidth: 25 },
+                            1: { cellWidth: 15 },
+                            2: { cellWidth: 80 }, 
+                            3: { cellWidth: 25 }
+                        }
+                    });
+
                 
                 // Estatísticas da tabela
                 const totalTabela = logsPorTabela[tabela].length;
