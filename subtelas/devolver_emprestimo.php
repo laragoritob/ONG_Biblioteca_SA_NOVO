@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
             $data_prevista = new DateTime($data_devolucao_prevista);
             $data_real = new DateTime($data_devolucao_real);
             $dias_atraso = $data_real->diff($data_prevista)->days;
-            $multa = $dias_atraso * 2.00; // R$ 2,00 por dia de atraso
+            $multa = $dias_atraso * 0.20; // R$ 2,00 por dia de atraso
         }
         
         // Inserir multa se houver
