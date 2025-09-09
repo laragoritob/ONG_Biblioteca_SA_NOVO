@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 09/09/2025 às 21:00
+-- Tempo de geração: 09/09/2025 às 21:04
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -248,6 +248,7 @@ CREATE TABLE `emprestimo` (
   `Cod_Livro` int(11) NOT NULL,
   `Data_Emprestimo` date NOT NULL,
   `Data_Devolucao` date NOT NULL,
+  `Data_Ultima_Renovacao` date DEFAULT NULL,
   `Status_Emprestimo` enum('Pendente','Devolvido') DEFAULT 'Pendente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -255,12 +256,12 @@ CREATE TABLE `emprestimo` (
 -- Despejando dados para a tabela `emprestimo`
 --
 
-INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`, `Status_Emprestimo`) VALUES
-(4, 8, 15, '2025-09-08', '2025-09-14', 'Devolvido'),
-(5, 9, 14, '2025-09-08', '2025-09-28', 'Devolvido'),
-(6, 10, 20, '2025-09-09', '2025-09-15', 'Pendente'),
-(7, 13, 14, '2025-09-09', '2025-09-15', 'Pendente'),
-(8, 12, 23, '2025-09-01', '2025-09-08', 'Devolvido');
+INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`, `Data_Ultima_Renovacao`, `Status_Emprestimo`) VALUES
+(4, 8, 15, '2025-09-08', '2025-09-14', NULL, 'Devolvido'),
+(5, 9, 14, '2025-09-08', '2025-09-28', NULL, 'Devolvido'),
+(6, 10, 20, '2025-09-09', '2025-09-15', NULL, 'Pendente'),
+(7, 13, 14, '2025-09-09', '2025-09-15', NULL, 'Pendente'),
+(8, 12, 23, '2025-09-01', '2025-09-08', NULL, 'Devolvido');
 
 --
 -- Acionadores `emprestimo`
