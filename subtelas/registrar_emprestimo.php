@@ -137,7 +137,7 @@ $data_devolucao_padrao = date('Y-m-d', strtotime('+1 week'));
                     </svg>
                     Voltar
             </a>
-            <h1>FAZER EMPRÉSTIMO</h1>
+            <h1>Fazer Empréstimo</h1>
         </header>
         
         <div class="main-content">
@@ -231,7 +231,7 @@ $data_devolucao_padrao = date('Y-m-d', strtotime('+1 week'));
                         <div class="input-group">
                             <label>Data Empréstimo</label>
                             <div class="input-wrapper">
-                                <input type="date" name="data_emprestimo" required id="data_emprestimo" min="1925-01-01" value="<?php echo $data_atual; ?>">
+                                <input type="date" name="data_emprestimo" required id="data_emprestimo" min="" max="" readonly value="<?php echo $data_atual; ?>">
                                 <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                     <line x1="16" y1="2" x2="16" y2="6"></line>
