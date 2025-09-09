@@ -489,6 +489,13 @@ try {
         });
       });
     });
+
+     // Função para limpar filtros
+     function limparFiltros() {
+      document.getElementById("search-input").value = "";
+      document.querySelector("select[name='filtro_genero']").value = "";
+      window.location.href = "consultar_livro.php";
+    }
     
     // Função para abrir a ficha do livro
     function abrirFichaLivro(livroId) {
