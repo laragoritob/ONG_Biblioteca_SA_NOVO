@@ -297,7 +297,6 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
           </div>
           
           <button type="submit" class="btn-filtrar">Buscar</button>
-          <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar</button>
           
           <div class="status-buttons">
             <?php if (!$mostrar_inativos): ?>

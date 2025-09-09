@@ -1,19 +1,19 @@
 <?php
-// Inicia a sessão para verificar autenticação e perfil do usuário
+// Inicia a sessão para verificar autenticação e genero do usuário
 session_start();
 
 // Inclui o arquivo de conexão com o banco de dados
 require_once '../conexao.php';
 
 // Verifica se o usuário tem permissão para acessar esta página
-// Gerente (perfil 1), Bibliotecário (perfil 3), Recreador (perfil 4) e Repositor (perfil 5) podem consultar livros
+// Gerente (genero 1), Bibliotecário (genero 3), Recreador (genero 4) e Repositor (genero 5) podem consultar livros
 if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3 && $_SESSION['perfil'] != 4 && $_SESSION['perfil'] != 5) {
     // Se não tem permissão, exibe alerta e redireciona para login
     echo "<script>alert('Acesso Negado!');window.location.href='../index.php';</script>";
     exit();
 }
 
-// Define qual página o usuário deve retornar baseado em seu perfil
+// Define qual página o usuário deve retornar baseado em seu genero
 switch ($_SESSION['perfil']) {
     case 1: // Gerente - pode acessar todas as funcionalidades
         $linkVoltar = "../gerente.php";
@@ -31,7 +31,7 @@ switch ($_SESSION['perfil']) {
         $linkVoltar = "../repositor.php";
         break;
     default:
-        // Se perfil não for reconhecido, redireciona para login
+        // Se genero não for reconhecido, redireciona para login
         $linkVoltar = "../index.php";
         break;
 }
@@ -57,34 +57,108 @@ if (isset($_GET['reativar']) && is_numeric($_GET['reativar'])) {
     }
 }
 
-// Consulta SQL para buscar todos os livros com informações relacionadas
-$sql = "SELECT 
-          l.Cod_Livro AS id_livro,
-          l.Titulo AS titulo,
-          a.Nome_Autor AS autor,
-          e.Nome_Editora AS editora,
-          d.Nome_Doador AS doador,
-          l.Data_Lancamento AS data_lancamento,
-          l.Data_Registro AS data_registro,
-          l.Quantidade AS quantidade,
-          l.Num_Prateleira AS prateleira
-        FROM livro l
-        LEFT JOIN autor a ON l.Cod_Autor = a.Cod_Autor
-        LEFT JOIN editora e ON l.Cod_Editora = e.Cod_Editora
-        LEFT JOIN doador d ON l.Cod_Doador = d.Cod_Doador
-        WHERE l.status = '" . ($mostrar_inativos ? "inativo" : "ativo") . "'
-        ORDER BY l.Titulo ASC";
-
+// Inicializa variáveis para armazenar os resultados e configurações
+$livros = [];
+$erro = null;
+$filtro_genero = isset($_POST['filtro_genero']) ? $_POST['filtro_genero'] : '';
 
 try {
-    // Prepara e executa a consulta para buscar todos os livros
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    // Em caso de erro na consulta, exibe mensagem e para execução
-    die("Erro na consulta: " . $e->getMessage());
-}
+    // Verifica se o formulário foi enviado para realizar busca
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Obtém os parâmetros de busca do formulário
+        $busca = isset($_POST['busca']) ? trim($_POST['busca']) : '';
+        $filtro_genero = isset($_POST['filtro_genero']) ? $_POST['filtro_genero'] : '';
+        
+        // Constrói a consulta SQL base com JOIN para obter o nome do genero
+        $status_condicao = $mostrar_inativos ? "l.status = 'inativo'" : "l.status = 'ativo'";
+        $sql = "SELECT 
+                  l.Cod_Livro AS id_livro,
+                  l.Titulo AS titulo,
+                  a.Nome_Autor AS autor,
+                  e.Nome_Editora AS editora,
+                  d.Nome_Doador AS doador,
+                  l.Data_Lancamento AS data_lancamento,
+                  g.Nome_Genero AS genero,
+                  l.Quantidade AS quantidade,
+                  l.Num_Prateleira AS prateleira
+                FROM livro l
+                LEFT JOIN autor a ON l.Cod_Autor = a.Cod_Autor
+                LEFT JOIN editora e ON l.Cod_Editora = e.Cod_Editora
+                LEFT JOIN doador d ON l.Cod_Doador = d.Cod_Doador
+                LEFT JOIN genero g ON l.Cod_Genero = g.Cod_Genero
+                WHERE $status_condicao";
+        
+        $params = [];
+        
+        // Adiciona filtro por genero se foi selecionado
+        if (!empty($filtro_genero)) {
+            $sql .= " AND l.Cod_Genero = :filtro_genero";
+            $params[':filtro_genero'] = $filtro_genero;
+        }
+        
+        // Adiciona filtro por busca se foi fornecido
+        if (!empty($busca)) {
+            if (is_numeric($busca)) {
+                // Se for numérico, busca por ID do livro
+                $sql .= " AND l.Cod_Livro = :busca";
+                $params[':busca'] = $busca;
+            } else {
+                // Se for texto, busca por nome do livro (busca parcial)
+                $sql .= " AND l.Titulo LIKE :busca_nome";
+                $params[':busca_nome'] = "$busca%";
+            }
+        }
+        
+        // Adiciona ordenação por ID do livro
+        $sql .= " ORDER BY l.Cod_Livro ASC";
+        
+        // Prepara a consulta SQL
+        $stmt = $pdo->prepare($sql);
+        
+        // Faz o bind dos parâmetros de forma segura
+        foreach ($params as $key => $value) {
+            if (is_numeric($value)) {
+                $stmt->bindValue($key, $value, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue($key, $value, PDO::PARAM_STR);
+            }
+          }
+      } else {
+          // BUSCA TODOS OS livros
+          $status_condicao = $mostrar_inativos ? "l.status = 'inativo'" : "l.status = 'ativo'";
+          $sql = "SELECT 
+                    l.Cod_Livro AS id_livro,
+                    l.Titulo AS titulo,
+                    a.Nome_Autor AS autor,
+                    e.Nome_Editora AS editora,
+                    d.Nome_Doador AS doador,
+                    l.Data_Lancamento AS data_lancamento,
+                    g.Nome_Genero AS genero,
+                    l.Quantidade AS quantidade,
+                    l.Num_Prateleira AS prateleira
+                  FROM livro l
+                  LEFT JOIN autor a ON l.Cod_Autor = a.Cod_Autor
+                  LEFT JOIN editora e ON l.Cod_Editora = e.Cod_Editora
+                  LEFT JOIN doador d ON l.Cod_Doador = d.Cod_Doador
+                  LEFT JOIN genero g ON l.Cod_Genero = g.Cod_Genero
+                  WHERE $status_condicao
+                  ORDER BY l.Titulo ASC";
+          
+          $stmt = $pdo->prepare($sql);
+      }
+
+      $stmt->execute();
+      $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      
+      // GARANTIR QUE $livros SEJA SEMPRE UM ARRAY
+      if (!is_array($livros)) {
+          $livros = [];
+      }
+      
+  } catch (PDOException $e) {
+      $erro = "Erro na consulta: " . $e->getMessage();
+      $livros = [];
+  }
 ?>
 
 <!DOCTYPE html>
@@ -276,9 +350,26 @@ try {
         </svg>
           <input type="text" id="search-input" name="busca" placeholder="Buscar por ID ou nome..." value="<?= htmlspecialchars(isset($_POST['busca']) ? $_POST['busca'] : '') ?>" onkeyup="filtrarTabela()">
         </div>
+
+        <select name="filtro_genero" class="filtro-select">
+            <option value="">Todos os gêneros</option>
+            <option value="1" <?= $filtro_genero == '1' ? 'selected' : '' ?>>Ação</option>
+            <option value="2" <?= $filtro_genero == '2' ? 'selected' : '' ?>>Aventura</option>
+            <option value="3" <?= $filtro_genero == '3' ? 'selected' : '' ?>>Romance</option>
+            <option value="4" <?= $filtro_genero == '4' ? 'selected' : '' ?>>Suspense</option>
+            <option value="5" <?= $filtro_genero == '5' ? 'selected' : '' ?>>Ficção Científica</option>
+            <option value="6" <?= $filtro_genero == '6' ? 'selected' : '' ?>>Terror</option>
+            <option value="7" <?= $filtro_genero == '7' ? 'selected' : '' ?>>Educacional</option>
+            <option value="8" <?= $filtro_genero == '8' ? 'selected' : '' ?>>Horror</option>
+            <option value="9" <?= $filtro_genero == '9' ? 'selected' : '' ?>>Fantasia</option>
+            <option value="10" <?= $filtro_genero == '10' ? 'selected' : '' ?>>Autorbiografia</option>
+            <option value="11" <?= $filtro_genero == '11' ? 'selected' : '' ?>>Infanto Juvenil</option>
+            <option value="12" <?= $filtro_genero == '12' ? 'selected' : '' ?>>Thriller</option>
+            <option value="13" <?= $filtro_genero == '13' ? 'selected' : '' ?>>Mistério</option>
+        </select>
         
         <button type="submit" class="btn-filtrar">Buscar</button>
-        <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar</button>
+        <button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar Filtros</button>
         
         <div class="status-buttons">
           <?php if (!$mostrar_inativos): ?>
@@ -306,10 +397,10 @@ try {
           <th>ID</th>
           <th>TÍTULO</th>
           <th>AUTOR</th>
+          <th>GÊNERO</th>
           <th>EDITORA</th>
           <th>DOADOR</th>
           <th>DATA LANÇAMENTO</th>
-          <th>DATA REGISTRO</th>
           <th>QUANTIDADE</th>
           <th>PRATELEIRA</th>
           <th>AÇÕES</th>
@@ -321,10 +412,10 @@ try {
               <td><?= htmlspecialchars($livro['id_livro']) ?></td>
               <td class="titulo-clicavel" data-livro-id="<?= $livro['id_livro'] ?>"><?= htmlspecialchars($livro['titulo']) ?></td>
               <td><?= htmlspecialchars($livro['autor'] ?? 'Não informado') ?></td>
+              <td><?= htmlspecialchars($livro['genero'] ?? '') ?></td>
               <td><?= htmlspecialchars($livro['editora'] ?? 'Não informado') ?></td>
               <td><?= htmlspecialchars($livro['doador'] ?? 'Não informado') ?></td>
               <td><?= htmlspecialchars($livro['data_lancamento'] ?? '') ?></td>
-              <td><?= htmlspecialchars($livro['data_registro'] ?? '') ?></td>
               <td><?= htmlspecialchars($livro['quantidade'] ?? '0') ?></td>
               <td><?= htmlspecialchars($livro['prateleira'] ?? '') ?></td>
               <td>
@@ -398,6 +489,13 @@ try {
         });
       });
     });
+
+     // Função para limpar filtros
+     function limparFiltros() {
+      document.getElementById("search-input").value = "";
+      document.querySelector("select[name='filtro_genero']").value = "";
+      window.location.href = "consultar_livro.php";
+    }
     
     // Função para abrir a ficha do livro
     function abrirFichaLivro(livroId) {
