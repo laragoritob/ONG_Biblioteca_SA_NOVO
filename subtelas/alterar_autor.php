@@ -202,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="page-wrapper">
-        <header>
+        <header class="header">
             <a href="consultar_autor.php" class="btn-voltar">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -214,17 +214,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="main-content">
             <div class="formulario">
-
-
                 <form method="POST" action="">
                     <div class="form-section">
                         <div class="section-title">
-                            📋 Informações do Autor
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            Informações do Autor
                         </div>
 
                         <div class="form-row">
                             <div class="input-group">
-                                <label for="nome">Nome Completo *</label>
+                                <label for="nome">Nome Completo</label>
                                 <div class="input-wrapper">
                                     <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($autor['Nome_Autor']) ?>" required>
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -237,16 +239,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="input-group">
                                 <label for="telefone">Telefone</label>
                                 <div class="input-wrapper">
-                                    <input type="text" id="telefone" name="telefone" value="<?= htmlspecialchars($autor['Telefone']) ?>" maxlength="15" oninput="formatTelefone(this)" placeholder="(00) 00000-0000">
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                                     </svg>
+                                    <input type="text" id="telefone" name="telefone" value="<?= htmlspecialchars($autor['Telefone']) ?>" maxlength="15" oninput="formatTelefone(this)" placeholder="(00) 00000-0000">
                                 </div>
                             </div>
                         </div>
 
                             <div class="input-group">
-                                <label for="email">Email *</label>
+                                <label for="email">Email</label>
                                 <div class="input-wrapper">
                                     <input type="email" id="email" name="email" value="<?= htmlspecialchars($autor['Email']) ?>" required>
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
