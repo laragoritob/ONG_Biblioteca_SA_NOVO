@@ -1,3 +1,4 @@
+
 <?php
 // Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
@@ -20,6 +21,7 @@ $sql = "SELECT
           e.Cod_Emprestimo,
           e.Data_Emprestimo,
           e.Data_Devolucao,
+          e.Data_Ultima_Renovacao,
           c.Nome as Nome_Cliente,
           l.Titulo as Nome_Livro
         FROM emprestimo e
@@ -48,25 +50,42 @@ try {
 // Processar renovação automática
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['renovar_automatico'])) {
     try {
-        // Calcular nova data de devolução (adicionar 7 dias à data atual de devolução)
-        $data_devolucao_atual = new DateTime($emprestimo['Data_Devolucao']);
-        $nova_data_devolucao = $data_devolucao_atual->add(new DateInterval('P7D'))->format('Y-m-d');
+        // Verificar se já foi renovado na mesma semana
+        $data_atual = new DateTime();
+        $data_ultima_renovacao = $emprestimo['Data_Ultima_Renovacao'] ? 
+                                new DateTime($emprestimo['Data_Ultima_Renovacao']) : 
+                                new DateTime($emprestimo['Data_Emprestimo']);
         
-        $sql_update = "UPDATE emprestimo 
-                      SET Data_Devolucao = :nova_data_devolucao
-                      WHERE Cod_Emprestimo = :id";
+        // Calcular diferença em dias entre a última renovação e a data atual
+        $diferenca = $data_atual->diff($data_ultima_renovacao);
+        $dias_desde_ultima_renovacao = $diferenca->days;
         
-        $stmt_update = $pdo->prepare($sql_update);
-        $stmt_update->bindParam(':nova_data_devolucao', $nova_data_devolucao);
-        $stmt_update->bindParam(':id', $id);
-        
-        if ($stmt_update->execute()) {
-            $sucesso = "Empréstimo renovado com sucesso! Nova data: " . date('d/m/Y', strtotime($nova_data_devolucao));
-            // Recarregar dados do emprestimo
-            $stmt->execute();
-            $emprestimo = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Verificar se já foi renovado nos últimos 7 dias
+        if ($dias_desde_ultima_renovacao < 7) {
+            $dias_restantes = 7 - $dias_desde_ultima_renovacao;
+            $erro = "Este empréstimo já foi renovado esta semana. Aguarde $dias_restantes dias para renovar novamente.";
         } else {
-            $erro = "Erro ao renovar empréstimo";
+            // Calcular nova data de devolução (adicionar 7 dias à data atual de devolução)
+            $data_devolucao_atual = new DateTime($emprestimo['Data_Devolucao']);
+            $nova_data_devolucao = $data_devolucao_atual->add(new DateInterval('P7D'))->format('Y-m-d');
+            
+            $sql_update = "UPDATE emprestimo 
+                          SET Data_Devolucao = :nova_data_devolucao,
+                              Data_Ultima_Renovacao = NOW()
+                          WHERE Cod_Emprestimo = :id";
+            
+            $stmt_update = $pdo->prepare($sql_update);
+            $stmt_update->bindParam(':nova_data_devolucao', $nova_data_devolucao);
+            $stmt_update->bindParam(':id', $id);
+            
+            if ($stmt_update->execute()) {
+                $sucesso = "Empréstimo renovado com sucesso! Nova data: " . date('d/m/Y', strtotime($nova_data_devolucao));
+                // Recarregar dados do emprestimo
+                $stmt->execute();
+                $emprestimo = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                $erro = "Erro ao renovar empréstimo";
+            }
         }
     } catch (PDOException $e) {
         $erro = "Erro ao renovar empréstimo: " . $e->getMessage();
@@ -326,6 +345,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
                         </div>
                     </div>
                 </div>
+                
+                <?php if (!empty($emprestimo['Data_Ultima_Renovacao'])): ?>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Última Renovação</label>
+                        <div class="input-wrapper">
+                            <input type="text" value="<?php echo date('d/m/Y', strtotime($emprestimo['Data_Ultima_Renovacao'])); ?>" readonly>
+                            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
 
             <div class="form-actions">

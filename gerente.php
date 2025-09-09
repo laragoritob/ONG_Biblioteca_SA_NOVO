@@ -637,7 +637,7 @@
                 
                 doc.setFontSize(12);
                 doc.setTextColor(41, 128, 185);
-                doc.text(`📋 ${tabela.charAt(0).toUpperCase() + tabela.slice(1)}`, 20, yPos);
+                doc.text(`${tabela.charAt(0).toUpperCase() + tabela.slice(1)}`, 20, yPos);
                 
                 yPos += 8;
                 doc.setFontSize(9);
