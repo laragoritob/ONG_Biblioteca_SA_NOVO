@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 08/09/2025 às 19:48
+-- Tempo de geração: 09/09/2025 às 20:13
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -231,7 +231,10 @@ INSERT INTO `editora` (`Cod_Editora`, `Nome_Editora`, `Telefone`, `Email`, `stat
 (14, 'Editora L&PM', '(31) 96666-3030', 'contato@lpm.com.br', 'ativo'),
 (15, 'Editora Nova Fronteira', '(41) 95555-4040', 'contato@novafronteira.com.br', 'ativo'),
 (16, 'Editora Scipione', '(51) 94444-5050', 'contato@scipione.com.br', 'ativo'),
-(17, 'Editora Saraiva', '(61) 93333-6060', 'contato@saraiva.com.br', 'ativo');
+(17, 'Editora Saraiva', '(61) 93333-6060', 'contato@saraiva.com.br', 'ativo'),
+(18, 'Suma', '(47) 92837-7382', 'suma@gmail.com', 'ativo'),
+(20, 'Paralela', '(47) 63627-2637', 'paralela@gmail.com', 'ativo'),
+(21, 'Princips', '(47) 92877-3882', 'princips@gmail.com', 'ativo');
 
 -- --------------------------------------------------------
 
@@ -424,7 +427,13 @@ INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod
 (12, 21, 4, 9, 9, 'Harry Potter e a Pedra Filosofal', '1990-08-20', '2025-09-05', 10, '5', 0x3831696266596b34716d4c2e6a7067, 'ativo'),
 (14, 20, 5, 9, 3, 'Amor & Gelato', '2016-06-03', '2025-09-05', 9, '8', 0x30373165333764342d643862322d343665372d393039652d3333333934656335636664392e6a7067, 'ativo'),
 (15, 23, 17, 15, 6, 'It a Coisa', '1986-09-15', '2025-09-05', 15, '9', 0x69745f636f6973612e6a7067, 'ativo'),
-(16, 26, 8, 14, 13, 'O Código da Vinci', '2006-06-19', '2025-09-05', 1, '14', 0x37316d617277582b6c794c2e5f5546313030302c313030305f514c38305f2e6a7067, 'ativo');
+(16, 26, 8, 14, 13, 'O Código da Vinci', '2006-06-19', '2025-09-05', 1, '14', 0x37316d617277582b6c794c2e5f5546313030302c313030305f514c38305f2e6a7067, 'ativo'),
+(17, 1, 3, 19, 5, 'Jogos Vorazes I', '2012-02-15', '2025-09-09', 15, '09', 0x6a6f676f735f766f72617a65732e6a7067, 'ativo'),
+(18, 22, 18, 15, 9, 'Fogo & Sangue I', '2018-11-20', '2025-09-09', 12, '17', 0x666f676f5f655f73616e6775652e6a7067, 'ativo'),
+(20, 25, 6, 19, 3, 'O Hobbit', '2019-07-15', '2025-09-09', 13, '2', '', 'ativo'),
+(21, 27, 20, 5, 3, 'Brida', '2017-07-05', '2025-09-09', 5, '08', '', 'ativo'),
+(22, 28, 12, 13, 5, 'O Fim da Eternidade', '2019-09-19', '2025-09-09', 6, '20', 0x6f46696d6461457465726e69646164652e77656270, 'ativo'),
+(23, 34, 21, 7, 3, 'Dom Casmurro ', '2019-05-02', '2025-09-09', 12, '23', 0x646f6d4361736d7572726f2e77656270, 'ativo');
 
 --
 -- Acionadores `livro`
@@ -640,7 +649,16 @@ INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_
 (165, 'livro', 'UPDATE', 15, 'Título: It a Coisa', 'Título: It a Coisa', NULL, '2025-09-08 17:36:51', NULL),
 (166, 'emprestimo', 'UPDATE', 4, 'Cliente: 8, Livro: 15, Data: 2025-09-08', 'Cliente: 8, Livro: 15, Data: 2025-09-08', 'root@localhost', '2025-09-08 17:36:51', NULL),
 (167, 'emprestimo', 'INSERT', 5, NULL, 'Cliente: 9, Livro: 14, Data: 2025-09-08', 'root@localhost', '2025-09-08 17:41:11', NULL),
-(168, 'livro', 'UPDATE', 14, 'Título: Amor & Gelato', 'Título: Amor & Gelato', NULL, '2025-09-08 17:41:11', NULL);
+(168, 'livro', 'UPDATE', 14, 'Título: Amor & Gelato', 'Título: Amor & Gelato', NULL, '2025-09-08 17:41:11', NULL),
+(169, 'livro', 'INSERT', 17, NULL, 'Título: Jogos Vorazes I', NULL, '2025-09-09 17:30:06', NULL),
+(170, 'livro', 'INSERT', 18, NULL, 'Título: Fogo & Sangue I', NULL, '2025-09-09 17:37:44', NULL),
+(171, 'livro', 'INSERT', 19, NULL, 'Título: Fogo & Sangue I', NULL, '2025-09-09 17:39:31', NULL),
+(172, 'livro', 'DELETE', 19, 'Título: Fogo & Sangue I', NULL, NULL, '2025-09-09 17:39:41', NULL),
+(173, 'livro', 'INSERT', 20, NULL, 'Título: O Hobbit', NULL, '2025-09-09 17:48:51', NULL),
+(174, 'livro', 'INSERT', 21, NULL, 'Título: Brida ', NULL, '2025-09-09 17:51:33', NULL),
+(175, 'livro', 'INSERT', 22, NULL, 'Título: O Fim da Eternidade', NULL, '2025-09-09 17:56:03', NULL),
+(176, 'livro', 'INSERT', 23, NULL, 'Título: Dom Casmurro ', NULL, '2025-09-09 18:03:56', NULL),
+(177, 'livro', 'UPDATE', 21, 'Título: Brida ', 'Título: Brida', NULL, '2025-09-09 18:04:56', NULL);
 
 -- --------------------------------------------------------
 
@@ -811,7 +829,7 @@ ALTER TABLE `doador`
 -- AUTO_INCREMENT de tabela `editora`
 --
 ALTER TABLE `editora`
-  MODIFY `Cod_Editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `Cod_Editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de tabela `emprestimo`
@@ -835,13 +853,13 @@ ALTER TABLE `genero`
 -- AUTO_INCREMENT de tabela `livro`
 --
 ALTER TABLE `livro`
-  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `Cod_Livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=169;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
 
 --
 -- AUTO_INCREMENT de tabela `multa`
