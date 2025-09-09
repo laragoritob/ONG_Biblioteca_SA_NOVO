@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 09/09/2025 às 20:13
+-- Tempo de geração: 09/09/2025 às 21:00
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -257,7 +257,10 @@ CREATE TABLE `emprestimo` (
 
 INSERT INTO `emprestimo` (`Cod_Emprestimo`, `Cod_Cliente`, `Cod_Livro`, `Data_Emprestimo`, `Data_Devolucao`, `Status_Emprestimo`) VALUES
 (4, 8, 15, '2025-09-08', '2025-09-14', 'Devolvido'),
-(5, 9, 14, '2025-09-08', '2025-09-14', 'Pendente');
+(5, 9, 14, '2025-09-08', '2025-09-28', 'Devolvido'),
+(6, 10, 20, '2025-09-09', '2025-09-15', 'Pendente'),
+(7, 13, 14, '2025-09-09', '2025-09-15', 'Pendente'),
+(8, 12, 23, '2025-09-01', '2025-09-08', 'Devolvido');
 
 --
 -- Acionadores `emprestimo`
@@ -430,10 +433,10 @@ INSERT INTO `livro` (`Cod_Livro`, `Cod_Autor`, `Cod_Editora`, `Cod_Doador`, `Cod
 (16, 26, 8, 14, 13, 'O Código da Vinci', '2006-06-19', '2025-09-05', 1, '14', 0x37316d617277582b6c794c2e5f5546313030302c313030305f514c38305f2e6a7067, 'ativo'),
 (17, 1, 3, 19, 5, 'Jogos Vorazes I', '2012-02-15', '2025-09-09', 15, '09', 0x6a6f676f735f766f72617a65732e6a7067, 'ativo'),
 (18, 22, 18, 15, 9, 'Fogo & Sangue I', '2018-11-20', '2025-09-09', 12, '17', 0x666f676f5f655f73616e6775652e6a7067, 'ativo'),
-(20, 25, 6, 19, 3, 'O Hobbit', '2019-07-15', '2025-09-09', 13, '2', '', 'ativo'),
+(20, 25, 6, 19, 3, 'O Hobbit', '2019-07-15', '2025-09-09', 12, '2', '', 'ativo'),
 (21, 27, 20, 5, 3, 'Brida', '2017-07-05', '2025-09-09', 5, '08', '', 'ativo'),
 (22, 28, 12, 13, 5, 'O Fim da Eternidade', '2019-09-19', '2025-09-09', 6, '20', 0x6f46696d6461457465726e69646164652e77656270, 'ativo'),
-(23, 34, 21, 7, 3, 'Dom Casmurro ', '2019-05-02', '2025-09-09', 12, '23', 0x646f6d4361736d7572726f2e77656270, 'ativo');
+(23, 34, 21, 7, 3, 'Dom Casmurro ', '2019-05-02', '2025-09-09', 13, '23', 0x646f6d4361736d7572726f2e77656270, 'ativo');
 
 --
 -- Acionadores `livro`
@@ -658,7 +661,18 @@ INSERT INTO `logs_auditoria` (`id`, `tabela`, `operacao`, `id_registro`, `dados_
 (174, 'livro', 'INSERT', 21, NULL, 'Título: Brida ', NULL, '2025-09-09 17:51:33', NULL),
 (175, 'livro', 'INSERT', 22, NULL, 'Título: O Fim da Eternidade', NULL, '2025-09-09 17:56:03', NULL),
 (176, 'livro', 'INSERT', 23, NULL, 'Título: Dom Casmurro ', NULL, '2025-09-09 18:03:56', NULL),
-(177, 'livro', 'UPDATE', 21, 'Título: Brida ', 'Título: Brida', NULL, '2025-09-09 18:04:56', NULL);
+(177, 'livro', 'UPDATE', 21, 'Título: Brida ', 'Título: Brida', NULL, '2025-09-09 18:04:56', NULL),
+(178, 'emprestimo', 'UPDATE', 5, 'Cliente: 9, Livro: 14, Data: 2025-09-08', 'Cliente: 9, Livro: 14, Data: 2025-09-08', 'root@localhost', '2025-09-09 18:14:57', NULL),
+(179, 'emprestimo', 'UPDATE', 5, 'Cliente: 9, Livro: 14, Data: 2025-09-08', 'Cliente: 9, Livro: 14, Data: 2025-09-08', 'root@localhost', '2025-09-09 18:14:59', NULL),
+(180, 'livro', 'UPDATE', 14, 'Título: Amor & Gelato', 'Título: Amor & Gelato', NULL, '2025-09-09 18:15:06', NULL),
+(181, 'emprestimo', 'UPDATE', 5, 'Cliente: 9, Livro: 14, Data: 2025-09-08', 'Cliente: 9, Livro: 14, Data: 2025-09-08', 'root@localhost', '2025-09-09 18:15:06', NULL),
+(182, 'emprestimo', 'INSERT', 6, NULL, 'Cliente: 10, Livro: 20, Data: 2025-09-09', 'root@localhost', '2025-09-09 18:27:50', NULL),
+(183, 'livro', 'UPDATE', 20, 'Título: O Hobbit', 'Título: O Hobbit', NULL, '2025-09-09 18:27:50', NULL),
+(184, 'emprestimo', 'INSERT', 7, NULL, 'Cliente: 13, Livro: 14, Data: 2025-09-09', 'root@localhost', '2025-09-09 18:28:26', NULL),
+(185, 'livro', 'UPDATE', 14, 'Título: Amor & Gelato', 'Título: Amor & Gelato', NULL, '2025-09-09 18:28:26', NULL),
+(186, 'emprestimo', 'INSERT', 8, NULL, 'Cliente: 12, Livro: 23, Data: 2025-09-01', 'root@localhost', '2025-09-09 18:35:39', NULL),
+(187, 'livro', 'UPDATE', 23, 'Título: Dom Casmurro ', 'Título: Dom Casmurro ', NULL, '2025-09-09 18:36:00', NULL),
+(188, 'emprestimo', 'UPDATE', 8, 'Cliente: 12, Livro: 23, Data: 2025-09-01', 'Cliente: 12, Livro: 23, Data: 2025-09-01', 'root@localhost', '2025-09-09 18:36:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -673,6 +687,14 @@ CREATE TABLE `multa` (
   `Valor_Multa` decimal(10,2) NOT NULL,
   `Status_Multa` enum('Pendente','Paga') DEFAULT 'Pendente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `multa`
+--
+
+INSERT INTO `multa` (`Cod_Multa`, `Cod_Emprestimo`, `Data_Multa`, `Valor_Multa`, `Status_Multa`) VALUES
+(9, 6, '2025-09-05', 5.50, 'Pendente'),
+(10, 8, '2025-09-09', 2.00, 'Pendente');
 
 -- --------------------------------------------------------
 
@@ -835,7 +857,7 @@ ALTER TABLE `editora`
 -- AUTO_INCREMENT de tabela `emprestimo`
 --
 ALTER TABLE `emprestimo`
-  MODIFY `Cod_Emprestimo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Cod_Emprestimo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `funcionario`
@@ -859,13 +881,13 @@ ALTER TABLE `livro`
 -- AUTO_INCREMENT de tabela `logs_auditoria`
 --
 ALTER TABLE `logs_auditoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=189;
 
 --
 -- AUTO_INCREMENT de tabela `multa`
 --
 ALTER TABLE `multa`
-  MODIFY `Cod_Multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `Cod_Multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de tabela `perfil_cliente`
