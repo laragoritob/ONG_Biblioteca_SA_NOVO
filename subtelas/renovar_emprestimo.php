@@ -1,4 +1,3 @@
-
 <?php
 // Inicia a sessão para verificar autenticação e perfil do usuário
 session_start();
@@ -47,51 +46,6 @@ try {
     die("Erro na consulta: " . $e->getMessage());
 }
 
-// Processar renovação automática
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['renovar_automatico'])) {
-    try {
-        // Verificar se já foi renovado na mesma semana
-        $data_atual = new DateTime();
-        $data_ultima_renovacao = $emprestimo['Data_Ultima_Renovacao'] ? 
-                                new DateTime($emprestimo['Data_Ultima_Renovacao']) : 
-                                new DateTime($emprestimo['Data_Emprestimo']);
-        
-        // Calcular diferença em dias entre a última renovação e a data atual
-        $diferenca = $data_atual->diff($data_ultima_renovacao);
-        $dias_desde_ultima_renovacao = $diferenca->days;
-        
-        // Verificar se já foi renovado nos últimos 7 dias
-        if ($dias_desde_ultima_renovacao < 7) {
-            $dias_restantes = 7 - $dias_desde_ultima_renovacao;
-            $erro = "Este empréstimo já foi renovado esta semana. Aguarde $dias_restantes dias para renovar novamente.";
-        } else {
-            // Calcular nova data de devolução (adicionar 7 dias à data atual de devolução)
-            $data_devolucao_atual = new DateTime($emprestimo['Data_Devolucao']);
-            $nova_data_devolucao = $data_devolucao_atual->add(new DateInterval('P7D'))->format('Y-m-d');
-            
-            $sql_update = "UPDATE emprestimo 
-                          SET Data_Devolucao = :nova_data_devolucao,
-                              Data_Ultima_Renovacao = NOW()
-                          WHERE Cod_Emprestimo = :id";
-            
-            $stmt_update = $pdo->prepare($sql_update);
-            $stmt_update->bindParam(':nova_data_devolucao', $nova_data_devolucao);
-            $stmt_update->bindParam(':id', $id);
-            
-            if ($stmt_update->execute()) {
-                $sucesso = "Empréstimo renovado com sucesso! Nova data: " . date('d/m/Y', strtotime($nova_data_devolucao));
-                // Recarregar dados do emprestimo
-                $stmt->execute();
-                $emprestimo = $stmt->fetch(PDO::FETCH_ASSOC);
-            } else {
-                $erro = "Erro ao renovar empréstimo";
-            }
-        }
-    } catch (PDOException $e) {
-        $erro = "Erro ao renovar empréstimo: " . $e->getMessage();
-    }
-}
-
 // Processar formulário de alteração manual
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
     $data_devolucao = trim($_POST['data_devolucao']);
@@ -134,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Renovar Empréstimo</title>
+    <title>Alterar Data de Devolução</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="subtelas_css/cadastros.css">
     <link rel="stylesheet" type="text/css" href="subtelas_css/sidebar-dropdown.css">
@@ -236,6 +190,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
             border: 1px solid #e5e7eb;
         }
         
+        .date-input-container {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .date-input-container h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #374151;
+            font-size: 1.1rem;
+        }
+        
+        .date-input-row {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+        
         @media (max-width: 768px) {
             body {
                 padding: 0.5rem;
@@ -252,6 +227,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
             .formulario {
                 padding: 1rem;
             }
+            
+            .date-input-row {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -259,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
     <?php include 'includes/sidebar-dropdown.php'; ?>
     <div class="main-container">
         <div class="header">
-            <h1>Renovar Empréstimo #<?php echo $emprestimo['Cod_Emprestimo']; ?></h1>
+            <h1>Alterar Data de Devolução #<?php echo $emprestimo['Cod_Emprestimo']; ?></h1>
         </div>
 
         <?php if (isset($erro)): ?>
@@ -364,17 +343,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
                 <?php endif; ?>
             </div>
 
+            <div class="form-row">
+                <div class="date-input-row">
+                    <button type="button" onclick="alterarData()" class="btn btn-primary" style="margin-bottom: 0;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        Alterar Data
+                    </button>
+                </div>
+            </div>
+
             <div class="form-actions">
-                <button type="button" onclick="renovarAutomatico()" class="btn btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-                        <path d="M21 3v5h-5"/>
-                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
-                        <path d="M3 21v-5h5"/>
-                    </svg>
-                    Renovar (+7 dias)
-                </button>
-                
                 <a href="consultar_emprestimo.php" class="btn btn-back">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="m15 18-6-6 6-6"/>
@@ -415,31 +397,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alterar_manual'])) {
                 });
             });
         <?php endif; ?>
-
-        function renovarAutomatico() {
-            Swal.fire({
-                title: 'Confirmar Renovação',
-                text: 'Deseja renovar o empréstimo adicionando 7 dias à data de devolução?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Sim, Renovar',
-                cancelButtonText: 'Cancelar',
-                customClass: {
-                    title: 'swal2-title-arial',
-                    confirmButton: 'swal2-confirm',
-                    cancelButton: 'swal2-cancel'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Criar e enviar formulário para renovação automática
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.innerHTML = '<input type="hidden" name="renovar_automatico" value="1">';
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            });
-        }
 
         function alterarData() {
             const data_devolucao = document.getElementById('data_devolucao').value.trim();
