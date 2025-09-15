@@ -98,6 +98,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $quantidade = intval(trim($_POST['quantidade'])); // Converte para inteiro
     $num_prateleira = trim($_POST['num_prateleira']);
     
+    // Processar upload da foto - mantém a foto atual por padrão
+    $foto = $livro['Foto'];
+    
+    // Verifica se foi enviada uma nova foto
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $arquivo_tmp = $_FILES['foto']['tmp_name'];
+        $nome_arquivo = $_FILES['foto']['name'];
+        $extensao = strtolower(pathinfo($nome_arquivo, PATHINFO_EXTENSION));
+        
+        // Verifica se a extensão do arquivo é válida
+        $extensoes_validas = ['jpg', 'jpeg', 'png'];
+        if (in_array($extensao, $extensoes_validas)) {
+            // Gera um nome único para o arquivo para evitar conflitos
+            $novo_nome = uniqid() . '.' . $extensao;
+            $destino = 'subtelas_img/' . $novo_nome;
+            
+            // Move o arquivo para a pasta de imagens
+            if (move_uploaded_file($arquivo_tmp, $destino)) {
+                // Se havia uma foto anterior, deleta para liberar espaço
+                if (!empty($livro['Foto']) && file_exists('subtelas_img/' . $livro['Foto'])) {
+                    unlink('subtelas_img/' . $livro['Foto']);
+                }
+                $foto = $novo_nome;
+            }
+        }
+    }
+    
     if (empty($titulo)) {
         $erro = "Título é obrigatório";
     } elseif (empty($cod_autor)) {
@@ -117,7 +144,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                               Data_Lancamento = :data_lancamento,
                               Data_Registro = :data_registro,
                               Quantidade = :quantidade,
-                              Num_Prateleira = :num_prateleira
+                              Num_Prateleira = :num_prateleira,
+                              Foto = :foto
                           WHERE Cod_Livro = :id";
             
             $stmt_update = $pdo->prepare($sql_update);
@@ -130,6 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_update->bindParam(':data_registro', $data_registro);
             $stmt_update->bindParam(':quantidade', $quantidade);
             $stmt_update->bindParam(':num_prateleira', $num_prateleira);
+            $stmt_update->bindParam(':foto', $foto);
             $stmt_update->bindParam(':id', $id);
             
             if ($stmt_update->execute()) {
@@ -234,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <main class="main-content">
             <div class="container">
-                    <form class="formulario" method="POST" action="">
+                    <form class="formulario" method="POST" action="" enctype="multipart/form-data">
                     <?php if (isset($erro)): ?>
                         <div class="alert alert-error" style="display: none;">
                             <?= htmlspecialchars($erro) ?>
@@ -342,7 +371,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="foto">Foto do Livro</label>
                                 <div class="file-upload-wrapper">
                                     <input type="text" name="seletor_arquivo" id="seletor_arquivo" readonly placeholder="Nenhum arquivo selecionado" class="file-display">
-                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" multiple onchange="atualizarNomeArquivo()">
+                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" onchange="atualizarNomeArquivo()">
                                     <button type="button" class="file-select-btn" onclick="document.getElementById('foto').click()">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -633,6 +662,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 });
             });
         <?php endif; ?>
+    </script>
+    <script>
+        function atualizarNomeArquivo() {
+            const inputFile = document.getElementById('foto');
+            const display = document.getElementById('seletor_arquivo');
+            if (inputFile && inputFile.files && inputFile.files.length > 0) {
+                display.value = inputFile.files[0].name;
+            }
+        }
     </script>
     <script src="subtelas_javascript/sidebar-dropdown.js"></script>
 </body>

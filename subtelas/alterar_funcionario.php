@@ -155,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                               Sexo = :sexo,
                               Telefone = :telefone,
                               Data_Nascimento = :data_nascimento,
+                              Foto = :foto,
                               CEP = :cep,
                               UF = :uf,
                               Cidade = :cidade,
@@ -172,6 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_update->bindParam(':sexo', $sexo);
             $stmt_update->bindParam(':telefone', $telefone);
             $stmt_update->bindParam(':data_nascimento', $data_nascimento);
+            $stmt_update->bindParam(':foto', $foto);
             $stmt_update->bindParam(':cep', $cep);
             $stmt_update->bindParam(':uf', $uf);
             $stmt_update->bindParam(':cidade', $cidade);
@@ -287,7 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <main class="main-content">
             <div class="container">
-                <form class="formulario" id="form_pessoal" method="POST" action="">
+                <form class="formulario" id="form_pessoal" method="POST" action="" enctype="multipart/form-data">
                     <section class="form-section">
                         <h2 class="section-title">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -384,7 +386,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="foto">Foto do Funcionário</label>
                                 <div class="file-upload-wrapper">
                                     <input type="text" name="seletor_arquivo" id="seletor_arquivo" readonly placeholder="Nenhum arquivo selecionado" class="file-display" value="<?= htmlspecialchars($funcionario['Foto']) ?>">
-                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" multiple onchange="atualizarNomeArquivo()">
+                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" onchange="atualizarNomeArquivo()">
                                     <button type="button" class="file-select-btn" onclick="document.getElementById('foto').click()">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -693,6 +695,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             input.value = formattedValue;
+        }
+    </script>
+    <script>
+        function atualizarNomeArquivo() {
+            const inputFile = document.getElementById('foto');
+            const display = document.getElementById('seletor_arquivo');
+            if (inputFile && inputFile.files && inputFile.files.length > 0) {
+                display.value = inputFile.files[0].name;
+            }
         }
     </script>
     <script src="subtelas_javascript/sidebar-dropdown.js"></script>

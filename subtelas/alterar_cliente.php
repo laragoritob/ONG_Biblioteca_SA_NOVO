@@ -332,7 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="foto">Foto do Cliente</label>
                                 <div class="file-upload-wrapper">
                                     <input type="text" name="seletor_arquivo" id="seletor_arquivo" readonly placeholder="Nenhum arquivo selecionado" class="file-display" value="<?= htmlspecialchars($cliente['Foto']) ?>">
-                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" multiple onchange="atualizarNomeArquivo()">
+                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" onchange="atualizarNomeArquivo()">
                                     <button type="button" class="file-select-btn" onclick="document.getElementById('foto').click()">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
