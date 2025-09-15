@@ -205,6 +205,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="container">
                 <form class="formulario" id="form_pessoal" action="#" method="post" onsubmit="return validaFormulario()">
                     
+                <div class="input-group">
+                                <div class="input-wrapper">
+                                    <input type="hidden" id="cod_autor" name="cod_autor" placeholder="ID" style="width: 100px;">
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <div class="input-wrapper">
+                                    <input type="hidden" id="cod_genero_id" name="cod_genero_id" placeholder="ID" style="width: 100px;">
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <div class="input-wrapper">
+                                    <input type="hidden" id="cod_editora" name="cod_editora" required placeholder="ID">
+                                 </div>
+                           </div> 
+
+                           <div class="input-group">
+                                <div class="input-wrapper">
+                                    <input type="hidden" id="cod_doador" name="cod_doador" placeholder="ID">
+                                </div>
+                            </div>
+                    
                     <section class="form-section">
                         <h2 class="section-title">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -214,8 +238,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             Informações do Livro
                         </h2>
 
-                        <div class="form-row" style="display: flex; gap: 1rem; align-items: flex-start;">
-                            <div class="input-group" style="flex: 2;">
+                        <div class="form-row">
+                            <div class="input-group">
                                 <label for="nome">Titulo: </label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -225,18 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 </div>
                             </div>
 
-                            <div class="input-group" style="flex: 0.5;">
-                                <label for="id_autor">ID do Autor</label>
-                                <div class="input-wrapper">
-                                    <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="12" cy="7" r="4"/>
-                                    </svg>
-                                    <input type="number" id="cod_autor" name="cod_autor" placeholder="ID" style="width: 100px;">
-                                </div>
-                            </div>
-
-                            <div class="input-group" style="flex: 1.5;">
+                            <div class="input-group">
                                 <label for="autor">Nome do Autor</label>
                                 <div class="autocomplete-container">
                                     <div class="input-wrapper">
@@ -250,8 +263,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                         </div>
 
-                        <div class="form-row" style="display: flex; gap: 1rem; align-items: flex-start;">
-                            <div class="input-group" style="flex: 2.0">
+                        <div class="form-row">
+                            <div class="input-group">
                                 <label for="data_lancamento">Data de Lançamento</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -264,18 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 </div>
                             </div>
 
-                             <div class="input-group" style="flex: 0.5;">
-                                <label for="cod_genero">ID do Gênero</label>
-                                <div class="input-wrapper">
-                                    <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="12" cy="7" r="4"/>
-                                    </svg>
-                                    <input type="number" id="cod_genero_id" name="cod_genero_id" placeholder="ID" style="width: 100px;">
-                                </div>
-                            </div>
-
-                            <div class="input-group" style="flex: 1.5">
+                            <div class="input-group">
                                 <label for="genero">Gênero</label>
                                 <div class="input-wrapper">
                                     <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 640 640" fill="none" stroke="currentColor" stroke-width="40"> 
@@ -296,8 +298,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                         </div>
 
-                    <div class="form-row" style="display: flex; gap: 1rem; align-items: flex-start;">
-                        <div class="input-group" style="flex: 2.0;">
+                    <div class="form-row">
+                        <div class="input-group">
                                 <label for="foto">Foto do Livro</label>
                                 <div class="file-upload-wrapper">
                                     <input type="text" name="seletor_arquivo" id="seletor_arquivo" readonly placeholder="Nenhum arquivo selecionado" class="file-display">
@@ -312,17 +314,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     </button>
                                 </div>
                             </div>
-
-                        <div class="input-group" style="flex: 0.5;">
-                            <label for="cod_editora">ID da Editora</label>
-                            <div class="input-wrapper">
-                                <svg class="input-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="12" cy="7" r="4"/>
-                                    </svg>
-                                <input type="number" id="cod_editora" name="cod_editora" required placeholder="ID">
-                            </div>
-                        </div> 
 
                         <div class="input-group" style="flex: 1.5;">
                             <label for="nome_editora">Nome da Editora</label>
@@ -375,8 +366,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                         </div>
 
-                        <div class="form-row" style="display: flex; gap: 1rem; align-items: flex-start;">
-                            <div class="input-group" style="flex: 2.0;">
+                        <div class="form-row">
+                            <div class="input-group">
                                 <label for="quantidade">Quantidade</label>
                                 <div class="input-wrapper">
                                    <!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -387,18 +378,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 </div>
                             </div>
 
-                            <div class="input-group" style="flex: 0.5;">
-                                <label for="cod_doador">ID do Doador</label>
-                                <div class="input-wrapper">
-                                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="12" cy="7" r="4"/>
-                                    </svg>
-                                    <input type="number" id="cod_doador" name="cod_doador" placeholder="ID">
-                                </div>
-                            </div>
-
-                            <div class="input-group" style="flex: 1.5;">
+                            <div class="input-group">
                                 <label for="nome_doador">Nome do Doador</label>
                                 <div class="autocomplete-container">
                                     <div class="input-wrapper">
