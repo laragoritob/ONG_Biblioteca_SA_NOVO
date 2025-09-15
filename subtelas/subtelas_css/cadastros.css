@@ -47,38 +47,28 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   color: var(--text-primary);
-  line-height: 1.6;
+  line-height: 1.5; /* Reduzi o line-height */
 }
 
 .page-wrapper {
   min-height: 100vh;
-  padding: 1rem 0.5rem;
+  padding: 0.5rem 0.25rem; /* Reduzi o padding vertical */
 }
 
 /* Header Styles */
 .header {
   background: var(--bg-primary);
-  border-radius: var(--radius-xl);
-  padding: 1.5rem;
-  margin: 0 auto 2rem;
+  border-radius: var(--radius-lg); /* Raio menor */
+  padding: 0.75rem; /* Reduzi o padding */
+  margin: 0 auto 1rem; /* Reduzi a margem inferior */
   max-width: 900px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
 
-.header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-
-}
-
 .header h1 {
-  font-size: 2rem;
+  font-size: 1.5rem; /* Reduzi o tamanho da fonte */
   font-weight: 700;
   text-align: center;
   color: #480b85;
@@ -87,19 +77,19 @@ body {
 
 .btn-voltar {
   position: absolute;
-  left: 1.5rem;
+  left: 1rem; /* Reduzi o espaçamento */
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  gap: 0.4rem; /* Reduzi o gap */
+  padding: 0.35rem 0.7rem; /* Reduzi o padding */
   background: var(--bg-secondary);
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 0.7rem; /* Reduzi a fonte */
   font-weight: 500;
   transition: var(--transition);
   text-decoration: none;
@@ -110,12 +100,12 @@ body {
   color: var(--text-primary);
   border-color: var(--border-focus);
   transform: translateY(-50%) translateX(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Main Content */
 .main-content {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -126,48 +116,48 @@ body {
 
 .formulario {
   background: var(--bg-primary);
-  padding: 2rem;
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
+  padding: 1rem 2rem;   /* Reduzi significativamente o padding vertical */
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
   width: 100%;
-  max-width: 900px;
+  max-width: 100%;
   border: 1px solid var(--border-color);
 }
 
 /* Form Sections */
 .form-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem; /* Reduzi o espaçamento entre seções */
 }
 
 .form-section:last-of-type {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem; /* Reduzi ainda mais a última seção */
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.25rem;
+  gap: 0.4rem; /* Reduzi o gap */
+  font-size: 0.95rem; /* Reduzi o tamanho da fonte */
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid var(--bg-secondary);
+  margin-bottom: 0.6rem; /* Reduzi a margem inferior */
+  padding-bottom: 0.4rem; /* Reduzi o padding inferior */
+  border-bottom: 1px solid var(--bg-secondary); /* Linha mais fina */
 }
 
 .section-title svg {
   color: var(--primary-color);
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: 16px; /* Reduzi o tamanho do ícone */
+  height: 16px;
 }
 
 /* Form Rows */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1rem;
+  gap: 0.6rem; /* Reduzi o gap entre colunas */
+  margin-bottom: 0.4rem; /* Reduzi a margem inferior */
 }
 
 .form-row:last-child {
@@ -181,11 +171,11 @@ body {
 }
 
 .input-group label {
-  font-size: 0.8rem;
+  font-size: 0.7rem; /* Reduzi o tamanho da fonte */
   font-weight: 500;
   color: var(--text-secondary);
-  margin-bottom: 0.4rem;
-  margin-left: 0.4rem;
+  margin-bottom: 0.2rem; /* Reduzi a margem inferior */
+  margin-left: 0.3rem;
 }
 
 .input-wrapper {
@@ -196,23 +186,23 @@ body {
 
 .input-icon {
   position: absolute;
-  left: 0.75rem;
+  left: 0.6rem; /* Reduzi o espaçamento */
   color: var(--text-muted);
   z-index: 1;
   transition: var(--transition);
-  width: 16px;
-  height: 16px;
+  width: 12px; /* Reduzi o tamanho do ícone */
+  height: 12px;
 }
 
 .input-wrapper input,
 .input-wrapper select {
-  width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-md);
+  width: 80%;
+  padding: 0.45rem 0.45rem 0.45rem 1.8rem; /* Reduzi significativamente o padding */
+  border: 1px solid var(--border-color); /* Borda mais fina */
+  border-radius: var(--radius-sm); /* Raio menor */
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-size: 0.8rem;
+  font-size: 0.75rem; /* Reduzi o tamanho da fonte */
   transition: var(--transition);
   outline: none;
 }
@@ -220,7 +210,7 @@ body {
 .input-wrapper input:focus,
 .input-wrapper select:focus {
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+  box-shadow: 0 0 0 2px rgb(99 102 241 / 0.1); /* Shadow mais suave */
 }
 
 .input-wrapper input:focus + .input-icon,
@@ -236,25 +226,31 @@ body {
 .custom-select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.75rem center;
+  background-position: right 0.5rem center; /* Ajuste de posição */
   background-repeat: no-repeat;
-  background-size: 1rem;
-  padding-right: 2.5rem;
+  background-size: 0.8rem; /* Ícone menor */
+  padding-right: 1.8rem; /* Reduzi o padding */
 }
 
 /* CEP Wrapper */
 .cep-wrapper {
   position: relative;
+  width: 80%;
+}
+
+.cep-wrapper input {
+  padding-right: 2.2rem; /* Reduzi o padding */
+  width: 100%;
 }
 
 .btn-cep {
   position: absolute;
-  right: 0.5rem;
+  right: 0.4rem; /* Ajuste de posição */
   top: 50%;
   transform: translateY(-50%);
   background: var(--primary-color);
   border: none;
-  padding: 0.4rem;
+  padding: 0.25rem; /* Reduzi o padding */
   border-radius: var(--radius-sm);
   color: white;
   cursor: pointer;
@@ -262,6 +258,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
 }
 
 .btn-cep:hover {
@@ -270,42 +267,45 @@ body {
 }
 
 .btn-cep svg {
-  width: 14px;
-  height: 14px;
+  width: 10px; /* Ícone menor */
+  height: 10px;
 }
 
 /* File Upload */
 .file-upload-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem; /* Reduzi o gap */
+  width: 80%;
 }
 
 .file-display {
   background: var(--bg-secondary);
-  border: 2px dashed var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 0.75rem;
+  border: 1px dashed var(--border-color); /* Borda mais fina */
+  border-radius: var(--radius-sm); /* Raio menor */
+  padding: 0.4rem; /* Reduzi o padding */
   text-align: center;
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: 0.7rem; /* Fonte menor */
+  width: 100%;
 }
 
 .file-select-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  padding: 0.6rem 1rem;
+  gap: 0.25rem; /* Reduzi o gap */
+  padding: 0.35rem 0.7rem; /* Reduzi o padding */
   background: var(--bg-secondary);
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm); /* Raio menor */
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.7rem; /* Fonte menor */
   font-weight: 500;
   transition: var(--transition);
   align-self: flex-start;
+  width: 100%;
 }
 
 .file-select-btn:hover {
@@ -313,25 +313,25 @@ body {
   color: var(--text-primary);
   border-color: var(--border-focus);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm); /* Shadow mais suave */
 }
 
 .file-select-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 12px; /* Ícone menor */
+  height: 12px;
 }
 
 /* Checkbox */
 .checkbox-wrapper {
-  margin-top: 0.75rem;
+  margin-top: 0.4rem; /* Reduzi a margem */
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.3rem; /* Reduzi o gap */
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.7rem; /* Fonte menor */
   color: var(--text-secondary);
   user-select: none;
 }
@@ -341,9 +341,9 @@ body {
 }
 
 .checkbox-custom {
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid var(--border-color);
+  width: 0.8rem; /* Reduzi o tamanho */
+  height: 0.8rem;
+  border: 1px solid var(--border-color); /* Borda mais fina */
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -355,7 +355,7 @@ body {
 .checkbox-custom::after {
   content: '✓';
   color: white;
-  font-size: 0.7rem;
+  font-size: 0.55rem; /* Fonte menor */
   font-weight: bold;
   opacity: 0;
   transition: var(--transition);
@@ -373,38 +373,38 @@ body {
 /* Form Actions */
 .form-actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.6rem; /* Reduzi o gap */
   justify-content: center;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid var(--bg-secondary);
+  margin-top: 1rem; /* Reduzi a margem */
+  padding-top: 0.8rem; /* Reduzi o padding */
+  border-top: 1px solid var(--bg-secondary); /* Linha mais fina */
 }
 
 .btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  gap: 0.3rem; /* Reduzi o gap */
+  padding: 0.5rem 0.9rem; /* Reduzi o padding */
   border: none;
-  border-radius: var(--radius-md);
-  font-size: 0.8rem;
+  border-radius: var(--radius-sm); /* Raio menor */
+  font-size: 0.7rem; /* Fonte menor */
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
   text-decoration: none;
-  min-width: 180px;
+  min-width: 140px; /* Largura mínima menor */
   justify-content: center;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
   color: white;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm); /* Shadow mais suave */
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px); /* Efeito mais suave */
+  box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
@@ -417,81 +417,98 @@ body {
   background: var(--bg-tertiary);
   color: var(--text-primary);
   border-color: var(--border-focus);
-  transform: translateY(-1px);
+  transform: translateY(-1px); /* Efeito mais suave */
 }
 
 .btn svg {
-  width: 16px;
-  height: 16px;
+  width: 12px; /* Ícone menor */
+  height: 12px;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
   .formulario {
-    padding: 1.5rem;
+    padding: 0.8rem 1.5rem; /* Padding menor em tablets */
   }
   
   .form-row {
-    gap: 1rem;
+    gap: 0.5rem;
   }
 }
 
 @media (max-width: 768px) {
   .page-wrapper {
-    padding: 0.5rem 0.25rem;
+    padding: 0.25rem 0.125rem;
   }
   
   .header {
-    padding: 1rem;
-    margin-bottom: 1.5rem;
+    padding: 0.6rem;
+    margin-bottom: 0.6rem;
   }
   
   .header h1 {
-    font-size: 1.75rem;
+    font-size: 1.2rem;
   }
   
   .btn-voltar {
     position: static;
     transform: none;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.4rem;
     align-self: flex-start;
   }
   
   .formulario {
-    padding: 1rem;
+    padding: 0.6rem 1rem;
   }
   
   .form-row {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    gap: 0.4rem;
   }
   
   .form-actions {
     flex-direction: column;
     align-items: center;
+    gap: 0.4rem;
   }
   
   .btn {
     width: 100%;
-    max-width: 250px;
+    max-width: 180px;
+    min-width: unset;
+  }
+  
+  .file-upload-wrapper,
+  .cep-wrapper {
+    width: 100%;
+  }
+  
+  .input-wrapper input,
+  .input-wrapper select {
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
   .header h1 {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
   
   .formulario {
-    padding: 0.75rem;
+    padding: 0.5rem 0.8rem;
   }
   
   .section-title {
-    font-size: 1.1rem;
+    font-size: 0.85rem;
   }
   
   .form-section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.65rem;
   }
 }
 
@@ -499,7 +516,7 @@ body {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(8px); /* Movimento menor */
   }
   to {
     opacity: 1;
@@ -508,27 +525,27 @@ body {
 }
 
 .form-section {
-  animation: fadeInUp 0.6s ease-out;
+  animation: fadeInUp 0.3s ease-out; /* Animação mais rápida */
 }
 
 .form-section:nth-child(2) {
-  animation-delay: 0.1s;
+  animation-delay: 0.05s; /* Delay menor */
 }
 
 .form-section:nth-child(3) {
-  animation-delay: 0.2s;
+  animation-delay: 0.1s;
 }
 
 .form-section:nth-child(4) {
-  animation-delay: 0.3s;
+  animation-delay: 0.15s;
 }
 
 /* Focus States */
 .input-wrapper input:focus,
 .input-wrapper select:focus,
 .btn:focus {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
+  outline: 1px solid var(--primary-color); /* Outline mais fino */
+  outline-offset: 1px;
 }
 
 /* Hover Effects */
