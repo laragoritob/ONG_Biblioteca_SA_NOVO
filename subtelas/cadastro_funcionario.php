@@ -188,8 +188,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <input type="text" id="cpf" name="cpf" maxlength="14" oninput="formatCPF(this)" required placeholder="000.000.000-00">
                                 </div>
                             </div>
-                        </div>
-
+</div>
+                        
+                            <div class="form-row">
                         <div class="input-group">
                             <label for="email">E-mail</label>
                             <div class="input-wrapper">
@@ -201,9 +202,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                         </div>
 
-                        <br>
-
-                        <div class="form-row">
                             <div class="input-group">
                                 <label for="telefone">Telefone</label>
                                 <div class="input-wrapper">
@@ -213,7 +211,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <input type="text" id="telefone" name="telefone" maxlength="15" oninput="formatTelefone(this)" required placeholder="(00) 00000-0000">
                                 </div>
                             </div>
+</div>
 
+<div class="form-row">
                             <div class="input-group">
                                 <label for="foto">Foto do Funcionário</label>
                                 <div class="file-upload-wrapper">
@@ -228,8 +228,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         Selecionar Foto
                                     </button>
                                 </div>
-                            </div>
-                        </div>
+</div>
+</div>
                     </section>
 
                     <section class="form-section">
