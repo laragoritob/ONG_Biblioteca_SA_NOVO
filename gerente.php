@@ -291,8 +291,8 @@
         LEFT JOIN autor a ON l.Cod_Autor = a.Cod_Autor
         LEFT JOIN genero g ON l.Cod_Genero = g.Cod_Genero
         LEFT JOIN editora e ON l.Cod_Editora = e.Cod_Editora
-        LEFT JOIN emprestimo e_emp ON l.Cod_Livro = e_emp.Cod_Livro
-        WHERE l.status = 'ativo'
+        LEFT JOIN emprestimo e_emp ON l.Cod_Livro = e_emp.Cod_Livro AND e_emp.Status_Emprestimo = 'Pendente'
+        WHERE 1=1
     ";
 
     $params = [];
@@ -307,7 +307,7 @@
 
     $sql_livros_emprestados .= "
         GROUP BY l.Cod_Livro, l.Titulo, a.Nome_Autor, g.Nome_Genero, e.Nome_Editora, l.Quantidade, l.Num_Prateleira
-        ORDER BY l.Titulo ASC
+        ORDER BY total_emprestimos DESC, l.Titulo ASC
     ";
 
     $stmt_livros = $pdo->prepare($sql_livros_emprestados);
@@ -460,6 +460,19 @@
             </button>
         </div>
 
+        <!-- Botões de ação para PDF -->
+        <div class="btn-group" style="margin: 30px 0; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn-pdf-modern" onclick="gerarRelatorioLivros()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                                📚 Relatório de Livros
+                            </button>
+                            <button class="btn-pdf-modern" onclick="gerarRelatorioEmprestimos()" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                                🔄 Empréstimos Ativos
+                            </button>
+                            <button class="btn-pdf-modern" onclick="gerarRelatorioCompletoLivros()" style="background: linear-gradient(135deg, #6f42c1 0%, #6610f2 100%);">
+                                📊 Relatório Completo
+                            </button>
+                        </div>
+
 
         <!-- Tabela de livros mais emprestados -->
         <div class="livros-table-container" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin: 20px 0;">
@@ -520,6 +533,7 @@
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                        
                 </div>
             <?php endif; ?>
         </div>
@@ -1711,6 +1725,274 @@
             });
         }
     }
+
+    // Função para gerar relatório de livros mais emprestados
+async function gerarRelatorioLivros() {
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Cabeçalho
+        doc.setFontSize(20);
+        doc.setTextColor(44, 62, 80);
+        doc.text('ONG Biblioteca - Relatório de Livros Mais Emprestados', 105, 20, { align: 'center' });
+        
+        doc.setFontSize(12);
+        doc.setTextColor(52, 73, 94);
+        doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, 105, 30, { align: 'center' });
+        
+        // Estatísticas
+        const totalLivros = <?= count($livros_emprestados) ?>;
+        const totalEmprestimos = <?= count($emprestimos_ativos) ?>;
+        const totalEmprestimosHistoricos = <?= array_sum(array_column($livros_emprestados, 'total_emprestimos')) ?>;
+        
+        doc.setFontSize(14);
+        doc.setTextColor(41, 128, 185);
+        doc.text('Resumo Executivo', 20, 45);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(52, 73, 94);
+        doc.text(`Total de Livros: ${totalLivros}`, 20, 55);
+        doc.text(`Empréstimos Ativos: ${totalEmprestimos}`, 20, 62);
+        doc.text(`Total de Empréstimos Históricos: ${totalEmprestimosHistoricos}`, 20, 69);
+        
+        // Dados dos livros
+        const livros = <?= json_encode($livros_emprestados) ?>;
+        const dados = livros.map((livro, index) => [
+            index + 1,
+            livro.Titulo,
+            livro.Nome_Autor || 'N/A',
+            livro.Nome_Genero || 'N/A',
+            livro.Nome_Editora || 'N/A',
+            livro.total_emprestimos,
+            livro.estoque_atual,
+            livro.Num_Prateleira || 'N/A'
+        ]);
+        
+        doc.autoTable({
+            startY: 80,
+            head: [['Posição', 'Título', 'Autor', 'Gênero', 'Editora', 'Empréstimos', 'Estoque', 'Prateleira']],
+            body: dados,
+            theme: 'grid',
+            headStyles: { fillColor: [41, 128, 185] },
+            styles: { fontSize: 8 },
+            columnStyles: {
+                0: { cellWidth: 15 },
+                1: { cellWidth: 40 },
+                2: { cellWidth: 30 },
+                3: { cellWidth: 20 },
+                4: { cellWidth: 25 },
+                5: { cellWidth: 20 },
+                6: { cellWidth: 15 },
+                7: { cellWidth: 15 }
+            }
+        });
+        
+        // Salvar
+        const nomeArquivo = `relatorio_livros_${new Date().toISOString().split('T')[0]}.pdf`;
+        doc.save(nomeArquivo);
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Relatório de Livros Gerado!',
+            text: `Relatório salvo como "${nomeArquivo}"`,
+            confirmButtonColor: '#ffbcfc'
+        });
+        
+    } catch (error) {
+        console.error('Erro ao gerar relatório de livros:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro ao gerar relatório',
+            text: 'Não foi possível gerar o relatório de livros. Tente novamente.',
+            confirmButtonColor: '#ffbcfc'
+        });
+    }
+}
+
+// Função para gerar relatório de empréstimos ativos
+async function gerarRelatorioEmprestimos() {
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Cabeçalho
+        doc.setFontSize(20);
+        doc.setTextColor(44, 62, 80);
+        doc.text('ONG Biblioteca - Relatório de Empréstimos Ativos', 105, 20, { align: 'center' });
+        
+        doc.setFontSize(12);
+        doc.setTextColor(52, 73, 94);
+        doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, 105, 30, { align: 'center' });
+        
+        // Dados dos empréstimos
+        const emprestimos = <?= json_encode($emprestimos_ativos) ?>;
+        const dados = emprestimos.map(emprestimo => [
+            emprestimo.Cod_Emprestimo,
+            emprestimo.titulo_livro,
+            emprestimo.Nome_Autor || 'N/A',
+            emprestimo.Nome_Genero || 'N/A',
+            emprestimo.nome_cliente,
+            new Date(emprestimo.Data_Emprestimo).toLocaleDateString('pt-BR'),
+            new Date(emprestimo.Data_Devolucao).toLocaleDateString('pt-BR'),
+            emprestimo.Status_Emprestimo
+        ]);
+        
+        doc.autoTable({
+            startY: 45,
+            head: [['ID', 'Livro', 'Autor', 'Gênero', 'Cliente', 'Data Empréstimo', 'Data Devolução', 'Status']],
+            body: dados,
+            theme: 'grid',
+            headStyles: { fillColor: [41, 128, 185] },
+            styles: { fontSize: 8 },
+            columnStyles: {
+                0: { cellWidth: 15 },
+                1: { cellWidth: 35 },
+                2: { cellWidth: 25 },
+                3: { cellWidth: 20 },
+                4: { cellWidth: 25 },
+                5: { cellWidth: 20 },
+                6: { cellWidth: 20 },
+                7: { cellWidth: 15 }
+            }
+        });
+        
+        // Salvar
+        const nomeArquivo = `relatorio_emprestimos_${new Date().toISOString().split('T')[0]}.pdf`;
+        doc.save(nomeArquivo);
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Relatório de Empréstimos Gerado!',
+            text: `Relatório salvo como "${nomeArquivo}"`,
+            confirmButtonColor: '#ffbcfc'
+        });
+        
+    } catch (error) {
+        console.error('Erro ao gerar relatório de empréstimos:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro ao gerar relatório',
+            text: 'Não foi possível gerar o relatório de empréstimos. Tente novamente.',
+            confirmButtonColor: '#ffbcfc'
+        });
+    }
+}
+
+// Função para gerar relatório completo de livros
+async function gerarRelatorioCompletoLivros() {
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Cabeçalho
+        doc.setFontSize(20);
+        doc.setTextColor(44, 62, 80);
+        doc.text('ONG Biblioteca - Relatório Completo de Livros', 105, 20, { align: 'center' });
+        
+        doc.setFontSize(12);
+        doc.setTextColor(52, 73, 94);
+        doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, 105, 30, { align: 'center' });
+        
+        // Estatísticas gerais
+        const totalLivros = <?= count($livros_emprestados) ?>;
+        const totalEmprestimos = <?= count($emprestimos_ativos) ?>;
+        const totalEmprestimosHistoricos = <?= array_sum(array_column($livros_emprestados, 'total_emprestimos')) ?>;
+        
+        doc.setFontSize(14);
+        doc.setTextColor(41, 128, 185);
+        doc.text('Estatísticas Gerais', 20, 45);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(52, 73, 94);
+        doc.text(`Total de Livros: ${totalLivros}`, 20, 55);
+        doc.text(`Empréstimos Ativos: ${totalEmprestimos}`, 20, 62);
+        doc.text(`Total de Empréstimos Históricos: ${totalEmprestimosHistoricos}`, 20, 69);
+        
+        // Ranking de livros
+        doc.setFontSize(14);
+        doc.setTextColor(41, 128, 185);
+        doc.text('Ranking de Livros Mais Emprestados', 20, 85);
+        
+        const livros = <?= json_encode($livros_emprestados) ?>;
+        const dadosLivros = livros.map((livro, index) => [
+            index + 1,
+            livro.Titulo,
+            livro.Nome_Autor || 'N/A',
+            livro.Nome_Genero || 'N/A',
+            livro.total_emprestimos,
+            livro.estoque_atual
+        ]);
+        
+        doc.autoTable({
+            startY: 95,
+            head: [['Posição', 'Título', 'Autor', 'Gênero', 'Empréstimos', 'Estoque']],
+            body: dadosLivros,
+            theme: 'grid',
+            headStyles: { fillColor: [41, 128, 185] },
+            styles: { fontSize: 8 },
+            columnStyles: {
+                0: { cellWidth: 20 },
+                1: { cellWidth: 50 },
+                2: { cellWidth: 35 },
+                3: { cellWidth: 25 },
+                4: { cellWidth: 20 },
+                5: { cellWidth: 15 }
+            }
+        });
+        
+        // Nova página para empréstimos ativos
+        doc.addPage();
+        doc.setFontSize(16);
+        doc.setTextColor(41, 128, 185);
+        doc.text('Empréstimos Ativos', 20, 20);
+        
+        const emprestimos = <?= json_encode($emprestimos_ativos) ?>;
+        const dadosEmprestimos = emprestimos.map(emprestimo => [
+            emprestimo.Cod_Emprestimo,
+            emprestimo.titulo_livro,
+            emprestimo.nome_cliente,
+            new Date(emprestimo.Data_Emprestimo).toLocaleDateString('pt-BR'),
+            new Date(emprestimo.Data_Devolucao).toLocaleDateString('pt-BR')
+        ]);
+        
+        doc.autoTable({
+            startY: 30,
+            head: [['ID', 'Livro', 'Cliente', 'Data Empréstimo', 'Data Devolução']],
+            body: dadosEmprestimos,
+            theme: 'grid',
+            headStyles: { fillColor: [41, 128, 185] },
+            styles: { fontSize: 8 },
+            columnStyles: {
+                0: { cellWidth: 20 },
+                1: { cellWidth: 50 },
+                2: { cellWidth: 40 },
+                3: { cellWidth: 25 },
+                4: { cellWidth: 25 }
+            }
+        });
+        
+        // Salvar
+        const nomeArquivo = `relatorio_completo_livros_${new Date().toISOString().split('T')[0]}.pdf`;
+        doc.save(nomeArquivo);
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Relatório Completo Gerado!',
+            text: `Relatório salvo como "${nomeArquivo}"`,
+            confirmButtonColor: '#ffbcfc'
+        });
+        
+    } catch (error) {
+        console.error('Erro ao gerar relatório completo:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro ao gerar relatório',
+            text: 'Não foi possível gerar o relatório completo. Tente novamente.',
+            confirmButtonColor: '#ffbcfc'
+        });
+    }
+}
 </script>
 
 
