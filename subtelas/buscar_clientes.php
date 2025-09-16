@@ -15,18 +15,15 @@ if (empty($termo)) {
 }
 
 try {
-    // Consulta SQL para buscar clientees que contenham o termo no nome
-    // Usa LIKE com wildcards para busca parcial
-    $sql = "SELECT Cod_Cliente as cod_cliente, Nome_Cliente as nome FROM cliente WHERE Nome_Cliente LIKE :termo AND status = 'ativo' ORDER BY Nome_Cliente";
+    // Ajustado para usar os nomes de colunas corretos (Nome em vez de Nome_Cliente)
+    $sql = "SELECT Cod_Cliente as cod_cliente, Nome as nome FROM cliente WHERE Nome LIKE :termo AND status = 'ativo' ORDER BY Nome";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':termo', '%' . $termo . '%', PDO::PARAM_STR);
     $stmt->execute();
     
-    // Busca todos os resultados e retorna em formato JSON
     $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo json_encode($clientes);
 } catch (PDOException $e) {
-    // Em caso de erro na consulta, retorna mensagem de erro
     echo json_encode(['error' => 'Erro ao buscar clientes']);
 }
 ?>
