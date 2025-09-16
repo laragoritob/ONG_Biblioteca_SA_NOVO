@@ -242,6 +242,7 @@ $data_devolucao_padrao = date('Y-m-d', strtotime('+1 week'));
                         </div>
 </div>
                 
+<br>
 
                 <div class="form-section">
                     <h2 class="section-title">
