@@ -120,7 +120,8 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   width: 100%;
-  max-width: 100%;
+  max-width: 560px; /* Largura menor do formulário */
+  margin: 0 auto; /* Centraliza o formulário */
   border: 1px solid var(--border-color);
 }
 
