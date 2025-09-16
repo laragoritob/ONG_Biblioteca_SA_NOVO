@@ -4,7 +4,7 @@ import time
 
 driver = webdriver.Chrome()
 
-driver.get("http://localhost/001Turma2024_2V1_TARDE/ONG_Biblioteca_SA_NOVO/index.php")
+driver.get("http://localhost:8080/ONG_Biblioteca_SA_NOVO/index.php")
 
 time.sleep(2)
 
@@ -18,26 +18,20 @@ driver.find_element(By.CSS_SELECTOR, "button[type='submit']"). click()
 time.sleep(1)
 
 # Navega para a página de Fazer Empréstimo
-driver.get("http://localhost/001Turma2024_2V1_TARDE/ONG_Biblioteca_SA_NOVO/subtelas/registrar_emprestimo.php")
+driver.get("http://localhost:8080/ONG_Biblioteca_SA_NOVO/subtelas/registrar_emprestimo.php")
 
 time.sleep(1)
 
 # Preenche o campo Id do Livro
-livro_input = driver.find_element(By.ID, "cod_livro")
+livro_input = driver.find_element(By.ID, "titulo")
 livro_input.clear()
-livro_input.send_keys("15")
+livro_input.send_keys("AAAAAAAAAAAAAAAAA")
 time.sleep(2)
 
 # Preenche o campo id do cliente
-cliente_input = driver.find_element(By.ID, "cod_cliente")
+cliente_input = driver.find_element(By.ID, "nome")
 cliente_input.clear()
-cliente_input.send_keys("11")
-time.sleep(2)
-
-# Preenche o campo Data de Empréstimo
-data_emprestimo_input = driver.find_element(By.ID, "data_emprestimo")
-data_emprestimo_input.clear()
-data_emprestimo_input.send_keys("10-09-2025")
+cliente_input.send_keys("AAAAAAAAAAAAAAAAAAAAAAAA")
 time.sleep(2)
 
 # Clica no botão de cadastro
