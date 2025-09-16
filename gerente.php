@@ -354,6 +354,196 @@
     $stmt_emprestimos = $pdo->prepare($sql_emprestimos_ativos);
     $stmt_emprestimos->execute();
     $emprestimos_ativos = $stmt_emprestimos->fetchAll(PDO::FETCH_ASSOC);
+
+    // Filtro por mês/ano - padrão: mês atual
+$mes_selecionado = isset($_GET['mes']) ? $_GET['mes'] : date('Y-m');
+
+// Gerar lista de meses para o seletor (últimos 12 meses)
+$meses_disponiveis = [];
+for ($i = 0; $i < 12; $i++) {
+    $timestamp = strtotime("-$i months");
+    $meses_disponiveis[] = date('Y-m', $timestamp);
+}
+
+// Modificar a consulta do gráfico para filtrar por mês
+$sql_grafico_tempo = "
+    SELECT 
+        DATE_FORMAT(Data_Emprestimo, '%Y-%m') as mes_ano,
+        DATE_FORMAT(Data_Emprestimo, '%b/%Y') as mes_formatado,
+        COUNT(Cod_Emprestimo) as total_emprestimos
+    FROM emprestimo 
+    WHERE DATE_FORMAT(Data_Emprestimo, '%Y-%m') = :mes_ano
+    GROUP BY DATE_FORMAT(Data_Emprestimo, '%Y-%m'), DATE_FORMAT(Data_Emprestimo, '%b/%Y')
+    ORDER BY mes_ano ASC
+";
+
+$stmt_grafico = $pdo->prepare($sql_grafico_tempo);
+$stmt_grafico->execute([':mes_ano' => $mes_selecionado]);
+$dados_grafico = $stmt_grafico->fetchAll(PDO::FETCH_ASSOC);
+
+// Filtro por período - padrão: mês atual, opção para últimos 6 meses
+$periodo_selecionado = isset($_GET['periodo']) ? $_GET['periodo'] : 'mes_atual';
+$mes_selecionado = isset($_GET['mes']) ? $_GET['mes'] : date('Y-m');
+
+// Gerar lista de meses para o seletor (últimos 12 meses)
+$meses_disponiveis = [];
+for ($i = 0; $i < 12; $i++) {
+    $timestamp = strtotime("-$i months");
+    $meses_disponiveis[] = date('Y-m', $timestamp);
+}
+
+// Modificar a consulta do gráfico para suportar ambos os filtros
+if ($periodo_selecionado === 'ultimos_6_meses') {
+    $sql_grafico_tempo = "
+        SELECT 
+            DATE_FORMAT(Data_Emprestimo, '%Y-%m') as mes_ano,
+            DATE_FORMAT(Data_Emprestimo, '%b/%Y') as mes_formatado,
+            COUNT(Cod_Emprestimo) as total_emprestimos
+        FROM emprestimo 
+        WHERE Data_Emprestimo >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+        GROUP BY DATE_FORMAT(Data_Emprestimo, '%Y-%m'), DATE_FORMAT(Data_Emprestimo, '%b/%Y')
+        ORDER BY mes_ano ASC
+    ";
+    $stmt_grafico = $pdo->prepare($sql_grafico_tempo);
+    $stmt_grafico->execute();
+} else {
+    $sql_grafico_tempo = "
+        SELECT 
+            DATE_FORMAT(Data_Emprestimo, '%Y-%m') as mes_ano,
+            DATE_FORMAT(Data_Emprestimo, '%b/%Y') as mes_formatado,
+            COUNT(Cod_Emprestimo) as total_emprestimos
+        FROM emprestimo 
+        WHERE DATE_FORMAT(Data_Emprestimo, '%Y-%m') = :mes_ano
+        GROUP BY DATE_FORMAT(Data_Emprestimo, '%Y-%m'), DATE_FORMAT(Data_Emprestimo, '%b/%Y')
+        ORDER BY mes_ano ASC
+    ";
+    $stmt_grafico = $pdo->prepare($sql_grafico_tempo);
+    $stmt_grafico->execute([':mes_ano' => $mes_selecionado]);
+}
+$dados_grafico = $stmt_grafico->fetchAll(PDO::FETCH_ASSOC);
+
+// Consulta para empréstimos ativos (também com suporte a ambos os filtros)
+if ($periodo_selecionado === 'ultimos_6_meses') {
+    $sql_emprestimos_ativos = "
+        SELECT 
+            e.Cod_Emprestimo,
+            e.Data_Emprestimo,
+            e.Data_Devolucao,
+            e.Status_Emprestimo,
+            l.Titulo as titulo_livro,
+            a.Nome_Autor,
+            g.Nome_Genero,
+            c.Nome as nome_cliente,
+            c.Email as email_cliente
+        FROM emprestimo e
+        LEFT JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+        LEFT JOIN autor a ON l.Cod_Autor = a.Cod_Autor
+        LEFT JOIN genero g ON l.Cod_Genero = g.Cod_Genero
+        LEFT JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+        WHERE e.Status_Emprestimo = 'Pendente'
+        AND e.Data_Emprestimo >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+        ORDER BY e.Data_Emprestimo DESC
+    ";
+    $stmt_emprestimos = $pdo->prepare($sql_emprestimos_ativos);
+    $stmt_emprestimos->execute();
+} else {
+    $sql_emprestimos_ativos = "
+        SELECT 
+            e.Cod_Emprestimo,
+            e.Data_Emprestimo,
+            e.Data_Devolucao,
+            e.Status_Emprestimo,
+            l.Titulo as titulo_livro,
+            a.Nome_Autor,
+            g.Nome_Genero,
+            c.Nome as nome_cliente,
+            c.Email as email_cliente
+        FROM emprestimo e
+        LEFT JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+        LEFT JOIN autor a ON l.Cod_Autor = a.Cod_Autor
+        LEFT JOIN genero g ON l.Cod_Genero = g.Cod_Genero
+        LEFT JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+        WHERE e.Status_Emprestimo = 'Pendente'
+        AND DATE_FORMAT(e.Data_Emprestimo, '%Y-%m') = :mes_ano
+        ORDER BY e.Data_Emprestimo DESC
+    ";
+    $stmt_emprestimos = $pdo->prepare($sql_emprestimos_ativos);
+    $stmt_emprestimos->execute([':mes_ano' => $mes_selecionado]);
+}
+$emprestimos_ativos = $stmt_emprestimos->fetchAll(PDO::FETCH_ASSOC);
+
+// Filtro por período - padrão: últimos 6 meses
+$periodo_selecionado = isset($_GET['periodo']) ? $_GET['periodo'] : 'ultimos_6_meses';
+$mes_selecionado = isset($_GET['mes']) ? $_GET['mes'] : date('Y-m');
+
+// Modificar a consulta do gráfico para suportar ambos os filtros
+if ($periodo_selecionado === 'ultimos_6_meses') {
+    $sql_grafico_tempo = "
+        SELECT 
+            DATE_FORMAT(Data_Emprestimo, '%Y-%m') as mes_ano,
+            DATE_FORMAT(Data_Emprestimo, '%b/%Y') as mes_formatado,
+            COUNT(Cod_Emprestimo) as total_emprestimos
+        FROM emprestimo 
+        WHERE Data_Emprestimo >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+        GROUP BY DATE_FORMAT(Data_Emprestimo, '%Y-%m'), DATE_FORMAT(Data_Emprestimo, '%b/%Y')
+        ORDER BY mes_ano ASC
+    ";
+    $stmt_grafico = $pdo->prepare($sql_grafico_tempo);
+    $stmt_grafico->execute();
+} else {
+    $sql_grafico_tempo = "
+        SELECT 
+            DATE_FORMAT(Data_Emprestimo, '%Y-%m') as mes_ano,
+            DATE_FORMAT(Data_Emprestimo, '%b/%Y') as mes_formatado,
+            COUNT(Cod_Emprestimo) as total_emprestimos
+        FROM emprestimo 
+        WHERE DATE_FORMAT(Data_Emprestimo, '%Y-%m') = :mes_ano
+        GROUP BY DATE_FORMAT(Data_Emprestimo, '%Y-%m'), DATE_FORMAT(Data_Emprestimo, '%b/%Y')
+        ORDER BY mes_ano ASC
+    ";
+    $stmt_grafico = $pdo->prepare($sql_grafico_tempo);
+    $stmt_grafico->execute([':mes_ano' => $mes_selecionado]);
+}
+$dados_grafico = $stmt_grafico->fetchAll(PDO::FETCH_ASSOC);
+
+// Modificar a consulta do gráfico para mostrar apenas meses com empréstimos
+$sql_grafico_tempo = "
+    SELECT 
+        DATE_FORMAT(Data_Emprestimo, '%Y-%m') as mes_ano,
+        DATE_FORMAT(Data_Emprestimo, '%b/%Y') as mes_formatado,
+        COUNT(Cod_Emprestimo) as total_emprestimos
+    FROM emprestimo 
+    WHERE Data_Emprestimo >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+    GROUP BY DATE_FORMAT(Data_Emprestimo, '%Y-%m'), DATE_FORMAT(Data_Emprestimo, '%b/%Y')
+    HAVING total_emprestimos > 0  -- Esta linha é a chave: filtra apenas meses com empréstimos
+    ORDER BY mes_ano ASC
+";
+
+// Modificar a consulta de empréstimos ativos para filtrar por mês
+$sql_emprestimos_ativos = "
+    SELECT 
+        e.Cod_Emprestimo,
+        e.Data_Emprestimo,
+        e.Data_Devolucao,
+        e.Status_Emprestimo,
+        l.Titulo as titulo_livro,
+        a.Nome_Autor,
+        g.Nome_Genero,
+        c.Nome as nome_cliente,
+        c.Email as email_cliente
+    FROM emprestimo e
+    LEFT JOIN livro l ON e.Cod_Livro = l.Cod_Livro
+    LEFT JOIN autor a ON l.Cod_Autor = a.Cod_Autor
+    LEFT JOIN genero g ON l.Cod_Genero = g.Cod_Genero
+    LEFT JOIN cliente c ON e.Cod_Cliente = c.Cod_Cliente
+    WHERE e.Status_Emprestimo = 'Pendente'
+    AND DATE_FORMAT(e.Data_Emprestimo, '%Y-%m') = :mes_ano
+    ORDER BY e.Data_Emprestimo DESC
+";
+
+$stmt_emprestimos = $pdo->prepare($sql_emprestimos_ativos);
+$stmt_emprestimos->execute([':mes_ano' => $mes_selecionado]);
+$emprestimos_ativos = $stmt_emprestimos->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -425,6 +615,31 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="filtro-group" style="flex: 1;">
+
+                    <div style="display: flex; gap: 20px;">
+    <div class="filtro-group" style="flex: 1;">
+        <label for="filtro_periodo" style="display: block; margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 14px;">📊 Período</label>
+        <select name="periodo" id="filtro_periodo" onchange="toggleMesSelector()" style="width: 100%; padding: 12px 15px; border: 2px solid #e9ecef; border-radius: 10px; background: white; color: #495057; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <option value="ultimos_6_meses" <?= $periodo_selecionado == 'ultimos_6_meses' ? 'selected' : '' ?>>Últimos 6 Meses</option>
+            <option value="mes_especifico" <?= $periodo_selecionado == 'mes_especifico' ? 'selected' : '' ?>>Mês Específico</option>
+        </select>
+    </div>
+    
+    <div class="filtro-group" id="mes_selector_container" style="flex: 1; display: <?= $periodo_selecionado == 'mes_especifico' ? 'block' : 'none' ?>;">
+        <label for="filtro_mes" style="display: block; margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 14px;">📅 Mês/Ano</label>
+        <select name="mes" id="filtro_mes" style="width: 100%; padding: 12px 15px; border: 2px solid #e9ecef; border-radius: 10px; background: white; color: #495057; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <?php foreach ($meses_disponiveis as $mes_option): ?>
+                <option value="<?= $mes_option ?>" <?= $mes_selecionado == $mes_option ? 'selected' : '' ?>>
+                    <?= date('m/Y', strtotime($mes_option)) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+</div>
+
+</div>
                     
                     <div class="filtro-buttons" style="display: flex; gap: 15px; width: 100%;">
                         <button type="submit" onclick="aplicarFiltrosFormulario()" style="flex: 1; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; padding: 15px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 16px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,123,255,0.3);">
@@ -1992,6 +2207,62 @@ async function gerarRelatorioCompletoLivros() {
             confirmButtonColor: '#ffbcfc'
         });
     }
+}
+
+function toggleMesSelector() {
+    const periodoSelector = document.getElementById('filtro_periodo');
+    const mesSelector = document.getElementById('mes_selector_container');
+    
+    if (periodoSelector.value === 'mes_atual') {
+        mesSelector.style.display = 'block';
+    } else {
+        mesSelector.style.display = 'none';
+    }
+}
+
+// Modifique as funções de relatório para considerar o período
+async function gerarRelatorioLivros() {
+    const periodo = document.getElementById('filtro_periodo').value;
+    const mes = document.getElementById('filtro_mes').value;
+    
+    // Use esses parâmetros nas suas consultas PDF
+    // Você precisará modificar seus endpoints PHP para aceitar ambos os parâmetros
+}
+
+// Inicialize a visibilidade do seletor quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    toggleMesSelector();
+});
+
+async function gerarRelatorioLivros() {
+    const periodo = document.getElementById('filtro_periodo').value;
+    const mes = document.getElementById('filtro_mes').value;
+    
+    window.location.href = `gerar_relatorio_livros.php?periodo=${periodo}&mes=${mes}&relatorio=pdf`;
+}
+
+function toggleMesSelector() {
+    const periodoSelector = document.getElementById('filtro_periodo');
+    const mesSelector = document.getElementById('mes_selector_container');
+    
+    if (periodoSelector.value === 'mes_especifico') {
+        mesSelector.style.display = 'block';
+    } else {
+        mesSelector.style.display = 'none';
+    }
+}
+
+// Inicialize a visibilidade do seletor quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    toggleMesSelector();
+});
+
+async function gerarRelatorioLivros() {
+    const periodo = document.getElementById('filtro_periodo').value;
+    const mes = document.getElementById('filtro_mes').value;
+    
+    // Redirecionar para URL com os parâmetros corretos
+    window.location.href = `gerar_pdf_livros.php?periodo=${periodo}&mes=${mes}`;
 }
 </script>
 
