@@ -216,29 +216,33 @@ $data_devolucao_padrao = date('Y-m-d', strtotime('+1 week'));
                     <div class="form-row">
                         <div class="input-group">
                             <label>Nome do Livro</label>
-                            <div class="input-wrapper">
-                                <input type="text" name="titulo" required id="titulo" placeholder="Nome do livro" readonly>
-                                <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14,2 14,8 20,8"></polyline>
-                                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                                    <polyline points="10,9 9,9 8,9"></polyline>
-                                </svg>
+                            <div class="autocomplete-container">
+                                <div class="input-wrapper">
+                                    <input type="text" name="titulo" required id="titulo" placeholder="Nome do livro" autocomplete="off">
+                                    <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14,2 14,8 20,8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                        <polyline points="10,9 9,9 8,9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="autocomplete-suggestions" id="livro-suggestions"></div>
                             </div>
-                            <div class="autocomplete-suggestions" id="livro-suggestions"></div>
                         </div>
 
                         <div class="input-group">
                             <label>Nome do Cliente</label>
-                            <div class="input-wrapper">
-                                <input type="text" name="nome" required id="nome" placeholder="Nome do cliente" autocomplete="off">
-                                <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
+                            <div class="autocomplete-container">
+                                <div class="input-wrapper">
+                                    <input type="text" name="nome" required id="nome" placeholder="Nome do cliente" autocomplete="off">
+                                    <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                </div>
+                                <div class="autocomplete-suggestions" id="cliente-suggestions"></div>
                             </div>
-                            <div class="autocomplete-suggestions" id="cliente-suggestions"></div>
                         </div>
 </div>
                 
@@ -312,39 +316,93 @@ $data_devolucao_padrao = date('Y-m-d', strtotime('+1 week'));
     <script src="subtelas_javascript/buscarID.js"></script>
 
     <script>
-        // Função para calcular automaticamente a data de devolução
-        function calcularDataDevolucao() {
-            const dataEmprestimo = document.getElementById('data_emprestimo');
-            const campoDataDevolucao = document.getElementById('data_devolucao');
-            
-            if (dataEmprestimo && campoDataDevolucao && dataEmprestimo.value) {
-                // Adiciona 7 dias à data de empréstimo
-                const data = new Date(dataEmprestimo.value);
-                data.setDate(data.getDate() + 7);
-                
-                // Formata a data para o formato YYYY-MM-DD
-                const ano = data.getFullYear();
-                const mes = String(data.getMonth() + 1).padStart(2, '0');
-                const dia = String(data.getDate()).padStart(2, '0');
-                const dataFormatada = `${ano}-${mes}-${dia}`;
-                
-                campoDataDevolucao.value = dataFormatada;
-            }
+    // Autocomplete genérico inspirado no registrar_livro
+    function setupAutocomplete(inputId, suggestionsId, url, onSelect) {
+        const input = document.getElementById(inputId);
+        const box = document.getElementById(suggestionsId);
+        if (!input || !box) return;
+
+        let highlightedIndex = -1;
+        let items = [];
+
+        function render(list) {
+            items = list || [];
+            box.innerHTML = '';
+            highlightedIndex = -1;
+            if (!items.length) { box.style.display = 'none'; return; }
+            items.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'autocomplete-suggestion';
+                div.textContent = item.label;
+                div.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    onSelect(item);
+                    box.style.display = 'none';
+                });
+                box.appendChild(div);
+            });
+            box.style.display = 'block';
         }
 
-        // Adicionar evento quando a página carregar
-        document.addEventListener('DOMContentLoaded', function() {
-            const campoDataEmprestimo = document.getElementById('data_emprestimo');
-            
-            if (campoDataEmprestimo) {
-                // Calcular data de devolução inicial
-                setTimeout(calcularDataDevolucao, 100);
-                
-                // Calcular data de devolução sempre que a data de empréstimo mudar
-                campoDataEmprestimo.addEventListener('change', calcularDataDevolucao);
-                campoDataEmprestimo.addEventListener('input', calcularDataDevolucao);
+        function fetchData(q) {
+            if (!q || q.trim().length < 2) { render([]); return; }
+            fetch(url + encodeURIComponent(q))
+                .then(r => r.json())
+                .then(data => {
+                    const list = (data || []).map(row => ({
+                        id: row.cod_livro || row.cod_cliente || row.id || row.cod,
+                        label: row.titulo || row.nome || row.label
+                    }));
+                    render(list);
+                })
+                .catch(() => render([]));
+        }
+
+        const debounce = (fn, d) => { let t; return v => { clearTimeout(t); t = setTimeout(() => fn(v), d); }; };
+        const debouncedFetch = debounce(fetchData, 250);
+
+        input.addEventListener('input', () => debouncedFetch(input.value));
+        input.addEventListener('focus', () => { if (items.length) box.style.display = 'block'; });
+        input.addEventListener('blur', () => setTimeout(() => { box.style.display = 'none'; }, 150));
+
+        input.addEventListener('keydown', function(e) {
+            const children = Array.from(box.children);
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                highlightedIndex = Math.min(highlightedIndex + 1, children.length - 1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                highlightedIndex = Math.max(highlightedIndex - 1, 0);
+            } else if (e.key === 'Enter') {
+                if (highlightedIndex >= 0 && highlightedIndex < items.length) {
+                    e.preventDefault();
+                    onSelect(items[highlightedIndex]);
+                    box.style.display = 'none';
+                }
+            } else {
+                return;
             }
+            children.forEach((c, i) => c.classList.toggle('highlighted', i === highlightedIndex));
         });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Livro pelo título
+        setupAutocomplete('titulo', 'livro-suggestions', 'buscar_livros.php?termo=', function(item) {
+            const input = document.getElementById('titulo');
+            const hidden = document.getElementById('cod_livro');
+            input.value = item.label;
+            if (hidden) hidden.value = item.id;
+        });
+
+        // Cliente pelo nome
+        setupAutocomplete('nome', 'cliente-suggestions', 'buscar_clientes.php?termo=', function(item) {
+            const input = document.getElementById('nome');
+            const hidden = document.getElementById('cod_cliente');
+            input.value = item.label;
+            if (hidden) hidden.value = item.id;
+        });
+    });
     </script>
     
     <script>

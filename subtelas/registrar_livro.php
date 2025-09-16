@@ -54,7 +54,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data_registro = $_POST['data_registro'];
     $quantidade = intval($_POST['quantidade']); // Converte para inteiro
     $num_prateleira = $_POST['num_prateleira'];
-    $foto = $_POST['foto'];
+    // Processamento de upload da foto do livro
+    $foto = '';
+    if (isset($_FILES['foto']) && isset($_FILES['foto']['tmp_name']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $arquivo_tmp = $_FILES['foto']['tmp_name'];
+        $nome_arquivo = $_FILES['foto']['name'];
+        $extensao = strtolower(pathinfo($nome_arquivo, PATHINFO_EXTENSION));
+        $extensoes_validas = ['jpg', 'jpeg', 'png', 'webp'];
+        if (in_array($extensao, $extensoes_validas)) {
+            $novo_nome = uniqid('', true) . '.' . $extensao;
+            $destino = 'subtelas_img/' . $novo_nome;
+            if (move_uploaded_file($arquivo_tmp, $destino)) {
+                $foto = $novo_nome;
+            }
+        }
+    }
+    if (empty($foto)) {
+        // imagem padrão caso nenhuma seja enviada com sucesso
+        $foto = 'livro1.jpg';
+    }
 
     // Validação da quantidade
     if ($quantidade <= 0) {
@@ -203,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         <main class="main-content">
             <div class="container">
-                <form class="formulario" id="form_pessoal" action="#" method="post" onsubmit="return validaFormulario()">
+                <form class="formulario" id="form_pessoal" action="#" method="post" enctype="multipart/form-data" onsubmit="return validaFormulario()">
                     
                 <div class="input-group">
                                 <div class="input-wrapper">

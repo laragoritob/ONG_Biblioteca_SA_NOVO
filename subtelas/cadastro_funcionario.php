@@ -55,7 +55,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data_efetivacao = $_POST['data_efetivacao'];
     $usuario = $_POST['usuario'];
     $senha = $_POST['senha'];
-    $foto = $_POST['foto'];
+    // Processamento de upload da foto do funcionário
+    $foto = '';
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $arquivo_tmp = $_FILES['foto']['tmp_name'];
+        $nome_arquivo = $_FILES['foto']['name'];
+        $extensao = strtolower(pathinfo($nome_arquivo, PATHINFO_EXTENSION));
+        $extensoes_validas = ['jpg', 'jpeg', 'png', 'webp'];
+        if (in_array($extensao, $extensoes_validas)) {
+            $novo_nome = uniqid('', true) . '.' . $extensao;
+            $destino = 'subtelas_img/' . $novo_nome;
+            if (move_uploaded_file($arquivo_tmp, $destino)) {
+                $foto = $novo_nome;
+            }
+        }
+    }
+    if (empty($foto)) {
+        $foto = 'gustavo_perfil.jpg';
+    }
 
     // Query SQL para inserir o novo funcionário no banco de dados
     $sql = "INSERT INTO funcionario (cod_perfil, nome, cpf, sexo, email, telefone, data_nascimento, data_efetivacao, cep, uf, cidade, bairro, rua, num_residencia, usuario, senha, foto) 
@@ -120,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         <main class="main-content">
             <div class="container">
-                <form class="formulario" id="form_pessoal" action="cadastro_funcionario.php" method="POST">
+                <form class="formulario" id="form_pessoal" action="cadastro_funcionario.php" method="POST" enctype="multipart/form-data">
                     
                     <section class="form-section">
                         <h2 class="section-title">
@@ -218,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <label for="foto">Foto do Funcionário</label>
                                 <div class="file-upload-wrapper">
                                     <input type="text" name="seletor_arquivo" id="seletor_arquivo" readonly placeholder="Nenhum arquivo selecionado" class="file-display">
-                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg" style="display: none;" multiple onchange="atualizarNomeArquivo()">
+                                    <input type="file" id="foto" name="foto" accept=".png, .jpeg, .jpg, .webp" style="display: none;" multiple onchange="atualizarNomeArquivo()">
                                     <button type="button" class="file-select-btn" onclick="document.getElementById('foto').click()">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
