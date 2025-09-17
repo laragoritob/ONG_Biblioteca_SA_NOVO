@@ -47,7 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Obtém os dados do formulário
     $cod_autor = $_POST['cod_autor'];
     $cod_editora = $_POST['cod_editora'];
-    $cod_doador = $_POST['cod_doador'];
+    $cod_doador = isset($_POST['cod_doador']) ? $_POST['cod_doador'] : null;
+    if ($cod_doador === '' || $cod_doador === '0') {
+        $cod_doador = null;
+    }
     $cod_genero = $_POST['cod_genero'];
     $titulo = $_POST['titulo'];
     $data_lancamento = $_POST['data_lancamento'];
@@ -86,7 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':cod_autor', $cod_autor);
     $stmt->bindParam(':cod_editora', $cod_editora);
-    $stmt->bindParam(':cod_doador', $cod_doador);
+    if ($cod_doador === null) {
+        $stmt->bindValue(':cod_doador', null, PDO::PARAM_NULL);
+    } else {
+        $stmt->bindValue(':cod_doador', (int)$cod_doador, PDO::PARAM_INT);
+    }
     $stmt->bindParam(':cod_genero', $cod_genero);
     $stmt->bindParam(':titulo', $titulo);
     $stmt->bindParam(':data_lancamento', $data_lancamento);
@@ -221,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         <main class="main-content">
             <div class="container">
-                <form class="formulario" id="form_pessoal" action="#" method="post" enctype="multipart/form-data" onsubmit="return validaFormulario()">
+                <form class="formulario" id="form_pessoal" action="#" method="post" enctype="multipart/form-data" onsubmit="return validaEEnviarFormulario(event)">
                     
                 <div class="input-group">
                                 <div class="input-wrapper">
