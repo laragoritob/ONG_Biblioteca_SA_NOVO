@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 // VALIDAÇÃO DO FORMULÁRIO DE LIVRO //
-function validaFormulario() {
+async function validaFormularioAsync() {
     const form = document.getElementById('form_pessoal');
     const dataRegistroInput = document.getElementById('data_registro');
     const autorInput = document.getElementById('autor');
@@ -97,45 +97,81 @@ function validaFormulario() {
         return false; // Impede o envio do formulário
     }
     
-    // Verificar se o autor foi selecionado corretamente
+    // Tenta resolver autor/editora/doador automaticamente pelo texto digitado
+    const doadorInput = document.getElementById('nome_doador');
+    const codDoadorInput = document.getElementById('cod_doador');
+
+    async function resolverPrimeiroOuCriar(endpoint, queryParam, termo, setId) {
+        const url = `${endpoint}?${queryParam}=${encodeURIComponent(termo)}`;
+        try {
+            const resp = await fetch(url);
+            const data = await resp.json();
+            if (Array.isArray(data) && data.length > 0) {
+                setId(String(data[0].cod_autor || data[0].cod_editora || data[0].cod_doador));
+                return true;
+            }
+        } catch (e) {
+            // silencioso: continuará para erro de validação abaixo
+        }
+        return false;
+    }
+
+    // Autor
+    if (!codAutorInput.value || codAutorInput.value === '') {
+        const termoAutor = (autorInput.value || '').trim();
+        if (termoAutor.length >= 2) {
+            await resolverPrimeiroOuCriar('buscar_autores.php', 'termo', termoAutor, (id) => { codAutorInput.value = id; });
+        }
+    }
+    // Editora
+    if (!codEditoraInput.value || codEditoraInput.value === '') {
+        const termoEditora = (editoraInput.value || '').trim();
+        if (termoEditora.length >= 2) {
+            await resolverPrimeiroOuCriar('buscar_editoras.php', 'termo', termoEditora, (id) => { codEditoraInput.value = id; });
+        }
+    }
+    // Doador (opcional): só resolve se houver texto
+    if (!codDoadorInput.value || codDoadorInput.value === '') {
+        const termoDoador = (doadorInput.value || '').trim();
+        if (termoDoador.length >= 2) {
+            await resolverPrimeiroOuCriar('buscar_doadores.php', 'termo', termoDoador, (id) => { codDoadorInput.value = id; });
+        }
+    }
+
+    // Após tentativas de resolução automática, validar campos obrigatórios
     if (!codAutorInput.value || codAutorInput.value === '') {
         Swal.fire({
             icon: 'error',
             title: 'Autor inválido',
-            text: 'Por favor, selecione um autor válido da lista de sugestões.',
+            text: 'Informe um autor válido.',
             confirmButtonColor: '#6366f1'
         });
         autorInput.focus();
         return false;
     }
-    
-    // Verificar se a editora foi selecionada corretamente
     if (!codEditoraInput.value || codEditoraInput.value === '') {
         Swal.fire({
             icon: 'error',
             title: 'Editora inválida',
-            text: 'Por favor, selecione uma editora válida da lista de sugestões.',
+            text: 'Informe uma editora válida.',
             confirmButtonColor: '#6366f1'
         });
         editoraInput.focus();
         return false;
     }
-    
-    // Verificar se o doador foi selecionado corretamente
-    const doadorInput = document.getElementById('nome_doador');
-    const codDoadorInput = document.getElementById('cod_doador');
-    if (!codDoadorInput.value || codDoadorInput.value === '') {
-        Swal.fire({
-            icon: 'error',
-            title: 'Doador inválido',
-            text: 'Por favor, selecione um doador válido da lista de sugestões.',
-            confirmButtonColor: '#6366f1'
-        });
-        doadorInput.focus();
-        return false;
-    }
-    
-    return true; // Permite o envio do formulário
+
+    // Doador pode ficar vazio
+    return true;
+}
+
+function validaEEnviarFormulario(event) {
+    event.preventDefault();
+    validaFormularioAsync().then((ok) => {
+        if (ok) {
+            document.getElementById('form_pessoal').submit();
+        }
+    });
+    return false;
 }
 
 // AUTCOMPLETE PARA AUTOR //
