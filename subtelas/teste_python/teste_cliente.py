@@ -18,16 +18,16 @@ driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
 time.sleep(1.5)
 
 # Vai para página de cadastro de funcionário
-driver.get("http://localhost:8080/ONG_Biblioteca_SA_NOVO/subtelas/cadastro_funcionario.php")
+driver.get("http://localhost:8080/ONG_Biblioteca_SA_NOVO/subtelas/cadastro_cliente.php")
 time.sleep(1.5)
 
 # Preenche os campos do formulário
 # Preenche o campo NOME
-driver.find_element(By.NAME, "nome").send_keys("Allan Kelly Pirchiner Perini")
+driver.find_element(By.NAME, "nome").send_keys("João Dela da Silva")
 time.sleep(1.5)
 
 # Preenche o campo DATA DE NASCIMENTO (yyyy-mm-dd)
-driver.find_element(By.NAME, "data_nascimento").send_keys("20011990")
+driver.find_element(By.NAME, "data_nascimento").send_keys("20011970")
 time.sleep(1.5)
 
 # Seleciona sexo
@@ -36,15 +36,15 @@ sexo_select.select_by_value("Masculino")
 time.sleep(1.5)
 
 # Preenche o campo CPF
-driver.find_element(By.NAME, "cpf").send_keys("12345678901")
+driver.find_element(By.NAME, "cpf").send_keys("098765432123")
 time.sleep(1.5)
 
 # Preenche o campo EMAIL
-driver.find_element(By.NAME, "email").send_keys("allan.perini@example.com")
+driver.find_element(By.NAME, "email").send_keys("joao.silva@example.com")
 time.sleep(1.5)
 
 # Preenche o campo Telefone
-driver.find_element(By.NAME, "telefone").send_keys("47988887777")
+driver.find_element(By.NAME, "telefone").send_keys("47988887778")
 time.sleep(1.5)
 
 # Upload da foto (arquivo existente no projeto)
@@ -69,32 +69,9 @@ try:
 except Exception:
     time.sleep(2)
 
-# Preenche a DATA DE EFETIVAÇÃO (yyyy-mm-dd)
-try:
-    from datetime import date
-    hoje = date.today().strftime("%Y-%m-%d")
-except Exception:
-    hoje = "2024-01-15"
-driver.find_element(By.NAME, "data_efetivacao").send_keys(hoje)
-time.sleep(1.0)
-
-# Preenche o campo NUMERO DA RESIDENCIA
-driver.find_element(By.NAME, "num_residencia").send_keys("1523")
+    # Preenche o campo NUMERO DA RESIDENCIA
+driver.find_element(By.NAME, "num_residencia").send_keys("1525")
 time.sleep(1.5)
-
-# Preenche o campo USUARIO
-driver.find_element(By.NAME, "usuario").send_keys("allan_kelly")
-time.sleep(1.5)
-
-# Preenche o campo SENHA
-driver.find_element(By.NAME, "senha").send_keys("12345678")
-time.sleep(1.5)
-# Clica no botão/checkbox de mostrar senha
-try:
-    driver.find_element(By.ID, "mostrarSenha").click()
-except:
-    driver.find_element(By.CSS_SELECTOR, "label[for='mostrarSenha']").click()
-time.sleep(3)
 
 # Clica no botão de cadastro
 driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
